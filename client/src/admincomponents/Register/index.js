@@ -1,13 +1,12 @@
 import React from 'react';
 import { Grid, Form, Image, Segment, Divider, Header, Button } from 'semantic-ui-react';
 import './index.css'
-import Register from "../Register";
 
 const post = require('../../helpers/fetch').post;
 
 //Компонент при вход
 
-export default class Login extends React.Component {
+export default class Register extends React.Component {
 
     constructor(props) {
         super(props);
@@ -24,7 +23,7 @@ export default class Login extends React.Component {
     }
 
     onSubmit = async () => {
-        const res = await post('/admin/login', {
+        const res = await post('/admin/register', {
             username: this.state.username,
             password: this.state.password
         })
@@ -41,20 +40,19 @@ export default class Login extends React.Component {
                     <Grid.Row>
                         <Grid.Column>
                             <Segment textAlign='center' className='login-form'>
-                                <Header >Вход като админ</Header>
+                                <Header >Регистрация</Header>
                                 <Divider />
                                 <Segment basic textAlign='left'>
                                     <Form onSubmit={this.onSubmit}>
                                         <Form.Input fluid label='Потребителско име' placeholder='Потребителско име' name='username' onChange={this.onChange} />
                                         <Form.Input fluid type='password' label='Парола' placeholder='Парола' name='password' onChange={this.onChange} />
-                                        <Form.Field fluid control={Button}>Вход</Form.Field>
+                                        <Form.Field fluid control={Button}>Регистрирай</Form.Field>
                                     </Form>
                                 </Segment>
                             </Segment>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Register/>
             </div>
         )
     }

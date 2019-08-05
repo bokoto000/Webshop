@@ -5,6 +5,9 @@ import { Grid } from "semantic-ui-react";
 import Home from "../Home";
 import Login from "../Login";
 
+
+const get = require('../../helpers/fetch').get;
+
 export default class Admin extends Component {
   constructor() {
     super();
@@ -16,9 +19,9 @@ export default class Admin extends Component {
   }
 
   async componentDidMount() {
-    const res = { ok: false }; //(await get('/get-sess-info/user'));
+    const res = (await get('/get-sess-info/admin'));
     if (res.ok) {
-      const userAdmin = res; //(await res.json()).user;
+      const userAdmin = (await res.json()).user;
       this.setState({ isAuthAdmin: true, userAdmin: userAdmin, authenticatingAdmin: false });
     } else {
       this.setState({ isAuthAdmin: false, authenticatingAdmin: false });
@@ -31,6 +34,7 @@ export default class Admin extends Component {
     console.log(isAuthAdmin);
     console.log(authenticatingAdmin);
     return authenticatingAdmin ? null : (
+      <div>
       <BrowserRouter>
         <Switch>
           <Route
@@ -45,6 +49,7 @@ export default class Admin extends Component {
           />
         </Switch>
       </BrowserRouter>
+      </div>
     );
   }
 }

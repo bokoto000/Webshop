@@ -1,8 +1,5 @@
 import React from 'react';
-import { Grid, Image, Segment, Header, Menu } from 'semantic-ui-react';
 import './index.css'
-import { Switch, Route, Link } from 'react-router-dom';
-
 const post = require('../../helpers/fetch').post;
 
 //Компонент за начална страница
