@@ -27,12 +27,5 @@ module.exports = sequelize => {
       freezeTableName: true
     }
   );
-  User.associate = models => {
-    User.belongsToMany(models.Device, {
-      through: "UserDevice",
-      as: "Device",
-      foreignKey: "userId"
-    });
-  };
   return User;
 };
