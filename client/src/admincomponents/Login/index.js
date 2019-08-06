@@ -5,7 +5,6 @@ import Register from "../Register";
 
 const post = require('../../helpers/fetch').post;
 
-//Компонент при вход
 
 export default class Login extends React.Component {
 
@@ -34,7 +33,6 @@ export default class Login extends React.Component {
     }
 
     render() {
-        console.log("login")
         return (
             <div style={{ height: '100vh' }}>
                 <Grid verticalAlign='middle' columns={4} centered>
@@ -54,7 +52,6 @@ export default class Login extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-                <Register/>
             </div>
         )
     }

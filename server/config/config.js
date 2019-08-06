@@ -37,6 +37,17 @@ module.exports = async (app) => {
         CONSTRAINT admins_pkey PRIMARY KEY (id)
     )`);
 
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS products
+    (
+        id serial NOT NULL,
+        description text,
+        image text,
+        name text UNIQUE NOT NULL, 
+        price numeric(15,2) NOT NULL,
+        stock int NOT NULL,
+        CONSTRAINT products_pkey PRIMARY KEY (id)
+    )`);
+
     const ormModels = require('../orm_models/index')(sequelize);
     const models = require ('../models/index')(ormModels);
     require ('./passportConfig')(passport,ormModels, models);

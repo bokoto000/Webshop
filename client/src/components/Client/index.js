@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid } from "semantic-ui-react";
+import { Grid, Divider } from "semantic-ui-react";
 import Menu from "../Menu";
 import Head from "../Head";
 import Body from "../Body";
@@ -8,16 +8,15 @@ import Footer from "../Footer";
 class Client extends Component {
   render() {
     return (
-    <div>
+      <div style={{ paddingLeft: "30px" }}>
+        <Head />
+        <Divider />
         <Grid>
-          <Grid.Row>
-            <Head />
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
+          <Grid.Row columns={2}>
+            <Grid.Column width={2}>
               <Menu />
             </Grid.Column>
-            <Grid.Column>
+            <Grid.Column width={12}>
               <Body />
             </Grid.Column>
           </Grid.Row>

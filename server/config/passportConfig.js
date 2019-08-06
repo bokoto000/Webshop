@@ -7,17 +7,26 @@ module.exports = (passport, ormModels, models) => {
   const Admin = models.Admin;
 
   passport.serializeUser((user, done) => {
-      if (!user) done(null, false);
-      else done(null, user.id);
+    const userData = {
+      id: user.id,
+      isAdmin: user.auth
+    };
+    if (!user) done(null, false);
+    else done(null, userData);
   });
 
-  passport.deserializeUser(async (id, done) => {
-    const userFromDb = await ormAdmin.findByPk(id);
+  passport.deserializeUser(async (userData, done) => {
+    const id = userData.id;
+    let userFromDb;
+    if (userData.isAdmin == null) userFromDb = await ormUser.findByPk(id);
+    else userFromDb = await ormAdmin.findByPk(id);
     const user = {
       id: userFromDb.dataValues.id,
       firstName: userFromDb.dataValues.firstName,
       lastName: userFromDb.dataValues.lastName,
-      email: userFromDb.dataValues.email
+      email: userFromDb.dataValues.email,
+      username: userFromDb.dataValues.username,
+      auth: userFromDb.dataValues.auth
     };
     if (user) done(null, user);
     else {
@@ -96,11 +105,12 @@ module.exports = (passport, ormModels, models) => {
     "local-signup",
     new LocalStrategy(
       {
-        usernameField: "email",
+        usernameField: "username",
         passwordField: "password",
         passReqToCallback: true
       },
-      async function(req, email, password, done) {
+      async function(req, username, password, done) {
+        const email = req.body.email;
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
         const user = await ormUser.findOne({ where: { email: email } });
@@ -111,7 +121,8 @@ module.exports = (passport, ormModels, models) => {
             firstName,
             lastName,
             email,
-            password
+            password,
+            username
           );
           if (user) {
             return done(null, user);

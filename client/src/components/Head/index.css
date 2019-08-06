@@ -1,0 +1,30 @@
+.dekstopheader {
+    background-color:white!important;
+    border:none!important;
+}
+
+.dekstopheader-button{
+    text-emphasis-color: black!important;
+}
+
+.dekstopheader-home{
+    color:blue!important;
+}
+
+.dekstop-header-menu-grid{
+    width:1200px!important;
+}
+
+.dekstopheader-menu{
+    border:none!important;
+}
+
+.dekstop-header{
+    max-width: 1200px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.dekstopheader-menu-button{
+    background-color:transparent!important;
+}

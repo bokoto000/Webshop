@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
-import ProductDisplay from '../ProductDisplay';
+import {
+    Header
+} from 'semantic-ui-react';
 
 
 export default class Body extends Component{
     render(){
         return (
             <div>
-                <ProductDisplay/> 
+                <h1> Body</h1>
             </div>
         )
     }

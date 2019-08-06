@@ -34,7 +34,7 @@ export default class Admin extends Component {
     console.log(isAuthAdmin);
     console.log(authenticatingAdmin);
     return authenticatingAdmin ? null : (
-      <div>
+      <div  style={{ paddingLeft: "30px" }}>
       <BrowserRouter>
         <Switch>
           <Route
