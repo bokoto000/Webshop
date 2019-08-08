@@ -7,7 +7,7 @@ router.use(bodyParser.urlencoded({
 }));
 
 module.exports = () => {
-    router.get('/user', (req, res) => {
+    router.get('/admin', (req, res) => {
         const user = req.user;
         if(user) res.json({user})
         else res.status(403).send("not logged")

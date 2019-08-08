@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { withRouter, } from "react-router-dom";
 import {
   Grid,
   Form,
@@ -40,13 +40,13 @@ export default withRouter(
         stock: this.state.stock
       });
       if (res.ok) {
-        this.props.history.push("/admin");
+        window.location.reload();
       }
     };
 
     render() {
       return (
-        <div style={{ height: "80vh", width: "400px" }}>
+        <div style={{ minWidth: "400px" }}>
           <Grid verticalAlign="middle" columns={4} centered>
             <Grid.Row>
               <Grid.Column width={16}>

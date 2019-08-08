@@ -9,7 +9,6 @@ router.use(
 );
 
 module.exports = (passport, ormModels) => {
-  //Вход в админ панела
   router.post("/login", (req, res, next) => {
     console.log("Admin Login");
     try {
@@ -46,9 +45,8 @@ module.exports = (passport, ormModels) => {
       });
     })(req, res, next);
   });
-
-  //Изход от админ панела
-  router.post("/logout", (req, res, next) => {
+  
+  router.get("/logout", (req, res, next) => {
     req.logout();
     return res.json();
   });

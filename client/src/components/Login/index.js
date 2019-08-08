@@ -23,7 +23,7 @@ export default class Login extends React.Component {
     }
 
     onSubmit = async () => {
-        const res = await post('/login', {
+        const res = await post('/user/login', {
             username: this.state.username,
             password: this.state.password
         })

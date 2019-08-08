@@ -6,7 +6,8 @@
   
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"cd server && npm start\" \"cd client && npm start\" "
+    "start": "concurrently \"cd server && npm start\" \"cd client && npm start\" ",
+    "admin":"concurrently \"cd admin_server && npm start\" \"cd admin_client && npm start\" "
   },
   "author": "Boris Velkovski",
   "license": "ISC"

@@ -20,8 +20,6 @@ class Head extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: props.user,
-      authenticating: props.authenticating
     };
   }
 
@@ -29,14 +27,15 @@ class Head extends Component {
   showFixedMenu = () => this.setState({ fixed: true });
 
   handleSignOut = async () => {
-    await get("/signout");
+    await get("/user/logout");
     window.location.reload();
   };
 
   render() {
     const fixed = this.state.fixed;
-    const authenticating = this.state.authenticating;
-    const user = this.state.user;
+    const authenticating = this.props.authenticating;
+    const user = this.props.user;
+    console.log(user);
     if (authenticating) {
       return (
         <Visibility
@@ -100,18 +99,7 @@ class Head extends Component {
                   <Menu.Item position="right">
                     <Button
                       as={Link}
-                      to="/timeline"
-                      inverted={!fixed}
-                      primary={fixed}
-                      style={{ marginLeft: "0.5em" }}
-                      className="dekstopheader-button"
-                      color="blue"
-                    >
-                      Дневник
-                    </Button>
-                    <Button
-                      as={Link}
-                      to="/profile"
+                      to="/"
                       inverted={!fixed}
                       primary={fixed}
                       style={{ marginLeft: "0.5em" }}

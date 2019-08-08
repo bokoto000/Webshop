@@ -36,8 +36,8 @@ export default class ProductCard extends React.Component {
             <span className="price">{product.price} лв</span>
           </Card.Meta>
           <Card.Description>{product.description}</Card.Description>
-          <Button positive>Купи</Button>
         </Card.Content>
+        <Button positive>Купи</Button>
       </Card>
     );
   }
