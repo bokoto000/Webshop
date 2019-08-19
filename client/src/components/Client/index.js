@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { Grid, Divider } from "semantic-ui-react";
+import { Divider } from "semantic-ui-react";
+import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
 import Menu from "../Menu";
 import Head from "../Head";
 import Body from "../Body";
 import Footer from "../Footer";
-
-
-const get = require('../../helpers/fetch').get;
-
+import Cart from "../Cart";
+const get = require("../../helpers/fetch").get;
 
 class Client extends Component {
   constructor() {
@@ -16,11 +15,11 @@ class Client extends Component {
       isAuth: true,
       user: null,
       authenticating: true
-    }
+    };
   }
 
   async componentDidMount() {
-    const res = (await get('get-sess-info/user'));
+    const res = await get("get-sess-info/user");
     if (res.ok) {
       const user = (await res.json()).user;
       this.setState({ isAuth: true, user: user, authenticating: false });
@@ -34,23 +33,14 @@ class Client extends Component {
     const user = this.state.user;
     const authenticating = this.state.authenticating;
     return (
-      
       <div style={{ paddingLeft: "30px" }}>
-        <Head user={user} authenticating={authenticating}  />
+        <Head user={user} authenticating={authenticating} />
         <Divider />
-        <Grid>
-          <Grid.Row columns={2}>
-            <Grid.Column width={2}>
-              <Menu />
-            </Grid.Column>
-            <Grid.Column width={12}>
-              <Body />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Footer />
-          </Grid.Row>
-        </Grid>
+        <Switch>
+          <Route exact path="/" component={Body} />
+          <Route exact path="/cart" component={Cart} />
+        </Switch>
+        <Footer />
       </div>
     );
   }

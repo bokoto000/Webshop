@@ -19,8 +19,7 @@ const get = fetch.get;
 class Head extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
   }
 
   hideFixedMenu = () => this.setState({ fixed: false });
@@ -35,7 +34,6 @@ class Head extends Component {
     const fixed = this.state.fixed;
     const authenticating = this.props.authenticating;
     const user = this.props.user;
-    console.log(user);
     if (authenticating) {
       return (
         <Visibility
@@ -99,6 +97,17 @@ class Head extends Component {
                   <Menu.Item position="right">
                     <Button
                       as={Link}
+                      to="/cart"
+                      inverted={!fixed}
+                      primary={fixed}
+                      style={{ marginLeft: "0.5em" }}
+                      className="dekstopheader-button"
+                      color="blue"
+                    >
+                      Количка
+                    </Button>
+                    <Button
+                      as={Link}
                       to="/"
                       inverted={!fixed}
                       primary={fixed}
@@ -152,6 +161,17 @@ class Head extends Component {
                     {/*logo*/}
                   </Menu.Item>
                   <Menu.Item position="right" style={{ padding: "1em 0em" }}>
+                    <Button
+                      as={Link}
+                      to="/cart"
+                      inverted={!fixed}
+                      primary={fixed}
+                      style={{ marginLeft: "0.5em" }}
+                      className="dekstopheader-button"
+                      color="blue"
+                    >
+                      Количка
+                    </Button>
                     <Popup
                       trigger={
                         <Button

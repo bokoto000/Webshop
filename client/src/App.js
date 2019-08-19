@@ -8,9 +8,7 @@ import Client from "./components/Client";
 function App() {
   return (
     <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={Client} />
-      </Switch>
+      <Client />
     </BrowserRouter>
   );
 }

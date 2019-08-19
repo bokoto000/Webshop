@@ -1,0 +1,18 @@
+.cart-product{
+    width:50%;
+
+}
+
+.product-image{
+    width:100px!important;
+    height:100px!important;
+}
+
+.cart-product-span{
+    padding-left: 30px!important;
+}
+
+.cart-product-row{
+    border-bottom-width: 10px!important;
+    border-bottom-color: black!important;
+}
