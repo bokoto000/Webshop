@@ -25,20 +25,20 @@ export default class ProductDisplay extends React.Component {
   }
 
   async componentDidMount() {
-    const products = (await (await get("/product/get-products")).json())
-      .products;
+    const products = (await (await get("/product/get-products")).json()).products;
+    console.log(products);
     this.setState({ products });
   }
 
   render() {
     const products = this.state.products;
-    //console.log(products);
+    console.log(products);
     return (
       <div style={{ height: "80vh", width: "100%" }}>
         <Card.Group itemsPerRow={4}>
           {products.map(product => {
             return (
-              <ProductCard key={product.id} product={product}/>
+              <ProductCard key={product.id} product={product} tags={this.props.tags}/>
             );
           })}
         </Card.Group>

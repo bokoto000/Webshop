@@ -49,7 +49,6 @@ export default class ProductCard extends React.Component {
 
   render() {
     const product = this.props.product;
-    console.log(this.state.modalOpen);
     return (
       <Card>
         <div className="product-image">
@@ -94,7 +93,7 @@ export default class ProductCard extends React.Component {
             </Modal>
           </div>
         </Header>
-        <EditProduct product={product} />
+        <EditProduct product={product} tags={this.props.tags}/>
       </Card>
     );
   }

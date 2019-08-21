@@ -7,8 +7,10 @@ import Body from "../Body";
 import Footer from "../Footer";
 import ProductForm from "../ProductForm";
 import ProductDisplay from "../ProductDisplay";
+import TagForm from "../TagForm";
 import "./index.css";
 const post = require("../../helpers/fetch").post;
+const get = require("../../helpers/fetch").get;
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -18,6 +20,12 @@ export default class Home extends React.Component {
       password: "",
       activeItem: null
     };
+  }
+
+  async componentDidMount() {
+    const tags = (await (await get("/tag/get-tags")).json())
+      .tags;
+    this.setState({ tags });
   }
 
   onChange = event => {
@@ -43,11 +51,14 @@ export default class Home extends React.Component {
               <Menu />
             </Grid.Column>
             <Grid.Column width={8}>
-              <ProductDisplay />
+              <ProductDisplay tags={this.state.tags} />
             </Grid.Column>
             <Grid.Column witdh={2}>
               <ProductForm />
             </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <TagForm tags={this.state.tags} />
           </Grid.Row>
           <Grid.Row>
             <Footer />

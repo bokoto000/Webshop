@@ -11,7 +11,7 @@ import {
 } from "semantic-ui-react";
 import "./index.css";
 
-const get = require("../../helpers/fetch").get;
+const post = require("../../helpers/fetch").post;
 
 export default class ProductCard extends React.Component {
   constructor(props) {
@@ -21,6 +21,7 @@ export default class ProductCard extends React.Component {
   async componentDidMount() {}
 
   async buyItem() {
+    
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
     if (cart!="[]") {
       let done = false;
@@ -41,6 +42,10 @@ export default class ProductCard extends React.Component {
       cart.push({"id":this.props.product.id, "count":1})
     }
     localStorage.setItem("cart", JSON.stringify(cart));
+    const res = await post("/cart/update-item", {
+      id:this.props.product.id,
+
+    });
   }
 
   render() {

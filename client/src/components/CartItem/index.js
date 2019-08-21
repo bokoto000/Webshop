@@ -5,20 +5,15 @@ import "./index.css";
 
 const get = require("../../helpers/fetch").get;
 
-export default class Cart extends Component {
+export default class CartItem extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   async componentDidMount() {
-    const carttest = await (await get("/cart/get-cart")).json();
-    if (carttest) {
-      this.setState({ cart: carttest });
-    } else {
-      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      this.setState({ cart });
-    }
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    this.setState({ cart });
     const products = (await (await get("/product/get-products")).json())
       .products;
     this.setState({ products });
@@ -30,7 +25,9 @@ export default class Cart extends Component {
       <div>
         <Grid>
           <Grid.Row columns={5} className="cart-product-row">
-            <Grid.Column />
+            <Grid.Column>
+            
+            </Grid.Column>
 
             <Grid.Column>Име</Grid.Column>
 
@@ -57,7 +54,7 @@ export default class Cart extends Component {
 
                       <Grid.Column>{product.price}</Grid.Column>
 
-                      <Grid.Column>{product.stock}</Grid.Column>
+                      <Grid.Column>{product.count}</Grid.Column>
                       <Divider />
                     </Grid.Row>
                   </Grid>
