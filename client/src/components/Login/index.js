@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Form, Image, Segment, Divider, Header, Button } from 'semantic-ui-react';
+import { Grid, Form, Image, Segment, Divider, Header, Button, Label } from 'semantic-ui-react';
 import './index.css'
 import Register from "../Register";
 
@@ -13,7 +13,8 @@ export default class Login extends React.Component {
 
         this.state = {
             username: "",
-            password: ""
+            password: "",
+            loginError:false
         };
     }
 
@@ -30,6 +31,9 @@ export default class Login extends React.Component {
         if (res.ok) {
             window.location.reload();
         }
+        else {
+            this.setState({loginError:true});
+        }
     }
 
     render() {
@@ -45,6 +49,12 @@ export default class Login extends React.Component {
                                         <Form.Input fluid type='password' label='Парола' placeholder='Парола' name='password' onChange={this.onChange} />
                                         <Form.Field fluid control={Button}>Влез</Form.Field>
                                     </Form>
+                                    {this.state.loginError?
+                                    <Label color='red'>
+                                        Wrong username or password
+                                    </Label>
+                                    :
+                                    null}
                                 </Segment>
                             </Segment>
                         </Grid.Column>

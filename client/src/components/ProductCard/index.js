@@ -5,10 +5,14 @@ import {
   Image,
   Segment,
   Divider,
-  Header,
+  Message,
   Button,
   Card
 } from "semantic-ui-react";
+import {
+  NotificationManager,
+  NotificationContainer
+} from "react-notifications";
 import "./index.css";
 
 const post = require("../../helpers/fetch").post;
@@ -16,14 +20,16 @@ const post = require("../../helpers/fetch").post;
 export default class ProductCard extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      addedProduct: false
+    };
   }
 
   async componentDidMount() {}
 
   async buyItem() {
-    
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    if (cart!="[]") {
+    if (cart != "[]") {
       let done = false;
       for (let i = 0; i < cart.length; i++) {
         if (cart[i].id == this.props.product.id) {
@@ -31,21 +37,29 @@ export default class ProductCard extends React.Component {
           done = true;
         }
       }
-      if(done==false){
-        cart.push({"id":this.props.product.id,"name":this.props.product.name,"image":this.props.product.image,
-        "description":this.props.product.description, "price":this.props.product.price,
-         "count":1})
+      if (done == false) {
+        cart.push({
+          id: this.props.product.id,
+          name: this.props.product.name,
+          image: this.props.product.image,
+          description: this.props.product.description,
+          price: this.props.product.price,
+          count: 1
+        });
       }
-    }
-    else {
+    } else {
       cart = [];
-      cart.push({"id":this.props.product.id, "count":1})
+      cart.push({ id: this.props.product.id, count: 1 });
     }
     localStorage.setItem("cart", JSON.stringify(cart));
     const res = await post("/cart/update-item", {
-      id:this.props.product.id,
-
+      id: this.props.product.id
     });
+    if (res.ok) {
+      NotificationManager.success("Добавен Продукт","", 3000, () => {
+        alert("callback");
+      });
+    }
   }
 
   render() {
@@ -62,7 +76,7 @@ export default class ProductCard extends React.Component {
           </Card.Meta>
           <Card.Description>{product.description}</Card.Description>
         </Card.Content>
-        <Button positive onClick={()=>this.buyItem()}>
+        <Button positive onClick={() => this.buyItem()}>
           Купи
         </Button>
       </Card>

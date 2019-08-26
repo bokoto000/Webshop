@@ -6,11 +6,15 @@ import Head from "../Head";
 import Body from "../Body";
 import Footer from "../Footer";
 import Cart from "../Cart";
+import Profile from "../Profile";
+import { NotificationContainer } from "react-notifications";
+import "react-notifications/lib/notifications.css";
+
 const get = require("../../helpers/fetch").get;
 
 class Client extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       isAuth: true,
       user: null,
@@ -36,9 +40,11 @@ class Client extends Component {
       <div style={{ paddingLeft: "30px" }}>
         <Head user={user} authenticating={authenticating} />
         <Divider />
+        <NotificationContainer />
         <Switch>
           <Route exact path="/" component={Body} />
           <Route exact path="/cart" component={Cart} />
+          <Route exact path="/profile" component={Profile} />
         </Switch>
         <Footer />
       </div>

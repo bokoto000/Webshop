@@ -5,8 +5,10 @@ import {
   Popup,
   Form,
   Segment,
-  Button
+  Button,
+  Label
 } from "semantic-ui-react";
+import Recaptcha from "react-recaptcha";
 import "./index.css";
 
 const post = require("../../helpers/fetch").post;
@@ -15,9 +17,13 @@ export default class Register extends React.Component {
   constructor(props) {
     super(props);
 
+    this.verifyCallback = this.verifyCallback.bind(this);
+
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      isVerified: false,
+      error: null
     };
   }
 
@@ -25,17 +31,42 @@ export default class Register extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  onSubmit = async () => {
-    const res = await post("/user/register", {
-      username: this.state.username,
-      password: this.state.password,
-      email: this.state.email,
-      firstName: this.state.firstName,
-      lastName:this.state.lastName
+  recaptchaLoaded() {
+    console.log("recaptcha loaded");
+  }
 
-    });
-    if (res.ok) {
-      window.location.reload();
+  verifyCallback(response) {
+    console.log(response);
+    try {
+      if (response) {
+        this.setState({
+          isVerified: true
+        });
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    console.log(this.state.isVerified);
+  }
+
+  onSubmit = async () => {
+    console.log(this.state.isVerified);
+    if (!this.state.isVerified) {
+      const res = await post("/user/register", {
+        username: this.state.username,
+        password: this.state.password,
+        email: this.state.email,
+        firstName: this.state.firstName,
+        lastName: this.state.lastName
+      });
+      if (res.ok) {
+        window.location.reload();
+      }
+      else {
+        this.setState({error:"There was an error"})
+      }
+    } else {
+      alert("Please verify that you are a human!");
     }
   };
 
@@ -45,7 +76,6 @@ export default class Register extends React.Component {
         <Container style={{ padding: "1em 0em" }}>
           <Segment>
             <Form onSubmit={this.onSubmit}>
-              <Form.Field hidden name="_csrf" value={this.state.csrf} />
               <Form.Field>
                 <label> Потребителско име</label>
                 <input
@@ -110,11 +140,18 @@ export default class Register extends React.Component {
                   }
                 />
               </Form.Field>
+              <Recaptcha
+                sitekey="6LfGb7QUAAAAACEjJLDnxl31GWzjTdE0401rme_e"
+                render="explicit"
+                onloadCallback={this.recaptchaLoaded}
+                verifyCallback={this.verifyCallback}
+              />
               <Form.Field>
                 <Button fluid type="submit">
                   Регистрирай се!
                 </Button>
               </Form.Field>
+              {this.state.error ? <Label color='red'>{this.state.error}</Label> : null}
             </Form>
           </Segment>
         </Container>

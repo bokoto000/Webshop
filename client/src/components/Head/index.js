@@ -10,7 +10,7 @@ import {
 } from "semantic-ui-react";
 import Login from "../Login";
 import Register from "../Register";
-import { Link } from "react-router-dom";
+import { Link, Redirect, withRouter } from "react-router-dom";
 import "./index.css";
 
 const fetch = require("../../helpers/fetch");
@@ -27,6 +27,7 @@ class Head extends Component {
 
   handleSignOut = async () => {
     await get("/user/logout");
+    this.props.history.push(`/`);
     window.location.reload();
   };
 
@@ -108,7 +109,7 @@ class Head extends Component {
                     </Button>
                     <Button
                       as={Link}
-                      to="/"
+                      to="/profile"
                       inverted={!fixed}
                       primary={fixed}
                       style={{ marginLeft: "0.5em" }}
@@ -216,4 +217,4 @@ class Head extends Component {
   }
 }
 
-export default Head;
+export default withRouter(Head);
