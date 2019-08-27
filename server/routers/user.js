@@ -12,7 +12,7 @@ router.use(
 module.exports = (passport, ormModels) => {
   router.post("/register", check("email").isEmail(),
   check("username").not().isEmpty(),
-  check("passowrd").not().isEmpty(), (req, res, next) => {
+  check("password").not().isEmpty(), (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({ errors: errors.array() });

@@ -105,8 +105,6 @@ export default class ProductDisplay extends React.Component {
   }
   render() {
     const products = this.state.products;
-    console.log(products);
-    console.log(this.state.sort);
     return (
       <div key={this.props.products} style={{ height: "80vh", width: "100%" }}>
         <Grid>
@@ -153,7 +151,7 @@ export default class ProductDisplay extends React.Component {
         ) : products ? (
           <Card.Group itemsPerRow={5}>
             {products.map(product => {
-              return <ProductCard product={product} />;
+              return <ProductCard key={product.id} product={product} />;
             })}
           </Card.Group>
         ) : null}

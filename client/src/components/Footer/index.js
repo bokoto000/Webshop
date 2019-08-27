@@ -1,15 +1,13 @@
-import React, {Component} from 'react';
-import {
-    Header
-} from 'semantic-ui-react';
+import React, { Component } from "react";
+import { Header, Divider } from "semantic-ui-react";
 
-
-export default class Footer extends Component{
-    render(){
-        return (
-            <div>
-                <h1> Footer</h1>
-            </div>
-        )
-    }
+export default class Footer extends Component {
+  render() {
+    return (
+      <div>
+        <Divider/>
+        <h1> Footer</h1>
+      </div>
+    );
+  }
 }

@@ -192,6 +192,7 @@ class Head extends Component {
                       trigger={
                         <Button
                           as={Link}
+                          to="/"
                           inverted={!fixed}
                           primary={fixed}
                           style={{ marginLeft: "0.5em" }}

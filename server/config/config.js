@@ -1,23 +1,24 @@
+const sequelize = require("./dbConfig");
+const passport = require("passport");
+const bodyParser = require("body-parser");
+const session = require("express-session");
+const cors = require("cors");
 
-const sequelize = require('./dbConfig');
-const passport = require('passport')
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const cors = require('cors')
+module.exports = async app => {
+  app.use(cors());
+  app.use(
+    session({
+      secret: "webshop",
+      resave: true,
+      saveUninitialized: true
+    })
+  );
+  app.use(bodyParser.json({ limit: "50mb" }));
+  app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-module.exports = async (app) => {
-    app.use(cors());
-    app.use(session({
-        secret: 'webshop',
-        resave: true,
-        saveUninitialized: true
-    }));
-    app.use(bodyParser.json({ limit: '50mb' }));
-    app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    await sequelize.query(`CREATE TABLE IF NOT EXISTS users
+  await sequelize.query(`CREATE TABLE IF NOT EXISTS users
     (
         id serial NOT NULL,
         first_name text ,
@@ -28,7 +29,7 @@ module.exports = async (app) => {
         CONSTRAINT users_pkey PRIMARY KEY (id)
     )`);
 
-    await sequelize.query(`CREATE TABLE IF NOT EXISTS admins
+  await sequelize.query(`CREATE TABLE IF NOT EXISTS admins
     (
         id serial NOT NULL,
         username text NOT NULL,
@@ -37,7 +38,7 @@ module.exports = async (app) => {
         CONSTRAINT admins_pkey PRIMARY KEY (id)
     )`);
 
-    await sequelize.query(`CREATE TABLE IF NOT EXISTS products
+  await sequelize.query(`CREATE TABLE IF NOT EXISTS products
     (
         id serial NOT NULL,
         description text,
@@ -48,7 +49,7 @@ module.exports = async (app) => {
         CONSTRAINT products_pkey PRIMARY KEY (id)
     )`);
 
-    await sequelize.query(`CREATE TABLE IF NOT EXISTS items
+  await sequelize.query(`CREATE TABLE IF NOT EXISTS items
     (
         id serial NOT NULL,
         cart_id int NOT NULL,
@@ -57,17 +58,23 @@ module.exports = async (app) => {
         CONSTRAINT items_pkey PRIMARY KEY (id)
     )`);
 
-
-    await sequelize.query(`CREATE TABLE IF NOT EXISTS carts
+  await sequelize.query(`CREATE TABLE IF NOT EXISTS carts
     (
         id serial NOT NULL,
         user_id int NOT NULL UNIQUE,
         CONSTRAINT cart_pkey PRIMARY KEY (id)
     )`);
 
-    const ormModels = require('../orm_models/index')(sequelize);
-    const models = require ('../models/index')(ormModels);
-    require ('./passportConfig')(passport,ormModels, models);
-    require('./routersConfig')(app, ormModels, passport,sequelize);
+  await sequelize.query(`CREATE TABLE IF NOT EXISTS resetpasswordtokens
+    (
+        id int UNIQUE NOT NULL,
+        token text UNIQUE NOT NULL,
+        expire text NOT NULL, 
+        CONSTRAINT resetpasswordtokens_pkey PRIMARY KEY (id)
+    )`);
 
-}
+  const ormModels = require("../orm_models/index")(sequelize);
+  const models = require("../models/index")(ormModels);
+  require("./passportConfig")(passport, ormModels, models);
+  require("./routersConfig")(app, ormModels, passport, sequelize);
+};

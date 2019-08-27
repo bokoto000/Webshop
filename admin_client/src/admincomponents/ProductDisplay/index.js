@@ -7,10 +7,12 @@ import {
   Divider,
   Header,
   Button,
-  Card
+  Card,
+  Tab,
+  Table
 } from "semantic-ui-react";
-import {Redirect } from "react-router-dom";
-import ProductCard from '../ProductCard';
+import { Redirect } from "react-router-dom";
+import ProductCard from "../ProductCard";
 import "./index.css";
 
 const get = require("../../helpers/fetch").get;
@@ -25,23 +27,36 @@ export default class ProductDisplay extends React.Component {
   }
 
   async componentDidMount() {
-    const products = (await (await get("/product/get-products")).json()).products;
-    console.log(products);
+    const products = (await (await get("/product/get-products")).json())
+      .products;
     this.setState({ products });
   }
 
   render() {
     const products = this.state.products;
-    console.log(products);
     return (
       <div style={{ height: "80vh", width: "100%" }}>
-        <Card.Group itemsPerRow={4}>
-          {products.map(product => {
-            return (
-              <ProductCard key={product.id} product={product} tags={this.props.tags}/>
-            );
-          })}
-        </Card.Group>
+        <Table celled>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Име</Table.HeaderCell>
+              <Table.HeaderCell>Цена</Table.HeaderCell>
+              <Table.HeaderCell>Наличност</Table.HeaderCell>
+              <Table.HeaderCell>Промяна</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {products.map(product => {
+              return (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  tags={this.props.tags}
+                />
+              );
+            })}
+          </Table.Body>
+        </Table>
       </div>
     );
   }

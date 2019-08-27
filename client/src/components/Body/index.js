@@ -18,20 +18,20 @@ export default class Body extends Component {
   async componentDidMount() {
     this.setState({ products: [], allProducts: [] });
     let products = (await (await get("/product/get-products")).json()).products;
+    console.log(products);
     products = filters.filterNewest(products);
     this.setState({ products, allProducts: products });
   }
 
-  setTag(tag) {
+  setTag = async (tag) =>  {
     const products = this.state.allProducts;
-    this.setState({ products: [] });
     if (tag == "All") {
       this.setState({ products });
     } else {
       let newProducts = [];
       for (let i = 0; i < products.length; i++) {
         if (products[i].tags)
-          for (let j = 0; j < products[i].tags.length; i++) {
+          for (let j = 0; j < products[i].tags.length; j++) {
             if (products[i].tags[j].name == tag) {
               newProducts.push(products[i]);
               break;
@@ -43,7 +43,6 @@ export default class Body extends Component {
   }
 
   render() {
-    console.log(this.state.products);
     return (
       <div>
         <Grid>

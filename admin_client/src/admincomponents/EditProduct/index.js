@@ -87,7 +87,7 @@ export default withRouter(
 
     render() {
       const { isLoading, value, results } = this.state;
-      console.log(this.state.tags)
+
       return (
         <Modal trigger={<Button>Edit</Button>}>
           <div style={{ minWidth: "400px" }}>
@@ -147,7 +147,7 @@ export default withRouter(
                         {this.state.tags
                           ? this.state.tags.map(tag => {
                               return (
-                                <Label as="a" tag>
+                                <Label key={tag.id} as="a" tag>
                                   {tag.name}
                                 </Label>
                               );

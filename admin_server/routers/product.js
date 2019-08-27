@@ -65,17 +65,18 @@ module.exports = (passport, ormModels, sequelize) => {
     product = products[0];
     productsRes.push({
       description: product.description,
-      name:product.name,
+      name: product.name,
       id: product.id,
       image: product.image,
       price: product.price,
+      stock: product.stock,
       tags: []
     });
     if (product.tagId) {
       productsRes[0].tags.push({ id: product.tagId, name: product.tagName });
     }
-    lastProduct=0;
-    for (i = 1; i < products.length;i++ ) {
+    lastProduct = 0;
+    for (i = 1; i < products.length; i++) {
       product = products[i];
       if (productsRes[lastProduct].id == product.id) {
         productsRes[lastProduct].tags.push({
@@ -86,10 +87,11 @@ module.exports = (passport, ormModels, sequelize) => {
         lastProduct++;
         productsRes.push({
           description: product.description,
-          name:product.name,
+          name: product.name,
           id: product.id,
           image: product.image,
           price: product.price,
+          stock: product.stock,
           tags: []
         });
         if (product.tagId) {

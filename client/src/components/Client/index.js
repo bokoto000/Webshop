@@ -7,8 +7,14 @@ import Body from "../Body";
 import Footer from "../Footer";
 import Cart from "../Cart";
 import Profile from "../Profile";
+import ForgotPassword from "../ForgotPassword";
+import RestorePassword from "../RestorePassword";
+
 import { NotificationContainer } from "react-notifications";
+
 import "react-notifications/lib/notifications.css";
+
+
 
 const get = require("../../helpers/fetch").get;
 
@@ -45,6 +51,8 @@ class Client extends Component {
           <Route exact path="/" component={Body} />
           <Route exact path="/cart" component={Cart} />
           <Route exact path="/profile" component={Profile} />
+          <Route exact path="/forgotpassword" component={ForgotPassword} />
+          <Route path ='/restorepassword/:token' component = {RestorePassword}/>
         </Switch>
         <Footer />
       </div>

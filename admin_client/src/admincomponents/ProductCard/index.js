@@ -7,7 +7,8 @@ import {
   Modal,
   Header,
   Button,
-  Card
+  Card,
+  Table
 } from "semantic-ui-react";
 import "./index.css";
 import EditProduct from "../EditProduct";
@@ -50,51 +51,42 @@ export default class ProductCard extends React.Component {
   render() {
     const product = this.props.product;
     return (
-      <Card>
-        <div className="product-image">
-          <img src={product.image} className="product-image" />
-        </div>
-        <Card.Content>
-          <Card.Header>{product.name}</Card.Header>
-          <Card.Meta>
-            <span className="price">{product.price} лв</span>
-          </Card.Meta>
-          <Card.Description>{product.description}</Card.Description>
-        </Card.Content>
-        <Header>
-          <div style={{ alignContent: "center" }}>
-            <span>Наличност:</span>
-            <span className="stock-edit-number">{this.state.stockEdit}</span>
-            <Modal
-              trigger={
-                <Button
-                  onClick={this.handleOpen}
-                  className="stock-edit-button"
-                  size="tiny"
-                >
-                  ✐
-                </Button>
-              }
-              open={this.state.modalOpen}
-              onClose={this.handleClose}
-            >
-              <Modal.Content>
-                <Form.Input
-                  fluid
-                  label="Наличност"
-                  placeholder={product.stock}
-                  name="stock"
-                  onChange={this.onChange}
-                />
-                <Button onClick={async () => await this.onSubmit()}>
-                  Save
-                </Button>
-              </Modal.Content>
-            </Modal>
-          </div>
-        </Header>
-        <EditProduct product={product} tags={this.props.tags}/>
-      </Card>
+      <Table.Row>
+        <Table.Cell>{product.name}</Table.Cell>
+        <Table.Cell>{product.price} лв</Table.Cell>
+        <Table.Cell>
+          <span>Наличност:</span>
+          <span className="stock-edit-number">{this.state.stockEdit}</span>
+          <Modal
+            product={product}
+            trigger={
+              <Button
+                onClick={this.handleOpen}
+                className="stock-edit-button"
+                size="tiny"
+              >
+                ✐
+              </Button>
+            }
+            open={this.state.modalOpen}
+            onClose={this.handleClose}
+          >
+            <Modal.Content>
+              <Form.Input
+                fluid
+                label="Наличност"
+                placeholder={product.stock}
+                name="stock"
+                onChange={this.onChange}
+              />
+              <Button onClick={async () => await this.onSubmit()}>Save</Button>
+            </Modal.Content>
+          </Modal>
+        </Table.Cell>
+        <Table.Cell>
+          <EditProduct product={product} tags={this.props.tags} />
+        </Table.Cell>
+      </Table.Row>
     );
   }
 }

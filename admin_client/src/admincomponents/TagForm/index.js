@@ -62,7 +62,7 @@ export default withRouter(
                     {this.props.tags
                       ? this.props.tags.map(tag => {
                           return (
-                            <Label as="a" tag>
+                            <Label key={tag.id} as="a" tag>
                               {tag.name}
                             </Label>
                           );

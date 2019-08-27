@@ -51,7 +51,7 @@ export default class Register extends React.Component {
 
   onSubmit = async () => {
     console.log(this.state.isVerified);
-    if (!this.state.isVerified) {
+    if (this.state.isVerified) {
       const res = await post("/user/register", {
         username: this.state.username,
         password: this.state.password,
