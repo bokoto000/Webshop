@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Divider } from "semantic-ui-react";
 import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
+import { NotificationContainer } from "react-notifications";
 import Menu from "../Menu";
 import Head from "../Head";
 import Body from "../Body";
@@ -9,12 +10,8 @@ import Cart from "../Cart";
 import Profile from "../Profile";
 import ForgotPassword from "../ForgotPassword";
 import RestorePassword from "../RestorePassword";
-
-import { NotificationContainer } from "react-notifications";
-
+import Order from "../Order";
 import "react-notifications/lib/notifications.css";
-
-
 
 const get = require("../../helpers/fetch").get;
 
@@ -50,9 +47,10 @@ class Client extends Component {
         <Switch>
           <Route exact path="/" component={Body} />
           <Route exact path="/cart" component={Cart} />
-          <Route exact path="/profile" component={Profile} />
+          <Route path="/order" component={Order} />
+          <Route exact path="/profile" component={Profile} user={user} />
           <Route exact path="/forgotpassword" component={ForgotPassword} />
-          <Route path ='/restorepassword/:token' component = {RestorePassword}/>
+          <Route path="/restorepassword/:token" component={RestorePassword} />
         </Switch>
         <Footer />
       </div>

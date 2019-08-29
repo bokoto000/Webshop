@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import ProductCard from "../ProductCard";
 import {
   Button,
@@ -12,6 +13,7 @@ import {
 import "./index.css";
 
 const get = require("../../helpers/fetch").get;
+const post = require("../../helpers/fetch").post;
 
 export default class Cart extends Component {
   constructor(props) {
@@ -35,6 +37,10 @@ export default class Cart extends Component {
       this.setState({ cart });
     }
   }
+
+  proceedOrder = async () => {
+    await post('/order/create');
+  };
 
   render() {
     const cart = this.state.cart;
@@ -72,7 +78,7 @@ export default class Cart extends Component {
                       <Grid.Column>{product.price} лв</Grid.Column>
 
                       <Grid.Column>
-                        <Input type="number" value={product.stock}/>
+                        <Input type="number" value={product.stock} />
                       </Grid.Column>
                       <Grid.Column>{product.productTotal} лв</Grid.Column>
                       <Divider />
@@ -104,7 +110,7 @@ export default class Cart extends Component {
               <Grid.Column />
 
               <Grid.Column>
-                <Button>Продължи -></Button>
+                <Button onClick={this.proceedOrder}>Продължи -></Button>
               </Grid.Column>
               <Divider />
             </Grid.Row>

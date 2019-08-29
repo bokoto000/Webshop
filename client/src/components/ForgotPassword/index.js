@@ -8,7 +8,8 @@ import {
   Divider
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import { post } from "../../helpers/fetch";
+import { post,get } from "../../helpers/fetch";
+
 
 export default class ForgotPassword extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ export default class ForgotPassword extends Component {
       email: ""
     };
   }
+
 
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });

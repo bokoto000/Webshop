@@ -4,6 +4,8 @@ module.exports =  (sequelize) => {
     const Product = require('./product')(sequelize);
     const Item = require ('./item')(sequelize);
     const Cart = require('./cart')(sequelize);
+    const Order = require('./order')(sequelize);
+    const OrderedItem = require('./ordered_item')(sequelize);
     const ResetPasswordToken = require('./resetpassword')(sequelize);
 
     Item.hasOne(Product,{foreignKey:'id'})

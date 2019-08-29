@@ -5,16 +5,24 @@ import {
   Segment,
   Button,
   Container,
-  Divider
+  Divider,
+  Label
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import { post } from "../../helpers/fetch";
+import { post, get } from "../../helpers/fetch";
 
-export default class ForgotPassword extends Component {
+export default class RestorePassword extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-    };
+    this.state = {};
+  }
+
+  async componentDidMount() {
+    const token = await this.props.match.params.token;
+    const res = await get(`/resetpassword/restore-password/${token}`);
+    if (res.ok) {
+      this.setState({ isOk: true });
+    }
   }
 
   onChange = event => {
@@ -22,11 +30,25 @@ export default class ForgotPassword extends Component {
   };
 
   onSubmit = async () => {
-    
+    console.log("Clicked");
+    if (this.state.password != this.state.verifyPassword) {
+      this.setState({ passwordNotVerified: true });
+      return;
+    }
+    const token = await this.props.match.params.token;
+    const res = await post(`/resetpassword/change-password`, {
+      password: this.state.password,
+      verifyPassword: this.state.verifyPassword,
+      token
+    });
+    if (res.ok) {
+      console.log("Ok");
+    } else {
+      this.setState({ error: true });
+    }
   };
 
   render() {
-    console.log(this.props.match.params.token);
     return (
       <div
         style={{
@@ -37,32 +59,44 @@ export default class ForgotPassword extends Component {
         }}
       >
         <Segment style={{ width: "500px" }}>
-          <div>
-            <Container>
-            </Container>
-            <Divider />
-            <Form onSubmit={this.onSubmit}>
-              <Form.Input
-                fluid
-                label="Email"
-                placeholder="Email"
-                type="email"
-                name="email"
-                onChange={this.onChange}
-              />
-              <Form.Field fluid control={Button}>
-                Изпрати мейл
-              </Form.Field>
-            </Form>
-          </div>
-          {this.state.error ? (
+          {this.state.isOk ? (
             <div>
-              {" "}
-              <Container style={{ color: "red" }}>
-                Имаше проблем със изпращането на имейл. Моля проверете данните
-                си и опитайте пак.
-              </Container>
+              <Container></Container>
+              <Divider />
+              <Form onSubmit={this.onSubmit}>
+                <Form.Input
+                  fluid
+                  label="Парола"
+                  placeholder="Password"
+                  type="password"
+                  name="password"
+                  onChange={this.onChange}
+                />
+                <Form.Input
+                  fluid
+                  label="Повтори парола"
+                  placeholder="Password"
+                  type="password"
+                  name="verifyPassword"
+                  onChange={this.onChange}
+                />
+                <Form.Field fluid control={Button}>
+                  Смени парола
+                </Form.Field>
+              </Form>
             </div>
+          ) : (
+            <Container>Линка ви е изтекъл</Container>
+          )}
+          {this.state.error ? (
+            <Label color="red" basic>
+              Имаше проблем със смяната на паролата
+            </Label>
+          ) : null}
+          {this.state.passwordNotVerified ? (
+            <Label color="red" basic>
+              Имате грешка при повтарянето на паролата
+            </Label>
           ) : null}
         </Segment>
       </div>

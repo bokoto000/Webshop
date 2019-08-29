@@ -5,6 +5,7 @@ module.exports = (passport, ormModels, models) => {
   const User = models.User;
   const ormAdmin = ormModels.Admin;
   const Admin = models.Admin;
+  const ResetPasswordToken = ormModels.ResetPasswordToken;
 
   passport.serializeUser((user, done) => {
     const userData = {
@@ -51,7 +52,6 @@ module.exports = (passport, ormModels, models) => {
       }
     )
   );
-
   passport.use(
     "local-signup",
     new LocalStrategy(
@@ -73,6 +73,35 @@ module.exports = (passport, ormModels, models) => {
             lastName,
             email,
             username,
+            password,
+          );
+          if (user) {
+            return done(null, user);
+          } else {
+            return done(null, false);
+          }
+        }
+      }
+    )
+  );
+
+  passport.use(
+    "local-changepassword",
+    new LocalStrategy(
+      {
+        passReqToCallback: true
+      },
+      async function(req, password, done) {
+        const token = req.body.token;
+        const resToken = await ResetPasswordToken.findOne({where:{expirePasswordToken:token}});
+        const userId = resToken.dataValues.id;
+        const user = await ormUser.findOne({ where: { id:userId } });
+        console.log(user)
+        if (!user) {
+          return done(null, false, "User doesnt exist");
+        } else {
+          const user = await User.changePassword(
+            userId,
             password,
           );
           if (user) {

@@ -74,7 +74,6 @@ module.exports = (passport, ormModels, sequelize) => {
         }
       }
     }
-    console.log(productsRes);
     res.json({ products: productsRes });
   });
 
