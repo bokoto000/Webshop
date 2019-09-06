@@ -23,7 +23,7 @@ module.exports = ormModels => {
     const hash = await bcrypt.hash(password, saltRounds);
     if (hash) {
       const user = await ormUser.update(
-        { password },
+        { password:hash },
         { where: { id } }
       );
       return user;

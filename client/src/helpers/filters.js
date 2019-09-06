@@ -2,7 +2,8 @@ const filters = {
   filterNewest(products) {
     //let filteredProducts;
     products.sort(function(a, b) {
-      const aId = Number(a.id), bId=Number(b.id);
+      const aId = Number(a.id),
+        bId = Number(b.id);
       if (aId < bId) return 1;
       if (aId > bId) return -1;
       return 0;
@@ -13,7 +14,8 @@ const filters = {
   filterOldest(products) {
     //let filteredProducts;
     products.sort(function(a, b) {
-      const aId = Number(a.id), bId=Number(b.id);
+      const aId = Number(a.id),
+        bId = Number(b.id);
       if (aId < bId) return -1;
       if (aId > bId) return 1;
       return 0;
@@ -46,17 +48,31 @@ const filters = {
     return products;
   },
 
-  filterBetweenPrice(products, lowerprice,higherprice){
-    console.log(higherprice);
-    let filteredProducts=[];
-    for(let i =0; i<products.length;i++){
-      const productPrice=parseFloat(products[i].price);
-      const lower=parseFloat(lowerprice);
-      const higher=parseFloat(higherprice)
-      if(productPrice>=lowerprice&&productPrice<=higherprice){
-        filteredProducts.push(products[i]);
+  filterBetweenPrice(products, lowerprice, higherprice) {
+    let filteredProducts = [];
+    if (null != higherprice)
+      for (let i = 0; i < products.length; i++) {
+        const productPrice = parseFloat(products[i].price);
+        const lower = parseFloat(lowerprice);
+        const higher = parseFloat(higherprice);
+        if (null != higherprice) {
+          if (productPrice >= lower && productPrice <= higher) {
+            filteredProducts.push(products[i]);
+          }
+        } else {
+          if (lower <= productPrice) {
+            filteredProducts.push(products[i]);
+          }
+        }
       }
-    }
+    else
+      for (let i = 0; i < products.length; i++) {
+        const productPrice = parseFloat(products[i].price);
+        const lower = parseFloat(lowerprice);
+        if (lower <= productPrice) {
+          filteredProducts.push(products[i]);
+        }
+      }
     return filteredProducts;
   }
 };

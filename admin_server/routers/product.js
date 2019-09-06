@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
+const faker = require("faker");
 router.use(bodyParser.json());
 router.use(
   bodyParser.urlencoded({
@@ -102,7 +103,7 @@ module.exports = (passport, ormModels, sequelize) => {
         }
       }
     }
-    console.log(productsRes);
+    //console.log(productsRes);
     res.json({ products: productsRes });
   });
 
@@ -167,6 +168,42 @@ module.exports = (passport, ormModels, sequelize) => {
     } else {
       res.sendStatus(400);
     }
+  });
+
+  router.post("/fake", async (req, res, next) => {
+    const fakes = [];
+    for (let i = 0; i <= 1000; i++) {
+      fakes.push({
+        description: faker.commerce.product(),
+        name: faker.commerce.productName()+faker.commerce.product(),
+        image: faker.image.image(),
+        price: faker.commerce.price(),
+        stock: 100
+      });
+    }
+    let failed = 0;
+    for (let i = 0; i < fakes.length; i++) {
+      try {
+        const image = fakes[i].image;
+        const name = fakes[i].name;
+        const description = fakes[i].description;
+        const price = fakes[i].price;
+        const stock = fakes[i].stock;
+        console.log(stock);
+        const product = await Product.create({
+          image,
+          name,
+          description,
+          price,
+          stock
+        });
+      } catch (e) {
+        console.log(e);
+        failed++;
+      }
+    }
+    console.log(failed);
+    return res.json(fakes);
   });
 
   return router;

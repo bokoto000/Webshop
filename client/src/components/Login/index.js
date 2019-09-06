@@ -1,12 +1,12 @@
 import React from "react";
 import { Grid, Form, Segment, Button, Label } from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import "./index.css";
 import Register from "../Register";
 
 const post = require("../../helpers/fetch").post;
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
 
@@ -28,6 +28,7 @@ export default class Login extends React.Component {
     });
     if (res.ok) {
       window.location.reload();
+      this.props.history.push("/");
     } else {
       this.setState({ loginError: true });
     }
@@ -78,3 +79,6 @@ export default class Login extends React.Component {
     );
   }
 }
+
+
+export default withRouter(Login);

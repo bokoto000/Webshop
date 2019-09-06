@@ -73,7 +73,6 @@ export default class ProductDisplay extends React.Component {
   filterProducts = () => {
     this.setState({ filtering: true });
     let products = this.state.unfilteredProducts;
-    console.log(products);
     const sort = this.state.sort;
     if (sort == "newest") {
       products = filters.filterNewest(products);
@@ -87,10 +86,9 @@ export default class ProductDisplay extends React.Component {
     if (sort == "priciest") {
       products = filters.filterHighestPrice(products);
     }
-    console.log(products);
     const higherprice = this.state.higherprice,
       lowerprice = this.state.lowerprice;
-    if (higherprice && lowerprice) {
+    if (lowerprice) {
       products = filters.filterBetweenPrice(products, lowerprice, higherprice);
     }
     this.setState({ products });

@@ -76,7 +76,7 @@ module.exports = async app => {
   await sequelize.query(`CREATE TABLE IF NOT EXISTS orders
     (
         id serial NOT NULL,
-        user_id int NOT NULL UNIQUE,
+        user_id int NOT NULL,
         status text NOT NULL,
         CONSTRAINT orders_pkey PRIMARY KEY (id)
     )`);
@@ -94,5 +94,5 @@ module.exports = async app => {
   const ormModels = require("../orm_models/index")(sequelize);
   const models = require("../models/index")(ormModels);
   require("./passportConfig")(passport, ormModels, models);
-  require("./routersConfig")(app, ormModels, passport, sequelize);
+  require("./routersConfig")(app, ormModels, passport, sequelize, models);
 };

@@ -3,6 +3,8 @@ module.exports =  (sequelize) => {
     const Admin = require('./admin')(sequelize);
     const Product = require('./product')(sequelize);
     const Tag = require ('./tag')(sequelize);
+    const Order = require('./order')(sequelize);
+    const OrderedItem = require('./ordered_item')(sequelize);
     const ProductTag = require ('./producttags')(sequelize);
 
     ProductTag.hasMany(Tag,{foreignKey:'tag_id'})
@@ -17,6 +19,8 @@ module.exports =  (sequelize) => {
         Admin,
         Product,
         Tag,
-        ProductTag
+        ProductTag,
+        Order,
+        OrderedItem
     }
 }

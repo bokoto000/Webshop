@@ -1,0 +1,143 @@
+import React, { Component } from "react";
+import {
+  Table,
+  Button,
+  Modal,
+  Image,
+  Header,
+  Grid,
+  Divider,
+  Segment,
+  Container
+} from "semantic-ui-react";
+import { post } from "../../helpers/fetch";
+
+export default class PendingOrder extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  proceedOrder = async (id) => {
+    console.log(id);
+    if (id) {
+      const res = await post(`/order/update-status/Verified`, {
+        orderId: id
+      });
+      if (res) {
+        window.location.reload();
+      } else {
+        alert("Error verifying order");
+      }
+    } else{
+      console.log("problem");
+    }
+  };
+
+  render() {
+    const order = this.props.order;
+    console.log("orders");
+    return (
+      <Table.Row>
+        <Table.Cell>
+          {order && order.user ? order.user.username : null}
+        </Table.Cell>
+        <Table.Cell>{order.status}</Table.Cell>
+        <Table.Cell>
+          <Modal trigger={<Button>Виж</Button>}>
+            <Modal.Header>Order: {order.id}</Modal.Header>
+            <Modal.Content>
+              <div>
+                <Grid>
+                  <Grid.Column>
+                    <Grid>
+                      <Grid.Row columns={5} className="cart-product-row">
+                        <Grid.Column />
+
+                        <Grid.Column>Име</Grid.Column>
+
+                        <Grid.Column>Цена/бр</Grid.Column>
+
+                        <Grid.Column>Количество</Grid.Column>
+
+                        <Grid.Column>Общо</Grid.Column>
+                      </Grid.Row>
+                    </Grid>
+                    {order.fullOrder
+                      ? order.fullOrder.map(product => {
+                          return (
+                            <Segment key={product.id}>
+                              <Grid>
+                                <Grid.Row
+                                  columns={5}
+                                  className="cart-product-row"
+                                >
+                                  <Grid.Column>
+                                    <div
+                                      style={{ width: "70px", height: "70px" }}
+                                    >
+                                      <Image
+                                        src={product.productImage}
+                                        size="tiny"
+                                        verticalAlign="top"
+                                      />
+                                    </div>
+                                  </Grid.Column>
+
+                                  <Grid.Column>
+                                    {product.productName}
+                                  </Grid.Column>
+
+                                  <Grid.Column>
+                                    {product.orderedPrice} лв
+                                  </Grid.Column>
+
+                                  <Grid.Column>{product.stock}</Grid.Column>
+                                  <Grid.Column>
+                                    {product.productTotal} лв
+                                  </Grid.Column>
+                                  <Divider />
+                                </Grid.Row>
+                              </Grid>
+                            </Segment>
+                          );
+                        })
+                      : null}
+                    <Segment>
+                      <Grid>
+                        <Grid.Row columns={5} className="cart-product-row">
+                          <Grid.Column />
+
+                          <Grid.Column />
+
+                          <Grid.Column />
+                          <Grid.Column />
+
+                          <Grid.Column>Тотал: {order.total} лв</Grid.Column>
+                          <Divider />
+                        </Grid.Row>
+                        <Grid.Row columns={2} className="cart-product-row">
+                          <Grid.Column>
+                            <Segment>
+                              <Container>{order.user.first_name}</Container>
+                              <Container>{order.user.last_name}</Container>
+                            </Segment>
+                          </Grid.Column>
+
+                          <Grid.Column>
+                            <Button onClick={()=>this.proceedOrder(this.props.order.id)}>Завърши</Button>
+                          </Grid.Column>
+                          <Divider />
+                        </Grid.Row>
+                      </Grid>
+                    </Segment>
+                  </Grid.Column>
+                </Grid>
+              </div>
+            </Modal.Content>
+          </Modal>
+        </Table.Cell>
+      </Table.Row>
+    );
+  }
+}

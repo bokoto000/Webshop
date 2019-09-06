@@ -23,6 +23,7 @@ export default class Register extends React.Component {
       username: "",
       password: "",
       isVerified: false,
+      hasAcceptedTerms: false,
       error: null
     };
   }
@@ -51,24 +52,28 @@ export default class Register extends React.Component {
 
   onSubmit = async () => {
     console.log(this.state.isVerified);
-    if (this.state.isVerified) {
-      const res = await post("/user/register", {
-        username: this.state.username,
-        password: this.state.password,
-        email: this.state.email,
-        firstName: this.state.firstName,
-        lastName: this.state.lastName
-      });
-      if (res.ok) {
-        window.location.reload();
-      }
-      else {
-        this.setState({error:"There was an error"})
+    if (this.state.hasAcceptedTerms) {
+      if (this.state.isVerified) {
+        const res = await post("/user/register", {
+          username: this.state.username,
+          password: this.state.password,
+          email: this.state.email,
+          firstName: this.state.firstName,
+          lastName: this.state.lastName
+        });
+        if (res.ok) {
+          window.location.reload();
+        } else {
+          this.setState({ error: "There was an error" });
+        }
+      } else {
+        alert("Please verify that you are a human!");
       }
     } else {
-      alert("Please verify that you are a human!");
+      alert("Please accept the terms");
     }
   };
+  toggle = () => this.setState((prevState) => ({ hasAcceptedTerms: !prevState.hasAcceptedTerms }))
 
   render() {
     return (
@@ -125,13 +130,15 @@ export default class Register extends React.Component {
               </Form.Field>
               <Form.Field required>
                 <Checkbox
+                  checked={this.state.hasAcceptedTerms}
+                  onChange={this.toggle}
                   label={
                     <label>
                       Съгласявам се с{" "}
                       <Popup
                         content="Доста дълги условия за ползване"
                         trigger={
-                          <a onClick={this.onClickAgree}>
+                          <a >
                             Условията за ползване
                           </a>
                         }
@@ -151,7 +158,9 @@ export default class Register extends React.Component {
                   Регистрирай се!
                 </Button>
               </Form.Field>
-              {this.state.error ? <Label color='red'>{this.state.error}</Label> : null}
+              {this.state.error ? (
+                <Label color="red">{this.state.error}</Label>
+              ) : null}
             </Form>
           </Segment>
         </Container>

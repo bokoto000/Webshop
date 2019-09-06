@@ -52,11 +52,16 @@ export default class ProductCard extends React.Component {
       cart.push({ id: this.props.product.id, count: 1 });
     }
     localStorage.setItem("cart", JSON.stringify(cart));
-    const res = await post("/cart/update-item", {
+    const res = await post("/cart/buy-item", {
       id: this.props.product.id
     });
     if (res.ok) {
       NotificationManager.success("Добавен Продукт","", 3000, () => {
+        alert("callback");
+      });
+    }
+    else{
+      NotificationManager.error("Проблем при добавянето на продукт ","", 3000, () => {
         alert("callback");
       });
     }

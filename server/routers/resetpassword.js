@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const Sequelize = require("sequelize");
 const { check, validationResult } = require("express-validator");
 router.use(bodyParser.json());

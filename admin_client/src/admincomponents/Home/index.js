@@ -9,6 +9,7 @@ import ProductForm from "../ProductForm";
 import ProductDisplay from "../ProductDisplay";
 import TagForm from "../TagForm";
 import "./index.css";
+import PendingOrders from "../PendingOrders";
 const post = require("../../helpers/fetch").post;
 const get = require("../../helpers/fetch").get;
 
@@ -22,23 +23,6 @@ export default class Home extends React.Component {
     };
   }
 
-  async componentDidMount() {
-    const tags = (await (await get("/tag/get-tags")).json())
-      .tags;
-    this.setState({ tags });
-  }
-
-  onChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
-
-  async handleLogOut() {
-    const res = await post("/admin/logout");
-    if (res.ok) {
-      window.location.reload();
-    }
-  }
-
   render() {
     return (
       <div>
@@ -46,19 +30,10 @@ export default class Home extends React.Component {
           <Grid.Row>
             <Head />
           </Grid.Row>
-          <Grid.Row columns={3}>
-            <Grid.Column width={1}>
+          <Grid.Row>
+            <Grid.Column>
               <Menu />
             </Grid.Column>
-            <Grid.Column width={8}>
-              <ProductDisplay tags={this.state.tags} />
-            </Grid.Column>
-            <Grid.Column witdh={2}>
-              <ProductForm />
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <TagForm tags={this.state.tags} />
           </Grid.Row>
           <Grid.Row>
             <Footer />

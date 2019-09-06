@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import ProductCard from "../ProductCard";
+import CartItem from "../CartItem";
 import {
   Button,
   Input,
@@ -8,29 +9,31 @@ import {
   Divider,
   Grid,
   Segment,
-  Form
+  Container
 } from "semantic-ui-react";
+import filter from "../../helpers/filters";
 import "./index.css";
 
 const get = require("../../helpers/fetch").get;
 const post = require("../../helpers/fetch").post;
 
-export default class Cart extends Component {
+class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   async componentDidMount() {
-    const cartTest = await (await get("/cart/get-cart")).json();
-    if (cartTest) {
+    let cart = await (await get("/cart/get-cart")).json();
+    cart = filter.filterHighestPrice(cart);
+    if (cart) {
       let total = 0;
-      for (let i = 0; i < cartTest.length; i++) {
-        let productTotal = parseFloat(cartTest[i].price * cartTest[i].stock);
+      for (let i = 0; i < cart.length; i++) {
+        let productTotal = parseFloat(cart[i].price * cart[i].stock);
         total += productTotal;
-        cartTest[i].productTotal = productTotal;
+        cart[i].productTotal = productTotal.toFixed(2);
       }
-      this.setState({ cart: cartTest });
+      this.setState({ cart });
       this.setState({ total });
     } else {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -39,7 +42,17 @@ export default class Cart extends Component {
   }
 
   proceedOrder = async () => {
-    await post('/order/create');
+    try {
+      const res = await post("/order/create");
+      console.log(res);
+      if (res.ok) this.props.history.push("/checkout");
+      else {
+        alert("Failed creating order");
+      }
+    } catch (e) {
+      console.log(e);
+      alert("Failed creating order");
+    }
   };
 
   render() {
@@ -61,31 +74,7 @@ export default class Cart extends Component {
         </Grid>
         {cart
           ? cart.map(product => {
-              return (
-                <Segment>
-                  <Grid>
-                    <Grid.Row columns={5} className="cart-product-row">
-                      <Grid.Column>
-                        <Image
-                          src={product.image}
-                          size="tiny"
-                          verticalAlign="top"
-                        />
-                      </Grid.Column>
-
-                      <Grid.Column>{product.name}</Grid.Column>
-
-                      <Grid.Column>{product.price} лв</Grid.Column>
-
-                      <Grid.Column>
-                        <Input type="number" value={product.stock} />
-                      </Grid.Column>
-                      <Grid.Column>{product.productTotal} лв</Grid.Column>
-                      <Divider />
-                    </Grid.Row>
-                  </Grid>
-                </Segment>
-              );
+              return <CartItem key={product.id} product={product}></CartItem>;
             })
           : null}
         <Segment>
@@ -96,9 +85,12 @@ export default class Cart extends Component {
               <Grid.Column />
 
               <Grid.Column />
-              <Grid.Column />
-
-              <Grid.Column>Тотал:{this.state.total} лв</Grid.Column>
+              <Grid.Column>Тотал:</Grid.Column>
+              <Grid.Column style={{ alignItems: "center" }}>
+                <Container>
+                  <div className="cart-item-price"> {this.state.total} лв</div>
+                </Container>
+              </Grid.Column>
               <Divider />
             </Grid.Row>
             <Grid.Row columns={5} className="cart-product-row">
@@ -120,3 +112,5 @@ export default class Cart extends Component {
     );
   }
 }
+
+export default withRouter(Cart);

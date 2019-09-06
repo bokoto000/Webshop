@@ -11,7 +11,6 @@ router.use(
 module.exports = () => {
   router.get("/user", (req, res) => {
     let user = req.user;
-    console.log(user);
     if (user) {
       user.id = null;
       res.json({ user });

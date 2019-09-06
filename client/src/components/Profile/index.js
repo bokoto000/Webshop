@@ -15,7 +15,14 @@ const post = require("../../helpers/fetch").post;
 export default class Profile extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      newPassword: "",
+      newPasswordVerify: "",
+    };
   }
 
   async componentDidMount() {
@@ -49,6 +56,23 @@ export default class Profile extends Component {
     } else {
       this.setState({ error: true });
     }
+  };
+
+  passwordChange = async () => {
+    console.log(
+      this.state.password +
+        " " +
+        this.state.newPassword +
+        " " +
+        this.state.newPasswordVerify
+    );
+    const res = await post('/user/change-password',{
+      password:this.state.password,
+      newPassword:this.state.newPassword,
+      newPasswordVerify:this.state.newPasswordVerify
+    });
+    console.log(res);
+
   };
 
   render() {
@@ -120,6 +144,51 @@ export default class Profile extends Component {
                       name="email"
                       onChange={this.onChange}
                       value={this.state.email}
+                    />
+                  </Form.Field>
+                  <Form.Field required />
+                  <Form.Field>
+                    <Button fluid type="submit">
+                      Промени
+                    </Button>
+                  </Form.Field>
+                </Form>
+              </Segment>
+            </Container>
+            <Container style={{ padding: "1em 0em" }}>
+              <Segment>
+                <Form onSubmit={this.passwordChange}>
+                  <Form.Field>
+                    <label>Парола:</label>
+                    <input
+                      placeholder="Парола"
+                      type="password"
+                      required
+                      name="password"
+                      onChange={this.onChange}
+                      value={this.state.password}
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <label> Нова парола:</label>
+                    <input
+                      placeholder="Нова парола"
+                      type="password"
+                      required
+                      name="newPassword"
+                      value={this.state.newPassword}
+                      onChange={this.onChange}
+                    />
+                  </Form.Field>
+                  <Form.Field>
+                    <label> Повтори нова парола: </label>
+                    <input
+                      placeholder="Нова парола"
+                      type="password"
+                      required
+                      name="newPasswordVerify"
+                      value={this.state.newPasswordVerify}
+                      onChange={this.onChange}
                     />
                   </Form.Field>
                   <Form.Field required />

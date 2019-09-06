@@ -42,9 +42,11 @@ module.exports = (passport, ormModels,sequelize) => {
   });
 
   router.post("/update-item", async (req, res) => {
+    console.log('test');
     const user = req.user;
     const itemId = req.body.id;
     stock = req.body.stock;
+    console.log(itemId+ " "+stock);
     if (user && user.id) {
       const cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
@@ -64,7 +66,7 @@ module.exports = (passport, ormModels,sequelize) => {
       } else {
         await Item.update(
           {
-            stock: item.dataValues.stock + 1
+            stock: stock
           },
           {
             where: {
@@ -76,6 +78,79 @@ module.exports = (passport, ormModels,sequelize) => {
       }
       //console.log(cart);
       res.json(cart);
+    } else res.sendStatus(403);
+  });
+
+
+  router.post("/buy-item", async (req, res) => {
+    console.log('test');
+    const user = req.user;
+    const itemId = req.body.id;
+    stock = req.body.stock;
+    console.log(itemId+ " "+stock);
+    if (user && user.id) {
+      const cart = await Cart.findOne({ where: { userId: user.id } });
+      if (!cart) {
+        await Cart.create({
+          userId: user.id
+        });
+      }
+      cartId = cart.dataValues.id;
+      const item = await Item.findOne({ where: { cartId: cartId, productId:itemId } });
+      if (!item) {
+        if (!stock) stock = 1;
+        await Item.create({
+          cartId: cartId,
+          productId: itemId,
+          stock: stock
+        });
+      } else {
+        await Item.update(
+          {
+            stock: item.dataValues.stock+1
+          },
+          {
+            where: {
+              cartId: cartId,
+              productId: itemId
+            }
+          }
+        );
+      }
+      //console.log(cart);
+      res.json(cart);
+    } else res.sendStatus(403);
+  });
+
+
+  router.post("/delete-item", async (req, res) => {
+    console.log('test');
+    
+    const user = req.user;
+    const itemId = req.body.id;
+    if (user && user.id) {
+      const cart = await Cart.findOne({ where: { userId: user.id } });
+      if (!cart) {
+        await Cart.create({
+          userId: user.id
+        });
+      }
+      cartId = cart.dataValues.id;
+      const item = await Item.findOne({ where: { cartId: cartId, productId:itemId } });
+      if (!item) {
+        return(422);
+      } else {
+        await Item.destroy(
+          {
+            where: {
+              cartId: cartId,
+              productId: itemId
+            }
+          }
+        );
+      }
+      console.log(item);
+      res.sendStatus(200);
     } else res.sendStatus(403);
   });
 

@@ -41,7 +41,6 @@ module.exports = (passport, ormModels, models) => {
       },
       async function(req, username, password, done) {
         const user = await ormUser.findOne({ where: { username: username } });
-        console.log(user);
         if (user) {
           const comp = await User.validPassword(password, user.password);
           if (!comp) return done(null, false, "Incorrect password");
@@ -96,7 +95,6 @@ module.exports = (passport, ormModels, models) => {
         const resToken = await ResetPasswordToken.findOne({where:{expirePasswordToken:token}});
         const userId = resToken.dataValues.id;
         const user = await ormUser.findOne({ where: { id:userId } });
-        console.log(user)
         if (!user) {
           return done(null, false, "User doesnt exist");
         } else {

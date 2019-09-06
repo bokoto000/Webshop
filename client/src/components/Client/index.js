@@ -11,7 +11,10 @@ import Profile from "../Profile";
 import ForgotPassword from "../ForgotPassword";
 import RestorePassword from "../RestorePassword";
 import Order from "../Order";
+import Checkout from "../Checkout";
+
 import "react-notifications/lib/notifications.css";
+import SuccessOrderScreen from "../SuccessOrderScreen";
 
 const get = require("../../helpers/fetch").get;
 
@@ -48,6 +51,8 @@ class Client extends Component {
           <Route exact path="/" component={Body} />
           <Route exact path="/cart" component={Cart} />
           <Route path="/order" component={Order} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/success-order" component={SuccessOrderScreen} />
           <Route exact path="/profile" component={Profile} user={user} />
           <Route exact path="/forgotpassword" component={ForgotPassword} />
           <Route path="/restorepassword/:token" component={RestorePassword} />

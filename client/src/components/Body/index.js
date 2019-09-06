@@ -18,6 +18,7 @@ export default class Body extends Component {
   async componentDidMount() {
     this.setState({ products: [], allProducts: [] });
     let products = (await (await get("/product/get-products")).json()).products;
+    console.log(products.length);
     products = filters.filterNewest(products);
     this.setState({ products, allProducts: products });
   }

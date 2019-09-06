@@ -92,8 +92,20 @@ class Head extends Component {
                 style={{ padding: "0em 0em" }}
               >
                 <Container>
-                  <Menu.Item as={Link} to="/" style={{ padding: "0em 0em" }}>
-                    {/*logo*/}
+                  <Menu.Item as={Link} to="/" style={{ padding: "1em 0em" }}>
+                    {
+                      <Button
+                        as={Link}
+                        to="/"
+                        inverted={!fixed}
+                        primary={fixed}
+                        style={{ marginLeft: "0.5em" }}
+                        className="dekstopheader-button"
+                        color="blue"
+                      >
+                        Начало
+                      </Button>
+                    }
                   </Menu.Item>
                   <Menu.Item position="right">
                     <Button
@@ -158,8 +170,20 @@ class Head extends Component {
                 style={{ padding: "0em 0em" }}
               >
                 <Container>
-                  <Menu.Item as={Link} to="/" style={{ padding: "0em 0em" }}>
-                    {/*logo*/}
+                  <Menu.Item as={Link} to="/" style={{ padding: "1em 0em" }}>
+                    {
+                      <Button
+                        as={Link}
+                        to="/"
+                        inverted={!fixed}
+                        primary={fixed}
+                        style={{ marginLeft: "0.5em" }}
+                        className="dekstopheader-button"
+                        color="blue"
+                      >
+                        Начало
+                      </Button>
+                    }
                   </Menu.Item>
                   <Menu.Item position="right" style={{ padding: "1em 0em" }}>
                     <Button

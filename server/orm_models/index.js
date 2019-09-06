@@ -11,6 +11,11 @@ module.exports =  (sequelize) => {
     Item.hasOne(Product,{foreignKey:'id'})
     Product.belongsTo(Item, {foreignKey:'id'})
 
+    Order.hasMany(OrderedItem,{foreignKey:'id'});
+    OrderedItem.belongsTo(Order,{foreignKey:'id'});
+
+    OrderedItem.hasOne(Product,{foreignKey:'product_id'});
+    Product.belongsTo(OrderedItem,{foreignKey:'id'});
 
     return {
         User,
@@ -18,6 +23,8 @@ module.exports =  (sequelize) => {
         Product,
         Item,
         Cart,
-        ResetPasswordToken
+        ResetPasswordToken,
+        Order,
+        OrderedItem
     }
 }

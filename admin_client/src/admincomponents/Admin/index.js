@@ -21,7 +21,7 @@ export default class Admin extends Component {
     const res = await get("/get-sess-info/admin");
     if (res.ok) {
       const userAdmin = (await res.json()).user;
-      //console.log(userAdmin);
+      console.log(userAdmin);
       if (userAdmin.auth == true) {
         this.setState({
           isAuthAdmin: true,
@@ -43,15 +43,7 @@ export default class Admin extends Component {
     //console.log(authenticatingAdmin);
     return authenticatingAdmin ? null : (
       <div style={{ paddingLeft: "30px" }}>
-        <BrowserRouter>
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => (isAuthAdmin ? <Home /> : <Login />)}
-            />
-          </Switch>
-        </BrowserRouter>
+        {isAuthAdmin ? <Home /> : <Login />}
       </div>
     );
   }
