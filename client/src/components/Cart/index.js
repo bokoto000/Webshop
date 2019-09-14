@@ -87,9 +87,10 @@ class Cart extends Component {
               <Grid.Column />
               <Grid.Column>Тотал:</Grid.Column>
               <Grid.Column style={{ alignItems: "center" }}>
-                <Container>
-                  <div className="cart-item-price"> {this.state.total} лв</div>
-                </Container>
+                <div className="cart-item-price">
+                  {" "}
+                  {parseFloat(this.state.total).toFixed(2)} лв
+                </div>
               </Grid.Column>
               <Divider />
             </Grid.Row>

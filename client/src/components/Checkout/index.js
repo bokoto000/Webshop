@@ -93,10 +93,10 @@ class Checkout extends Component {
 
                           <Grid.Column>{product.stock}</Grid.Column>
                           <Grid.Column style={{ alignItems: "center" }}>
-                              <div className="cart-item-price">
-                                {" "}
-                                {parseFloat(product.productTotal).toFixed(2)} лв
-                              </div>
+                            <div className="cart-item-price">
+                              {" "}
+                              {parseFloat(product.productTotal).toFixed(2)} лв
+                            </div>
                           </Grid.Column>
                           <Divider />
                         </Grid.Row>
@@ -113,13 +113,13 @@ class Checkout extends Component {
                   <Grid.Column />
 
                   <Grid.Column />
-                  <Grid.Column >Тотал: </Grid.Column>
+                  <Grid.Column>Тотал: </Grid.Column>
                   <Grid.Column style={{ alignItems: "center" }}>
-                              <div className="cart-item-price">
-                                {" "}
-                                {parseFloat(this.state.total).toFixed(2)} лв
-                              </div>
-                          </Grid.Column>
+                    <div className="cart-item-price">
+                      {" "}
+                      {parseFloat(this.state.total).toFixed(2)} лв
+                    </div>
+                  </Grid.Column>
                   <Divider />
                 </Grid.Row>
                 <Grid.Row columns={5} className="cart-product-row">

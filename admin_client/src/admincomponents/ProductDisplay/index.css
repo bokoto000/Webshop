@@ -7,3 +7,12 @@
     max-width: 100%!important;
     max-height: 100%!important;
 }
+
+.pagination{
+    align-items: center
+}
+
+.pagination li{
+    display: inline!important;
+    padding-left: 15px!important;
+}

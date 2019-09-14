@@ -11,6 +11,7 @@ import {
   Container
 } from "semantic-ui-react";
 import { post } from "../../helpers/fetch";
+import "./index.css";
 
 export default class PendingOrder extends Component {
   constructor(props) {
@@ -18,7 +19,7 @@ export default class PendingOrder extends Component {
     this.state = {};
   }
 
-  proceedOrder = async (id) => {
+  proceedOrder = async id => {
     console.log(id);
     if (id) {
       const res = await post(`/order/update-status/Verified`, {
@@ -29,7 +30,7 @@ export default class PendingOrder extends Component {
       } else {
         alert("Error verifying order");
       }
-    } else{
+    } else {
       console.log("problem");
     }
   };
@@ -87,14 +88,23 @@ export default class PendingOrder extends Component {
                                   <Grid.Column>
                                     {product.productName}
                                   </Grid.Column>
-
-                                  <Grid.Column>
-                                    {product.orderedPrice} лв
+                                  <Grid.Column style={{ alignItems: "center" }}>
+                                    <div className="cart-item-price">
+                                      {parseFloat(product.orderedPrice).toFixed(
+                                        2
+                                      )}
+                                      лв
+                                    </div>
                                   </Grid.Column>
 
                                   <Grid.Column>{product.stock}</Grid.Column>
-                                  <Grid.Column>
-                                    {product.productTotal} лв
+                                  <Grid.Column style={{ alignItems: "center" }}>
+                                    <div className="cart-item-price">
+                                      {parseFloat(product.productTotal).toFixed(
+                                        2
+                                      )}
+                                      лв
+                                    </div>
                                   </Grid.Column>
                                   <Divider />
                                 </Grid.Row>
@@ -112,8 +122,12 @@ export default class PendingOrder extends Component {
 
                           <Grid.Column />
                           <Grid.Column />
-
-                          <Grid.Column>Тотал: {order.total} лв</Grid.Column>
+                          <Grid.Column style={{ alignItems: "center" }}>
+                            <div className="cart-item-price">
+                              {" "}
+                              {parseFloat(order.total).toFixed(2)} лв
+                            </div>
+                          </Grid.Column>
                           <Divider />
                         </Grid.Row>
                         <Grid.Row columns={2} className="cart-product-row">
@@ -125,7 +139,13 @@ export default class PendingOrder extends Component {
                           </Grid.Column>
 
                           <Grid.Column>
-                            <Button onClick={()=>this.proceedOrder(this.props.order.id)}>Завърши</Button>
+                            <Button
+                              onClick={() =>
+                                this.proceedOrder(this.props.order.id)
+                              }
+                            >
+                              Завърши
+                            </Button>
                           </Grid.Column>
                           <Divider />
                         </Grid.Row>

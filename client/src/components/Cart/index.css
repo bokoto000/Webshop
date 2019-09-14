@@ -16,3 +16,10 @@
     border-bottom-width: 10px!important;
     border-bottom-color: black!important;
 }
+
+
+
+.cart-item-price{
+    width: 80px;
+    text-align: right;
+}
