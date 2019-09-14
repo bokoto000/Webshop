@@ -9,7 +9,7 @@ module.exports = (passport, ormModels, models) => {
 
   passport.serializeUser((user, done) => {
     const userData = {
-      id: user.id,
+      id: user.id
     };
     if (!user) done(null, false);
     else done(null, userData);
@@ -23,7 +23,7 @@ module.exports = (passport, ormModels, models) => {
       firstName: userFromDb.dataValues.firstName,
       lastName: userFromDb.dataValues.lastName,
       email: userFromDb.dataValues.email,
-      username: userFromDb.dataValues.username,
+      username: userFromDb.dataValues.username
     };
     if (user) done(null, user);
     else {
@@ -64,15 +64,18 @@ module.exports = (passport, ormModels, models) => {
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
         const user = await ormUser.findOne({ where: { email: email } });
+        const usernameUser = await ormUser.findOne({ where: { username } });
         if (user) {
-          return done(null, false, "User already exists");
+          return done(null, false, "Email is already taken");
+        } else if (usernameUser) {
+          return done(null, false, "Username is already taken");
         } else {
           const user = await User.createUser(
             firstName,
             lastName,
             email,
             username,
-            password,
+            password
           );
           if (user) {
             return done(null, user);
@@ -92,16 +95,15 @@ module.exports = (passport, ormModels, models) => {
       },
       async function(req, password, done) {
         const token = req.body.token;
-        const resToken = await ResetPasswordToken.findOne({where:{expirePasswordToken:token}});
+        const resToken = await ResetPasswordToken.findOne({
+          where: { expirePasswordToken: token }
+        });
         const userId = resToken.dataValues.id;
-        const user = await ormUser.findOne({ where: { id:userId } });
+        const user = await ormUser.findOne({ where: { id: userId } });
         if (!user) {
           return done(null, false, "User doesnt exist");
         } else {
-          const user = await User.changePassword(
-            userId,
-            password,
-          );
+          const user = await User.changePassword(userId, password);
           if (user) {
             return done(null, user);
           } else {

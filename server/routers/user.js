@@ -26,10 +26,13 @@ module.exports = (passport, ormModels, models) => {
       if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
       } else
-        passport.authenticate("local-signup", function(err, user) {
+        passport.authenticate("local-signup", function(err, user,info) {
           if (err) {
             console.log(err);
             return res.status(400).send();
+          }
+          if(info){
+            return res.status(422).send({error:info});
           }
           req.logIn(user, err => {
             if (err) {

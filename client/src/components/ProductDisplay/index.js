@@ -50,8 +50,8 @@ export default class ProductDisplay extends React.Component {
       lowerprice: null,
       higherprice: null,
       perPage: 25,
-      pageCount:25,
-      page:0,
+      pageCount: 25,
+      page: 0,
       sort: "newest"
     };
   }
@@ -101,7 +101,7 @@ export default class ProductDisplay extends React.Component {
 
   componentWillReceiveProps(newProps) {
     const products = newProps.products;
-    const pageCount = products.length/this.state.perPage;
+    const pageCount = products.length / this.state.perPage;
     this.setState({
       products: newProps.products,
       unfilteredProducts: newProps.products,
@@ -116,13 +116,9 @@ export default class ProductDisplay extends React.Component {
     const productsLength = originalProducts.length;
     let products = [];
     console.log(productsLength);
-    for (
-      let i = page * perPage;
-      i < (page + 1) * perPage;
-      i++
-    ) {
+    for (let i = page * perPage; i < (page + 1) * perPage; i++) {
       console.log(originalProducts[i]);
-      if(originalProducts[i])products.push(originalProducts[i]);
+      if (originalProducts[i]) products.push(originalProducts[i]);
     }
     return products;
   }
@@ -185,21 +181,19 @@ export default class ProductDisplay extends React.Component {
             })}
           </Card.Group>
         ) : null}
-        <div className={"pagination-div"}>
-          <ReactPaginate
-            previousLabel={"previous"}
-            nextLabel={"next"}
-            breakLabel={"..."}
-            breakClassName={"break-me"}
-            pageCount={this.state.pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={this.handlePageClick}
-            containerClassName={"pagination"}
-            subContainerClassName={"pagination-item"}
-            activeClassName={"active"}
-          />
-        </div>
+        <ReactPaginate
+          previousLabel={"previous"}
+          nextLabel={"next"}
+          breakLabel={"..."}
+          breakClassName={"break-me"}
+          pageCount={this.state.pageCount}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={this.handlePageClick}
+          containerClassName={"pagination"}
+          subContainerClassName={"pagination-item"}
+          activeClassName={"active"}
+        />
       </div>
     );
   }

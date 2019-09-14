@@ -61,10 +61,13 @@ export default class Register extends React.Component {
           firstName: this.state.firstName,
           lastName: this.state.lastName
         });
+        console.log(res);
         if (res.ok) {
           window.location.reload();
         } else {
-          this.setState({ error: "There was an error" });
+          const resJson = await res.json();
+          console.log(resJson);
+          this.setState({ error: resJson.error });
         }
       } else {
         alert("Please verify that you are a human!");
