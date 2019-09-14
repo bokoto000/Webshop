@@ -172,7 +172,7 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/fake", async (req, res, next) => {
     const fakes = [];
-    for (let i = 0; i <= 1000; i++) {
+    for (let i = 0; i <= 10000; i++) {
       fakes.push({
         description: faker.commerce.product(),
         name: faker.commerce.productName()+faker.commerce.product(),

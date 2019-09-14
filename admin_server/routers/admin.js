@@ -17,6 +17,7 @@ module.exports = (passport, ormModels) => {
           console.error(err);
           return res.status(400).send();
         }
+        console.log(user);
         req.logIn(user, err => {
           if (err) {
             console.error(err);

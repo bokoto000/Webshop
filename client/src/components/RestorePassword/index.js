@@ -8,10 +8,10 @@ import {
   Divider,
   Label
 } from "semantic-ui-react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { post, get } from "../../helpers/fetch";
 
-export default class RestorePassword extends Component {
+class RestorePassword extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -42,7 +42,9 @@ export default class RestorePassword extends Component {
       token
     });
     if (res.ok) {
-      console.log("Ok");
+      alert("Успешно сменихте вашата парола");
+      this.props.history.push(`/`);
+      window.location.reload();
     } else {
       this.setState({ error: true });
     }
@@ -103,3 +105,6 @@ export default class RestorePassword extends Component {
     );
   }
 }
+
+
+export default withRouter(RestorePassword);

@@ -11,6 +11,7 @@ import {
   Form
 } from "semantic-ui-react";
 import { Redirect } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 import ProductCard from "../ProductCard";
 import "./index.css";
 import filters from "../../helpers/filters";
@@ -48,12 +49,16 @@ export default class ProductDisplay extends React.Component {
       filtering: true,
       lowerprice: null,
       higherprice: null,
+      perPage: 25,
+      pageCount:25,
+      page:0,
       sort: "newest"
     };
   }
 
   async componentDidMount() {
     const products = this.props.products;
+
     this.setState({ filtering: true });
     this.setState({ unfilteredProducts: products });
     this.setState({ products: products });
@@ -68,7 +73,6 @@ export default class ProductDisplay extends React.Component {
     await this.setState({ [name]: value });
     this.filterProducts();
   };
-
 
   filterProducts = () => {
     this.setState({ filtering: true });
@@ -96,15 +100,43 @@ export default class ProductDisplay extends React.Component {
   };
 
   componentWillReceiveProps(newProps) {
+    const products = newProps.products;
+    const pageCount = products.length/this.state.perPage;
     this.setState({
       products: newProps.products,
-      unfilteredProducts: newProps.products
+      unfilteredProducts: newProps.products,
+      pageCount
     });
   }
+
+  pageFilterProducts() {
+    const originalProducts = this.state.products;
+    const page = this.state.page;
+    const perPage = this.state.perPage;
+    const productsLength = originalProducts.length;
+    let products = [];
+    console.log(productsLength);
+    for (
+      let i = page * perPage;
+      i < (page + 1) * perPage;
+      i++
+    ) {
+      console.log(originalProducts[i]);
+      if(originalProducts[i])products.push(originalProducts[i]);
+    }
+    return products;
+  }
+
+  handlePageClick = data => {
+    let selected = data.selected;
+    console.log(selected);
+    this.setState({ page: selected });
+  };
+
   render() {
-    const products = this.state.products;
+    const products = this.pageFilterProducts();
     return (
-      <div key={this.props.products} style={{ height: "80vh", width: "100%" }}>
+      <div key={this.props.products} style={{ width: "100%" }}>
         <Grid>
           <Grid.Row>
             <Grid.Column width={3}>
@@ -153,6 +185,21 @@ export default class ProductDisplay extends React.Component {
             })}
           </Card.Group>
         ) : null}
+        <div className={"pagination-div"}>
+          <ReactPaginate
+            previousLabel={"previous"}
+            nextLabel={"next"}
+            breakLabel={"..."}
+            breakClassName={"break-me"}
+            pageCount={this.state.pageCount}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName={"pagination"}
+            subContainerClassName={"pagination-item"}
+            activeClassName={"active"}
+          />
+        </div>
       </div>
     );
   }

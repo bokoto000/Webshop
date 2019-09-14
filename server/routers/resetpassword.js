@@ -24,12 +24,13 @@ module.exports = (passport, ormModels, sequelize) => {
     check("email").isEmail(),
     async (req, res) => {
       const errors = validationResult(req);
+      let user = null;
       if (!errors.isEmpty()) {
         console.error("Validation errors");
         console.log(req.body.email);
         return res.status(422).json({ errors: errors.array() });
       } else {
-        const user = await User.findOne({
+        user = await User.findOne({
           where: {
             email: req.body.email
           }
@@ -63,15 +64,15 @@ module.exports = (passport, ormModels, sequelize) => {
           const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: ``,
-              pass: ``
+              user: `webshopdemo123@gmail.com`,
+              pass: `demo1231`
             }
           });
           const mailOptions = {
             from: "Webshop@gmail.com",
             to: `${user.dataValues.email}`,
             subject: "Reset Password",
-            text: `Reset pasword\nhttp://borisvelkovski.com:3000/reset/${token}`
+            text: `Hello ${user.username},\nReset pasword\nhttp://borisvelkovski.com:3000/restorepassword/${token}`
           };
           console.log("sending mail");
           transporter.sendMail(mailOptions, function(err, response) {
@@ -80,7 +81,7 @@ module.exports = (passport, ormModels, sequelize) => {
               res.sendStatus(403);
             } else {
               console.log(`Email res:`, response);
-              res.status(200);
+              res.sendStatus(200);
             }
           });
         } catch (e) {
@@ -123,7 +124,6 @@ module.exports = (passport, ormModels, sequelize) => {
         });
         const userId = resToken.dataValues.id;
         const user = await User.findOne({ where: { id: userId } });
-        console.log(user);
         if (!user) {
           return done(null, false, "User doesnt exist");
         } else {
@@ -135,6 +135,8 @@ module.exports = (passport, ormModels, sequelize) => {
             );
             if(user){
               return res.sendStatus(200);
+            } else{
+              return res.sendStatus(403);
             }
           }
         }

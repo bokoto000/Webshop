@@ -47,7 +47,7 @@ class Client extends Component {
         <Head user={user} authenticating={authenticating} />
         <Divider />
         <NotificationContainer />
-        <Switch>
+        <Switch style ={{minHeight: "80vh"}}>
           <Route exact path="/" component={Body} />
           <Route exact path="/cart" component={Cart} />
           <Route path="/order" component={Order} />

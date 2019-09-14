@@ -15,7 +15,7 @@ export default class ForgotPassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: ""
+      email: "",
     };
   }
 
@@ -29,7 +29,10 @@ export default class ForgotPassword extends Component {
     const res = await post("/resetpassword/forget-password", {
       email: this.state.email
     });
+    console.log(res);
     if (res.ok) {
+      this.setState({success:true});
+      console.log("test");
     } else {
       this.setState({ error: true });
     }
@@ -67,12 +70,20 @@ export default class ForgotPassword extends Component {
               </Form.Field>
             </Form>
           </div>
-          {this.state.error ? (
+          {this.state.error&&!this.state.success ? (
             <div>
               {" "}
               <Container style={{ color: "red" }}>
                 Имаше проблем със изпращането на имейл. Моля проверете данните
                 си и опитайте пак.
+              </Container>
+            </div>
+          ) : null}
+          {this.state.success ? (
+            <div>
+              {" "}
+              <Container style={{ color: "green" }}>
+                Успешно изпратен мейл за смяна на парола!
               </Container>
             </div>
           ) : null}

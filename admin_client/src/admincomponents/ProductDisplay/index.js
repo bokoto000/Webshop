@@ -35,7 +35,7 @@ export default class ProductDisplay extends React.Component {
   render() {
     const products = this.state.products;
     return (
-      <div style={{ height: "80vh", width: "100%" }}>
+      <div style={{ width: "100%" }}>
         <Table celled>
           <Table.Header>
             <Table.Row>

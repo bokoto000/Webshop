@@ -3,6 +3,7 @@ import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
 
 import { Grid } from "semantic-ui-react";
 import Home from "../Home";
+import Register from "../Register";
 import Login from "../Login";
 
 const get = require("../../helpers/fetch").get;
@@ -29,10 +30,16 @@ export default class Admin extends Component {
           authenticatingAdmin: false
         });
       } else {
-        this.setState({ isAuthAdmin: false, authenticatingAdmin: false });
+        this.setState({
+          isAuthAdmin: false,
+          authenticatingAdmin: false
+        });
       }
     } else {
-      this.setState({ isAuthAdmin: false, authenticatingAdmin: false });
+      this.setState({
+        isAuthAdmin: false,
+        authenticatingAdmin: false
+      });
     }
   }
 
@@ -42,8 +49,17 @@ export default class Admin extends Component {
     //console.log("Admin" + isAuthAdmin);
     //console.log(authenticatingAdmin);
     return authenticatingAdmin ? null : (
-      <div style={{ paddingLeft: "30px" }}>
-        {isAuthAdmin ? <Home /> : <Login />}
+      <div
+        style={{
+          paddingLeft: "30px"
+        }}
+      >
+        {" "}
+        {isAuthAdmin ? (
+          <Home />
+        ) : (
+            <Login />
+        )}{" "}
       </div>
     );
   }

@@ -26,19 +26,15 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <Grid>
-          <Grid.Row>
-            <Head />
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column>
+        <Head />
+        <Grid style={{ minHeight: "80vh" }}>
+          <Grid.Row >
+            <Grid.Column >
               <Menu />
             </Grid.Column>
           </Grid.Row>
-          <Grid.Row>
-            <Footer />
-          </Grid.Row>
         </Grid>
+        <Footer />
       </div>
     );
   }
