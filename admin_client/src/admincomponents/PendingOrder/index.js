@@ -34,10 +34,24 @@ export default class PendingOrder extends Component {
       console.log("problem");
     }
   };
+  cancelOrder = async id => {
+    console.log(id);
+    if (id) {
+      const res = await post(`/order/update-status/Canceled`, {
+        orderId: id
+      });
+      if (res) {
+        window.location.reload();
+      } else {
+        alert("Error verifying order");
+      }
+    } else {
+      console.log("problem");
+    }
+  };
 
   render() {
     const order = this.props.order;
-    console.log("orders");
     return (
       <Table.Row>
         <Table.Cell>
@@ -145,6 +159,13 @@ export default class PendingOrder extends Component {
                               }
                             >
                               Завърши
+                            </Button>
+                            <Button
+                              onClick={() =>
+                                this.cancelOrder(this.props.order.id)
+                              }
+                            >
+                              Откажи
                             </Button>
                           </Grid.Column>
                           <Divider />

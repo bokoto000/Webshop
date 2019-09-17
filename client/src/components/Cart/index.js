@@ -33,6 +33,7 @@ class Cart extends Component {
         total += productTotal;
         cart[i].productTotal = productTotal.toFixed(2);
       }
+      cart = filter.filterNewest(cart);
       this.setState({ cart });
       this.setState({ total });
     } else {
@@ -47,7 +48,8 @@ class Cart extends Component {
       console.log(res);
       if (res.ok) this.props.history.push("/checkout");
       else {
-        alert("Failed creating order");
+        const json = await res.json();
+        alert(json.error);
       }
     } catch (e) {
       console.log(e);
@@ -57,6 +59,7 @@ class Cart extends Component {
 
   render() {
     const cart = this.state.cart;
+    console.log(cart);
     return (
       <div>
         <Grid>

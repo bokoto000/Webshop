@@ -111,32 +111,47 @@ module.exports = (passport, ormModels, sequelize) => {
             fullOrder[0][i].productTotal = productTotal;
           }
           fullOrder[2] = total;
-          orders[i].dataValues.fullOrder= fullOrder[0] ;
+          orders[i].dataValues.fullOrder = fullOrder[0];
           orders[i].dataValues.total = fullOrder[2];
           console.log(orders[i].dataValues.userId);
-          const user = await User.findOne({attributes:['id','username','first_name','last_name','email'], where:{id:orders[i].dataValues.userId}});
-          
-          orders[i].dataValues.user=user;
+          const user = await User.findOne({
+            attributes: ["id", "username", "first_name", "last_name", "email"],
+            where: { id: orders[i].dataValues.userId }
+          });
+
+          orders[i].dataValues.user = user;
         }
         res.status(200).json(orders);
       }
     } else res.sendStatus(403);
   });
-  
-  router.post("/update-status/:status", async function(req,res){
-    const user=req.user;
+
+  router.post("/update-status/:status", async function(req, res) {
+    const user = req.user;
     const status = req.params.status;
     const orderId = req.body.orderId;
-    if(user&&user.id){
-      const update=await Order.update({status},{where:{id:orderId}});
-      if(update){
-        return res.sendStatus(200);
+    if (user && user.id) {
+      const update = await Order.update({ status }, { where: { id: orderId } });
+      if (status == "Canceled") {
+        const orderedItems = await OrderedItem.findAll({ where: { orderId } });
+        const orderedItemsLength = orderedItems.length;
+        for (let i = 0; i < orderedItemsLength; i++) {
+          console.log(`///////////////////////////////////////`);
+          console.log(orderedItems[i].dataValues);
+          const productId = orderedItems[i].dataValues.productId;
+          const stock = orderedItems[i].dataValues.stock;
+          const product = await Product.findOne({ where: { id: productId } });
+          console.log(product.dataValues);
+          await Product.update({ stock: product.dataValues.stock + stock },{where:{id:productId}});
+        }
       }
-      else{
+      if (update) {
+        return res.sendStatus(200);
+      } else {
         return res.sendStatus(403);
       }
     }
-  })
+  });
 
   return router;
 };

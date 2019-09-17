@@ -9,7 +9,8 @@ import {
   Segment,
   Icon,
   Loader,
-  Container
+  Container,
+  Label
 } from "semantic-ui-react";
 import { Redirect } from "react-router-dom";
 import "./index.css";
@@ -23,7 +24,8 @@ export default class CartItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stock: 0
+      stock: 0,
+      notEnoughStock: false
     };
   }
 
@@ -41,17 +43,26 @@ export default class CartItem extends Component {
         value: product.stock
       });
     }
+    if (product.stock > product.leftStock) {
+      this.setState({ notEnoughStock: true });
+    }
     this.setState({ options });
   }
 
   async updateItemStock() {
     this.setState({ loading: true });
     const product = this.props.product;
-    console.log(this.state.stock);
-    const res = await post("/cart/update-item", {
-      id: product.id,
-      stock: this.state.stock
-    });
+    let res;
+    if (this.state.stock > 0)
+      res = await post("/cart/update-item", {
+        id: product.id,
+        stock: this.state.stock
+      });
+    else {
+      res = await post("/cart/delete-item", {
+        id: product.id
+      });
+    }
     if (res.ok) {
       window.location.reload();
     } else {
@@ -113,15 +124,17 @@ export default class CartItem extends Component {
                 <Grid.Column>
                   {" "}
                   <Dropdown
-                    name="stock"
-                    options={this.state.options}
-                    value={this.state.stock}
                     onChange={this.handleChange}
+                    options={this.state.options}
                     selection
+                    value={product.stock}
                   />
                   <Button color="red" onClick={this.deleteItem}>
                     <Icon disabled name="x" />
                   </Button>
+                  {this.state.notEnoughStock ? (
+                    <Label basic color="red">Остават само {product.leftStock} продукта.</Label>
+                  ) : null}
                 </Grid.Column>
                 <Grid.Column style={{ alignItems: "center" }}>
                   <Container>

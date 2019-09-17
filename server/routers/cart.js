@@ -29,7 +29,8 @@ module.exports = (passport, ormModels,sequelize) => {
            "product"."name" AS "name",
             "product"."description" AS "description",
              "product"."image" AS "image",
-              "product"."price" AS "price"
+              "product"."price" AS "price",
+              "product"."stock" AS "leftStock"
                 FROM "items" AS "items" LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id" WHERE "items"."cart_id" = ${cartId}`);
       /*const items = await Item.findAll({
         where: { cartId: cart.dataValues.id },

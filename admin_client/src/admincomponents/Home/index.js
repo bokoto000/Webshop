@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
 import { Grid } from "semantic-ui-react";
 import Menu from "../Menu";
 import Head from "../Head";
@@ -26,11 +27,19 @@ export default class Home extends React.Component {
   render() {
     return (
       <div>
-        <Head />
+        <Head></Head>
         <Grid style={{ minHeight: "80vh" }}>
-          <Grid.Row >
-            <Grid.Column >
+          <Grid.Row>
+            <Grid.Column>
               <Menu />
+            </Grid.Column>
+            <Grid.Column>
+              <Switch style={{ minHeight: "80vh" }}>
+                <Route exact path="/" component={ProductDisplay} />
+                <Route exact path="/create-product" component={ProductForm} />
+                <Route exact path="/create-tag" component={TagForm} />
+                <Route exact path="/orders" component={PendingOrders} />
+              </Switch>
             </Grid.Column>
           </Grid.Row>
         </Grid>

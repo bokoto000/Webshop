@@ -6,10 +6,12 @@ import {
   Segment,
   Visibility,
   Modal,
-  Popup
+  Popup,
+  Search
 } from "semantic-ui-react";
 import Login from "../Login";
 import Register from "../Register";
+import SearchBar from "../SearchBar";
 import { Link, Redirect, withRouter } from "react-router-dom";
 import "./index.css";
 
@@ -95,8 +97,6 @@ class Head extends Component {
                   <Menu.Item as={Link} to="/" style={{ padding: "1em 0em" }}>
                     {
                       <Button
-                        as={Link}
-                        to="/"
                         inverted={!fixed}
                         primary={fixed}
                         style={{ marginLeft: "0.5em" }}
@@ -107,10 +107,12 @@ class Head extends Component {
                       </Button>
                     }
                   </Menu.Item>
-                  <Menu.Item position="right">
+                  <Menu.Item>
+                    <SearchBar />
+                  </Menu.Item>
+                  <Menu.Item   as={Link}
+                      to="/cart" position="right">
                     <Button
-                      as={Link}
-                      to="/cart"
                       inverted={!fixed}
                       primary={fixed}
                       style={{ marginLeft: "0.5em" }}
@@ -184,6 +186,9 @@ class Head extends Component {
                         Начало
                       </Button>
                     }
+                  </Menu.Item>
+                  <Menu.Item>
+                    <SearchBar />
                   </Menu.Item>
                   <Menu.Item position="right" style={{ padding: "1em 0em" }}>
                     <Button

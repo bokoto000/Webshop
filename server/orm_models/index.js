@@ -14,9 +14,6 @@ module.exports =  (sequelize) => {
     Order.hasMany(OrderedItem,{foreignKey:'id'});
     OrderedItem.belongsTo(Order,{foreignKey:'id'});
 
-    OrderedItem.hasOne(Product,{foreignKey:'product_id'});
-    Product.belongsTo(OrderedItem,{foreignKey:'id'});
-
     return {
         User,
         Admin,

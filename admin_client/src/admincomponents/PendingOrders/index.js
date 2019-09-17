@@ -33,6 +33,7 @@ export default class PendingOrders extends Component {
           <Grid.Row columns={2}>
             <Button onClick={() => this.getOrders("Sent")}>Pending</Button>
             <Button onClick={() => this.getOrders("Verified")}>Verified</Button>
+            <Button onClick={() => this.getOrders("Canceled")}>Canceled</Button>
           </Grid.Row>
           <Grid.Row>
             <Table celled>

@@ -189,7 +189,6 @@ module.exports = (passport, ormModels, sequelize) => {
         const description = fakes[i].description;
         const price = fakes[i].price;
         const stock = fakes[i].stock;
-        console.log(stock);
         const product = await Product.create({
           image,
           name,

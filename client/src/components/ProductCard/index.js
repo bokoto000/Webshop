@@ -10,8 +10,7 @@ import {
   Card
 } from "semantic-ui-react";
 import {
-  NotificationManager,
-  NotificationContainer
+  NotificationManager
 } from "react-notifications";
 import "./index.css";
 

@@ -8,7 +8,7 @@ const cors = require('cors')
 module.exports = async (app) => {
     app.use(cors());
     app.use(session({
-        secret: 'webshop',
+        secret: 'webshopadmin',
         resave: true,
         saveUninitialized: true
     }));

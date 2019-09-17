@@ -115,9 +115,7 @@ export default class ProductDisplay extends React.Component {
     const perPage = this.state.perPage;
     const productsLength = originalProducts.length;
     let products = [];
-    console.log(productsLength);
     for (let i = page * perPage; i < (page + 1) * perPage; i++) {
-      console.log(originalProducts[i]);
       if (originalProducts[i]) products.push(originalProducts[i]);
     }
     return products;
@@ -125,7 +123,6 @@ export default class ProductDisplay extends React.Component {
 
   handlePageClick = data => {
     let selected = data.selected;
-    console.log(selected);
     this.setState({ page: selected });
   };
 

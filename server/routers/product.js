@@ -18,7 +18,6 @@ function compare(a, b) {
   return 0;
 }
 
-
 module.exports = (passport, ormModels, sequelize) => {
   const Product = ormModels.Product;
 
@@ -28,6 +27,7 @@ module.exports = (passport, ormModels, sequelize) => {
       "products"."image",
        "products"."price",
         "products"."stock",
+        "products"."name" AS "title",
              "producttags->tags"."tag_id" AS "tagId",
               "producttags->tags"."name" AS "tagName"
                 FROM "products" AS "products" LEFT OUTER JOIN "producttags" AS "producttags" ON "products"."id" = "producttags"."product_id"
@@ -39,7 +39,7 @@ module.exports = (passport, ormModels, sequelize) => {
     product = products[0];
     productsRes.push({
       description: product.description,
-      name:product.name,
+      name: product.name,
       id: product.id,
       image: product.image,
       price: product.price,
@@ -48,8 +48,8 @@ module.exports = (passport, ormModels, sequelize) => {
     if (product.tagId) {
       productsRes[0].tags.push({ id: product.tagId, name: product.tagName });
     }
-    lastProduct=0;
-    for (i = 1; i < products.length;i++ ) {
+    lastProduct = 0;
+    for (i = 1; i < products.length; i++) {
       product = products[i];
       if (productsRes[lastProduct].id == product.id) {
         productsRes[lastProduct].tags.push({
@@ -60,7 +60,7 @@ module.exports = (passport, ormModels, sequelize) => {
         lastProduct++;
         productsRes.push({
           description: product.description,
-          name:product.name,
+          name: product.name,
           id: product.id,
           image: product.image,
           price: product.price,
@@ -75,6 +75,16 @@ module.exports = (passport, ormModels, sequelize) => {
       }
     }
     res.json({ products: productsRes });
+  });
+
+  router.get("/get-product/:id", async (req, res) => {
+    const id = req.params.id;
+    const product = await Product.findOne({ where: { id } });
+    if(product){
+      return res.status(200).json({product});
+    } else{
+      return res.sendStatus(403);
+    }
   });
 
   return router;

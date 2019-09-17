@@ -41,47 +41,28 @@ class Menu extends React.Component {
   }
 
   redirect = path => {
-    console.log(path);
-    this.setState({ path });
+    this.props.history.push(`${path}`);
   };
 
   render() {
     return (
-      <div >
-        <Grid>
-          <Grid.Column>
-            <Table>
-              <Table.Body>
-                <Table.Row onClick={() => this.redirect("products")}>
-                  <Table.Cell>Продукти</Table.Cell>
-                </Table.Row>
-                <Table.Row onClick={() => this.redirect("create-product")}>
-                  <Table.Cell>Направи продукт</Table.Cell>
-                </Table.Row>
-                <Table.Row onClick={() => this.redirect("create-tag")}>
-                  <Table.Cell>Тагове</Table.Cell>
-                </Table.Row>
-                <Table.Row onClick={() => this.redirect("orders")}>
-                  <Table.Cell>Поръчки</Table.Cell>
-                </Table.Row>
-              </Table.Body>
-            </Table>
-          </Grid.Column>
-          <Grid.Column className="body">
-            {this.state.path == "" || this.state.path == "products" ? (
-              <ProductDisplay tags={this.state.tags}></ProductDisplay>
-            ) : null}
-            {this.state.path == "create-product" ? (
-              <ProductForm></ProductForm>
-            ) : null}
-            {this.state.path == "create-tag" ? (
-              <TagForm tags={this.state.tags}></TagForm>
-            ) : null}
-            {this.state.path == "orders" ? (
-              <PendingOrders></PendingOrders>
-            ) : null}
-          </Grid.Column>
-        </Grid>
+      <div>
+        <Table>
+          <Table.Body>
+            <Table.Row onClick={() => this.redirect("/")}>
+              <Table.Cell>Продукти</Table.Cell>
+            </Table.Row>
+            <Table.Row onClick={() => this.redirect("/create-product")}>
+              <Table.Cell>Направи продукт</Table.Cell>
+            </Table.Row>
+            <Table.Row onClick={() => this.redirect("/create-tag")}>
+              <Table.Cell>Тагове</Table.Cell>
+            </Table.Row>
+            <Table.Row onClick={() => this.redirect("/orders")}>
+              <Table.Cell>Поръчки</Table.Cell>
+            </Table.Row>
+          </Table.Body>
+        </Table>
       </div>
     );
   }

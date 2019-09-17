@@ -8,9 +8,7 @@ import Admin from "./admincomponents/Admin";
 function App() {
   return (
     <BrowserRouter>
-      <Switch>
-        <Route exact path="/" component={Admin} />
-      </Switch>
+      <Admin />
     </BrowserRouter>
   );
 }
