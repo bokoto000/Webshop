@@ -1,6 +1,12 @@
 import React, { Component } from "react";
-import { Divider } from "semantic-ui-react";
-import { Route, Switch, Redirect, BrowserRouter } from "react-router-dom";
+import { Divider, Loader } from "semantic-ui-react";
+import {
+  Route,
+  Switch,
+  Redirect,
+  BrowserRouter,
+  withRouter
+} from "react-router-dom";
 import { NotificationContainer } from "react-notifications";
 import Menu from "../Menu";
 import Head from "../Head";
@@ -16,6 +22,7 @@ import Checkout from "../Checkout";
 
 import "react-notifications/lib/notifications.css";
 import SuccessOrderScreen from "../SuccessOrderScreen";
+import Maintance from "../Maintance";
 
 const get = require("../../helpers/fetch").get;
 
@@ -25,12 +32,22 @@ class Client extends Component {
     this.state = {
       isAuth: true,
       user: null,
-      authenticating: true
+      authenticating: true,
+      online: false
     };
   }
 
   async componentDidMount() {
-    const res = await get("get-sess-info/user");
+    this.setState({ loading: true });
+    const online = await get("/status/get-status");
+    console.log(online);
+    if (!online.ok) {
+      this.setState({ online: false });
+    } else {
+      this.setState({ online: true });
+    }
+    this.setState({ loading: false });
+    const res = await get("/get-sess-info/user");
     if (res.ok) {
       const user = (await res.json()).user;
       this.setState({ isAuth: true, user: user, authenticating: false });
@@ -43,26 +60,44 @@ class Client extends Component {
     const isAuth = this.state.isAuth;
     const user = this.state.user;
     const authenticating = this.state.authenticating;
-    return (
-      <div style={{ paddingLeft: "30px" }}>
-        <Head user={user} authenticating={authenticating} />
-        <Divider />
-        <NotificationContainer />
-        <Switch style ={{minHeight: "80vh"}}>
-          <Route exact path="/" component={Body} />
-          <Route exact path="/cart" component={Cart} />
-          <Route path="/order" component={Order} />
-          <Route path="/checkout" component={Checkout} />
-          <Route path="/product/:id" component={ProductPage} />
-          <Route path="/success-order" component={SuccessOrderScreen} />
-          <Route exact path="/profile" component={Profile} user={user} />
-          <Route exact path="/forgotpassword" component={ForgotPassword} />
-          <Route path="/restorepassword/:token" component={RestorePassword} />
-        </Switch>
-        <Footer />
-      </div>
-    );
+    console.log(this.state.online);
+    if (!this.state.loading)
+      return (
+        <div style={{ paddingLeft: "30px" }}>
+          {this.state.online ? (
+            <div>
+              <Head user={user} authenticating={authenticating} />
+              <Divider />
+              <NotificationContainer />
+              <Switch style={{ minHeight: "80vh" }}>
+                <Route exact path="/" component={Body} />
+                <Route exact path="/cart" component={Cart} />
+                <Route path="/order" component={Order} />
+                <Route path="/checkout" component={Checkout} />
+                <Route path="/product/:id" component={ProductPage} />
+                <Route path="/success-order" component={SuccessOrderScreen} />
+                <Route exact path="/profile" component={Profile} user={user} />
+                <Route
+                  exact
+                  path="/forgotpassword"
+                  component={ForgotPassword}
+                />
+                <Route
+                  path="/restorepassword/:token"
+                  component={RestorePassword}
+                />
+              </Switch>
+              <Footer />
+            </div>
+          ) : (
+            <Maintance></Maintance>
+          )}
+        </div>
+      );
+    else {
+      return <Loader></Loader>;
+    }
   }
 }
 
-export default Client;
+export default withRouter(Client);

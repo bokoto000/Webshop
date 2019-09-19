@@ -10,7 +10,8 @@ import {
   Segment,
   Form
 } from "semantic-ui-react";
-import { Redirect } from "react-router-dom";
+import { Redirect, withRouter } from "react-router-dom";
+import queryString from "query-string";
 import ReactPaginate from "react-paginate";
 import ProductCard from "../ProductCard";
 import "./index.css";
@@ -39,7 +40,7 @@ const filterOptions = [
   }
 ];
 
-export default class ProductDisplay extends React.Component {
+class ProductDisplay extends React.Component {
   constructor(props) {
     super(props);
 
@@ -65,19 +66,31 @@ export default class ProductDisplay extends React.Component {
     this.setState({ filtering: false });
   }
 
-  handleChange = (e, { name, value }) => {
-    this.setState({ [name]: value });
+  handleChange = async (e, { name, value }) => {
+    await this.setState({ loading: true });
+    let values = queryString.parse(this.props.location.search);
+    values[name] = value;
+    this.props.history.push({
+      search: "?" + new URLSearchParams(values).toString()
+    });
+    this.filterProducts();
+    await this.setState({ loading: false });
   };
 
   handleSortChange = async (e, { name, value }) => {
     await this.setState({ [name]: value });
+    let values = queryString.parse(this.props.location.search);
+    values[name] = value;
+    this.props.history.push({
+      search: "?" + new URLSearchParams(values).toString()
+    });
     this.filterProducts();
   };
 
   filterProducts = () => {
-    this.setState({ filtering: true });
     let products = this.state.unfilteredProducts;
-    const sort = this.state.sort;
+    const values = queryString.parse(this.props.location.search);
+    let sort = values.sort ? values.sort : "newest";
     if (sort == "newest") {
       products = filters.filterNewest(products);
     }
@@ -90,13 +103,14 @@ export default class ProductDisplay extends React.Component {
     if (sort == "priciest") {
       products = filters.filterHighestPrice(products);
     }
-    const higherprice = this.state.higherprice,
-      lowerprice = this.state.lowerprice;
+    const higherprice = values.higherprice,
+      lowerprice = values.lowerprice;
     if (lowerprice) {
       products = filters.filterBetweenPrice(products, lowerprice, higherprice);
     }
-    this.setState({ products });
-    this.setState({ filtering: false });
+    const pageCount = products.length / this.state.perPage;
+    products = this.pageFilterProducts(products);
+    return { products, pageCount };
   };
 
   componentWillReceiveProps(newProps) {
@@ -109,15 +123,16 @@ export default class ProductDisplay extends React.Component {
     });
   }
 
-  pageFilterProducts() {
-    const originalProducts = this.state.products;
-    const page = this.state.page;
-    const perPage = this.state.perPage;
-    const productsLength = originalProducts.length;
+  pageFilterProducts(originalProducts) {
     let products = [];
-    for (let i = page * perPage; i < (page + 1) * perPage; i++) {
-      if (originalProducts[i]) products.push(originalProducts[i]);
+    if (originalProducts) {
+      const page = this.state.page;
+      const perPage = this.state.perPage;
+      for (let i = page * perPage; i < (page + 1) * perPage; i++) {
+        if (originalProducts[i]) products.push(originalProducts[i]);
+      }
     }
+
     return products;
   }
 
@@ -126,10 +141,21 @@ export default class ProductDisplay extends React.Component {
     this.setState({ page: selected });
   };
 
+  sleep(miliseconds) {
+    var currentTime = new Date().getTime();
+ 
+    while (currentTime + miliseconds >= new Date().getTime()) {
+    }
+ }
+
   render() {
-    const products = this.pageFilterProducts();
+    const data = this.filterProducts();
+    const products = data.products;
+    const pageCount = data.pageCount;
+    const loading = this.state.loading;
+    const values = queryString.parse(this.props.location.search);
     return (
-      <div key={this.props.products} style={{ width: "100%" }}>
+      <div style={{ width: "100%" }}>
         <Grid>
           <Grid.Row>
             <Grid.Column width={3}>
@@ -139,6 +165,7 @@ export default class ProductDisplay extends React.Component {
                 options={filterOptions}
                 placeholder="Най-нови"
                 onChange={this.handleSortChange}
+                value={values.sort ? values.sort : "newest"}
               />
             </Grid.Column>
             <Grid.Column width={5}>
@@ -147,18 +174,24 @@ export default class ProductDisplay extends React.Component {
                   <Form.Field>
                     <Input
                       className="price-box"
-                      placeholder="цена"
+                      placeholder={
+                        values.lowerprice ? values.lowerprice : "от цена"
+                      }
                       name="lowerprice"
                       type="number"
                       onChange={this.handleChange}
+                      value={values.lowerprice ? values.lowerprice : null}
                     />
                     -
                     <Input
                       className="price-box"
-                      placeholder="цена"
+                      placeholder={
+                        values.higherprice ? values.higherprice : "до цена"
+                      }
                       name="higherprice"
                       type="number"
                       onChange={this.handleChange}
+                      value={values.higherprice ? values.higherprice : null}
                     />
                     <Button type="submit" onClick={this.filterProducts}>
                       <Icon name="search" />
@@ -169,21 +202,20 @@ export default class ProductDisplay extends React.Component {
             </Grid.Column>
           </Grid.Row>
         </Grid>
-        {this.state.products && this.state.filtering ? (
-          <Loader />
-        ) : products ? (
+        {products && !loading ? (
           <Card.Group itemsPerRow={5}>
             {products.map(product => {
               return <ProductCard key={product.id} product={product} />;
             })}
           </Card.Group>
         ) : null}
+        {loading ? <Loader></Loader> : null}
         <ReactPaginate
           previousLabel={"previous"}
           nextLabel={"next"}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={this.state.pageCount}
+          pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={this.handlePageClick}
@@ -195,3 +227,5 @@ export default class ProductDisplay extends React.Component {
     );
   }
 }
+
+export default withRouter(ProductDisplay);

@@ -30,10 +30,10 @@ export default class Home extends React.Component {
         <Head></Head>
         <Grid style={{ minHeight: "80vh" }}>
           <Grid.Row>
-            <Grid.Column>
+            <Grid.Column width={3}>
               <Menu />
             </Grid.Column>
-            <Grid.Column>
+            <Grid.Column width={12}>
               <Switch style={{ minHeight: "80vh" }}>
                 <Route exact path="/" component={ProductDisplay} />
                 <Route exact path="/create-product" component={ProductForm} />

@@ -5,4 +5,5 @@ module.exports = (app, ormModels, passport,sequelize, models) => {
     app.use('/order',require('../routers/order') (passport, ormModels,sequelize));
     app.use('/resetpassword', require('../routers/resetpassword')(passport,ormModels,sequelize));
     app.use('/get-sess-info', require('../routers/get-sess-info')(passport, ormModels));
+    app.use('/status', require('../routers/status')(passport, ormModels));
 }
