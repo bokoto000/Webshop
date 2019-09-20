@@ -9,6 +9,7 @@ import Footer from "../Footer";
 import ProductForm from "../ProductForm";
 import ProductDisplay from "../ProductDisplay";
 import TagForm from "../TagForm";
+import Enquery from "../Enquery";
 import "./index.css";
 import PendingOrders from "../PendingOrders";
 const post = require("../../helpers/fetch").post;
@@ -24,6 +25,11 @@ export default class Home extends React.Component {
     };
   }
 
+  async componentDidMount() {
+    const tags = (await (await get(`/tag/get-tags`)).json()).tags;
+    this.setState({ tags });
+  }
+
   render() {
     return (
       <div>
@@ -35,10 +41,23 @@ export default class Home extends React.Component {
             </Grid.Column>
             <Grid.Column width={12}>
               <Switch style={{ minHeight: "80vh" }}>
-                <Route exact path="/" component={ProductDisplay} />
+                <Route
+                  exact
+                  path="/"
+                  render={props => (
+                    <ProductDisplay {...props} tags={this.state.tags} />
+                  )}
+                />
                 <Route exact path="/create-product" component={ProductForm} />
-                <Route exact path="/create-tag" component={TagForm} />
+                <Route
+                  exact
+                  path="/create-tag"
+                  render={props => (
+                    <TagForm {...props} tags={this.state.tags} />
+                  )}
+                />
                 <Route exact path="/orders" component={PendingOrders} />
+                <Route path="/enquery" component={Enquery} />
               </Switch>
             </Grid.Column>
           </Grid.Row>

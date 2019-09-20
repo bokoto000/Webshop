@@ -1,6 +1,5 @@
 module.exports =  (sequelize) => {
     const User = require('./user')(sequelize);
-    const Admin = require('./admin')(sequelize);
     const Product = require('./product')(sequelize);
     const Item = require ('./item')(sequelize);
     const Cart = require('./cart')(sequelize);
@@ -16,7 +15,6 @@ module.exports =  (sequelize) => {
 
     return {
         User,
-        Admin,
         Product,
         Item,
         Cart,

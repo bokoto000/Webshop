@@ -113,7 +113,11 @@ export default class CartItem extends Component {
                   </div>
                 </Grid.Column>
 
-                <Grid.Column>{product.name}</Grid.Column>
+                <Grid.Column>
+                  {product.name}
+                  <br></br>
+                  Код:{product.id}
+                </Grid.Column>
 
                 <Grid.Column style={{ alignItems: "center" }}>
                   <Container>
@@ -133,7 +137,9 @@ export default class CartItem extends Component {
                     <Icon disabled name="x" />
                   </Button>
                   {this.state.notEnoughStock ? (
-                    <Label basic color="red">Остават само {product.leftStock} продукта.</Label>
+                    <Label basic color="red">
+                      Остават само {product.leftStock} продукта.
+                    </Label>
                   ) : null}
                 </Grid.Column>
                 <Grid.Column style={{ alignItems: "center" }}>

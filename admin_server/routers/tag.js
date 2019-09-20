@@ -13,7 +13,7 @@ module.exports = (passport, ormModels) => {
 
   router.post("/create", async (req, res, next) => {
     const user = req.user;
-    if (user.auth) {
+    if (user) {
       const name = req.body.name;
       try {
         await Tag.create({

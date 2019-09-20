@@ -81,7 +81,7 @@ export default class PendingOrder extends Component {
                     {order.fullOrder
                       ? order.fullOrder.map(product => {
                           return (
-                            <Segment key={product.id}>
+                            <Segment key={product.productId}>
                               <Grid>
                                 <Grid.Row
                                   columns={5}
@@ -101,6 +101,8 @@ export default class PendingOrder extends Component {
 
                                   <Grid.Column>
                                     {product.productName}
+                                    <br></br>
+                                    Код:{product.productId}
                                   </Grid.Column>
                                   <Grid.Column style={{ alignItems: "center" }}>
                                     <div className="cart-item-price">
@@ -147,8 +149,12 @@ export default class PendingOrder extends Component {
                         <Grid.Row columns={2} className="cart-product-row">
                           <Grid.Column>
                             <Segment>
-                              <Container>{order.user.first_name}</Container>
-                              <Container>{order.user.last_name}</Container>
+                              <Container>
+                                {order.user ? order.user.first_name : null}
+                              </Container>
+                              <Container>
+                                {order.user ? order.user.last_name : null}
+                              </Container>
                             </Segment>
                           </Grid.Column>
 

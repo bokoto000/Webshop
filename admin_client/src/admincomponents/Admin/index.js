@@ -23,7 +23,7 @@ export default class Admin extends Component {
     if (res.ok) {
       const userAdmin = (await res.json()).user;
       console.log(userAdmin);
-      if (userAdmin.auth == true) {
+      if (userAdmin.role == "Admin") {
         this.setState({
           isAuthAdmin: true,
           userAdmin: userAdmin,

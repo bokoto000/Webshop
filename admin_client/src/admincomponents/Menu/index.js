@@ -61,6 +61,9 @@ class Menu extends React.Component {
             <Table.Row onClick={() => this.redirect("/orders")}>
               <Table.Cell>Поръчки</Table.Cell>
             </Table.Row>
+            <Table.Row onClick={() => this.redirect("/enquery")}>
+              <Table.Cell>Справки</Table.Cell>
+            </Table.Row>
           </Table.Body>
         </Table>
       </div>

@@ -17,8 +17,6 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/create", async (req, res) => {
     const user = req.user;
-    console.log("+++++++++++++++");
-    console.log(user);
     if (user && user.id) {
       const cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
@@ -55,9 +53,17 @@ module.exports = (passport, ormModels, sequelize) => {
       if (order) {
         await Order.destroy({ where: { id: order.dataValues.id } });
         await OrderedItem.destroy({ where: { orderId: order.dataValues.id } });
-        await Order.create({ userId: user.id, status: "New" });
+        await Order.create({
+          userId: user.id,
+          status: "New",
+          date: Date.now()
+        });
       } else {
-        await Order.create({ userId: user.id, status: "New" });
+        await Order.create({
+          userId: user.id,
+          status: "New",
+          date: Date.now()
+        });
       }
       const newOrder = await Order.findOne({
         where: { userId: user.id, status: "New" }

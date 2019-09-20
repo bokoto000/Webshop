@@ -71,11 +71,28 @@ export default class ProductDisplay extends React.Component {
       query: e.target.value
     });
     this.setState({ isLoading: true, value: e.target.value });
-    console.log(e.target.value);
     const value = e.target.value;
     if (value.length < 1) return this.setState(initialState);
     const re = new RegExp(_.escapeRegExp(value), "i");
     const isMatch = result => re.test(result.name);
+    const products = _.filter(this.state.originalProducts, isMatch);
+    const pageCount = products.length / this.state.perPage;
+    this.setState({
+      isLoading: false,
+      products,
+      pageCount
+    });
+  };
+
+  handleInputCodeChange = e => {
+    this.setState({
+      queryCode: e.target.value
+    });
+    this.setState({ isLoading: true, value: e.target.value });
+    const value = e.target.value;
+    if (value.length < 1) return this.setState(initialState);
+    const re = new RegExp(_.escapeRegExp(value), "i");
+    const isMatch = result => re.test(result.id);
     const products = _.filter(this.state.originalProducts, isMatch);
     const pageCount = products.length / this.state.perPage;
     this.setState({
@@ -110,6 +127,13 @@ export default class ProductDisplay extends React.Component {
         return filters.sortStockDown(products);
       }
     }
+    if (sort == "code") {
+      if (sortDir == "true") {
+        return filters.sortCodeUp(products);
+      } else {
+        return filters.sortCodeDown(products);
+      }
+    }
     return products;
   }
 
@@ -135,9 +159,16 @@ export default class ProductDisplay extends React.Component {
         <div style={{ width: "100%" }}>
           <Form onSubmit={this.handleFormSubmit}>
             <Form.Input
-              placeholder="Search..."
+              placeholder="Search by name..."
               value={this.state.query}
               onChange={this.handleInputChange}
+            />
+          </Form>
+          <Form onSubmit={this.handleFormSubmit}>
+            <Form.Input
+              placeholder="Search by id..."
+              value={this.state.queryCode}
+              onChange={this.handleInputCodeChange}
             />
           </Form>
           <Table celled>
@@ -148,6 +179,12 @@ export default class ProductDisplay extends React.Component {
                   onClick={() => this.setSort("name")}
                 >
                   Име
+                </Table.HeaderCell>
+                <Table.HeaderCell
+                  width={3}
+                  onClick={() => this.setSort("code")}
+                >
+                  Код
                 </Table.HeaderCell>
                 <Table.HeaderCell
                   width={4}
@@ -161,6 +198,7 @@ export default class ProductDisplay extends React.Component {
                 >
                   Наличност
                 </Table.HeaderCell>
+
                 <Table.HeaderCell width={3}>Промяна</Table.HeaderCell>
               </Table.Row>
             </Table.Header>

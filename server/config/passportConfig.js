@@ -9,7 +9,8 @@ module.exports = (passport, ormModels, models) => {
 
   passport.serializeUser((user, done) => {
     const userData = {
-      id: user.id
+      id: user.id,
+      role: user.role
     };
     if (!user) done(null, false);
     else done(null, userData);
@@ -23,7 +24,8 @@ module.exports = (passport, ormModels, models) => {
       firstName: userFromDb.dataValues.firstName,
       lastName: userFromDb.dataValues.lastName,
       email: userFromDb.dataValues.email,
-      username: userFromDb.dataValues.username
+      username: userFromDb.dataValues.username,
+      role: userFromDb.dataValues.role
     };
     if (user) done(null, user);
     else {
@@ -63,6 +65,7 @@ module.exports = (passport, ormModels, models) => {
         const email = req.body.email;
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
+        const role = "Guest";
         const user = await ormUser.findOne({ where: { email: email } });
         const usernameUser = await ormUser.findOne({ where: { username } });
         if (user) {
@@ -75,7 +78,8 @@ module.exports = (passport, ormModels, models) => {
             lastName,
             email,
             username,
-            password
+            password,
+            role
           );
           if (user) {
             return done(null, user);

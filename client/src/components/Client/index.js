@@ -50,6 +50,7 @@ class Client extends Component {
     const res = await get("/get-sess-info/user");
     if (res.ok) {
       const user = (await res.json()).user;
+      console.log(user);
       this.setState({ isAuth: true, user: user, authenticating: false });
     } else {
       this.setState({ isAuth: false, authenticating: false });
@@ -60,7 +61,6 @@ class Client extends Component {
     const isAuth = this.state.isAuth;
     const user = this.state.user;
     const authenticating = this.state.authenticating;
-    console.log(this.state.online);
     if (!this.state.loading)
       return (
         <div style={{ paddingLeft: "30px" }}>

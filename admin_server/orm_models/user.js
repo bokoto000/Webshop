@@ -28,6 +28,10 @@ module.exports = sequelize => {
       password: {
         field: "password",
         type: Sequelize.STRING
+      },
+      role: {
+        field: "role",
+        type: Sequelize.STRING
       }
     },
     {

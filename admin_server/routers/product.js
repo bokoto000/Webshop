@@ -124,7 +124,7 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/update-product", async (req, res, next) => {
     const user = req.user;
-    if (user.auth) {
+    if (user) {
       const id = req.body.id;
       const image = req.body.image;
       const description = req.body.description;

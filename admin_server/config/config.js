@@ -8,9 +8,11 @@ const cors = require('cors')
 module.exports = async (app) => {
     app.use(cors());
     app.use(session({
+        name: 'webshopadmin',
         secret: 'webshopadmin',
-        resave: true,
-        saveUninitialized: true
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }
     }));
     app.use(bodyParser.json({ limit: '50mb' }));
     app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
@@ -25,6 +27,7 @@ module.exports = async (app) => {
         email text NOT NULL UNIQUE,
         username text NOT NULL UNIQUE,
         password text  NOT NULL,
+        role text NOT NULL,
         CONSTRAINT users_pkey PRIMARY KEY (id)
     )`);
 

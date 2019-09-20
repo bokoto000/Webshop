@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
+const checkPermission = require("../helpers/checkPermission");
 router.use(bodyParser.json());
 router.use(
   bodyParser.urlencoded({
     extended: true
   })
 );
+
+router.use(checkPermission());
 
 module.exports = (passport, ormModels,sequelize) => {
   const Item = ormModels.Item;
@@ -90,9 +93,9 @@ module.exports = (passport, ormModels,sequelize) => {
     stock = req.body.stock;
     console.log(itemId+ " "+stock);
     if (user && user.id) {
-      const cart = await Cart.findOne({ where: { userId: user.id } });
+      let cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
-        await Cart.create({
+        cart = await Cart.create({
           userId: user.id
         });
       }

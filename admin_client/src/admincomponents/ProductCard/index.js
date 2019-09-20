@@ -53,6 +53,7 @@ export default class ProductCard extends React.Component {
     return (
       <Table.Row>
         <Table.Cell>{product.name}</Table.Cell>
+        <Table.Cell>{product.id}</Table.Cell>
         <Table.Cell>{product.price} лв</Table.Cell>
         <Table.Cell>
           <span>Наличност:</span>

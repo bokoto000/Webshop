@@ -9,24 +9,24 @@ module.exports = (passport, ormModels, models) => {
   passport.serializeUser((user, done) => {
     const userData = {
       id: user.id,
-      isAdmin: user.auth
+      role:user.role
     };
     if (!user) done(null, false);
     else done(null, userData);
   });
 
   passport.deserializeUser(async (userData, done) => {
+    console.log(done);
     const id = userData.id;
     let userFromDb;
-    if (userData.isAdmin == null) userFromDb = await ormUser.findByPk(id);
-    else userFromDb = await ormAdmin.findByPk(id);
+    userFromDb = await ormUser.findByPk(id);
     const user = {
       id: userFromDb.dataValues.id,
       firstName: userFromDb.dataValues.firstName,
       lastName: userFromDb.dataValues.lastName,
       email: userFromDb.dataValues.email,
       username: userFromDb.dataValues.username,
-      auth: userFromDb.dataValues.auth
+      role: userFromDb.dataValues.role
     };
     if (user) done(null, user);
     else {
@@ -38,12 +38,14 @@ module.exports = (passport, ormModels, models) => {
     "local-login-admin",
     new LocalStrategy(async function(username, password, done) {
       try {
-        const user = await ormAdmin.findOne({ where: { username: username } });
-        if (user && user.auth) {
+        const user = await ormUser.findOne({ where: { username: username } });
+        console.log(user);
+        if (user && user.dataValues.role=="Admin") {
           const comp = await Admin.validPassword(password, user.password);
           if (!comp) return done(null, false, "Incorrect password");
           return done(null, user);
         } else {
+          console.log("?")
           return done(null, false, "No such user found");
         }
       } catch (e) {
@@ -67,8 +69,7 @@ module.exports = (passport, ormModels, models) => {
         } else {
           const user = await Admin.createUser(
             username,
-            password,
-            (auth = "FALSE")
+            password
           );
           if (user) {
             return done(null, user);
