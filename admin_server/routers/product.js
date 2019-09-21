@@ -109,7 +109,7 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/update-stock", async (req, res, next) => {
     const user = req.user;
-    if (user.auth) {
+    if (user) {
       console.log("updating stonks");
       const id = req.body.id;
       const stock = req.body.stock;

@@ -11,7 +11,7 @@ router.use(
 
 router.use(checkPermission());
 
-module.exports = (passport, ormModels,sequelize) => {
+module.exports = (passport, ormModels, sequelize) => {
   const Item = ormModels.Item;
   const Cart = ormModels.Cart;
   const Product = ormModels.Product;
@@ -25,7 +25,7 @@ module.exports = (passport, ormModels,sequelize) => {
           userId: user.id
         });
       }
-      const cartId=cart.dataValues.id;
+      const cartId = cart.dataValues.id;
       const items = await sequelize.query(`SELECT "items"."id",
          "items"."stock",
           "product"."id" AS "id",
@@ -46,11 +46,11 @@ module.exports = (passport, ormModels,sequelize) => {
   });
 
   router.post("/update-item", async (req, res) => {
-    console.log('test');
+    console.log("test");
     const user = req.user;
     const itemId = req.body.id;
     stock = req.body.stock;
-    console.log(itemId+ " "+stock);
+    console.log(itemId + " " + stock);
     if (user && user.id) {
       const cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
@@ -59,7 +59,9 @@ module.exports = (passport, ormModels,sequelize) => {
         });
       }
       cartId = cart.dataValues.id;
-      const item = await Item.findOne({ where: { cartId: cartId, productId:itemId } });
+      const item = await Item.findOne({
+        where: { cartId: cartId, productId: itemId }
+      });
       if (!item) {
         if (!stock) stock = 1;
         await Item.create({
@@ -80,18 +82,27 @@ module.exports = (passport, ormModels,sequelize) => {
           }
         );
       }
-      //console.log(cart);
-      res.json(cart);
+      const updatedItem = await sequelize.query(`SELECT "items"."id",
+         "items"."stock",
+          "product"."id" AS "id",
+           "product"."name" AS "name",
+            "product"."description" AS "description",
+             "product"."image" AS "image",
+              "product"."price" AS "price",
+              "product"."stock" AS "leftStock"
+                FROM "items" AS "items" LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id"
+                 WHERE "items"."cart_id" = ${cartId} AND  "product"."id"=${itemId}`);
+
+      res.status(200).send({ product: updatedItem[0] });
     } else res.sendStatus(403);
   });
 
-
   router.post("/buy-item", async (req, res) => {
-    console.log('test');
+    console.log("test");
     const user = req.user;
     const itemId = req.body.id;
     stock = req.body.stock;
-    console.log(itemId+ " "+stock);
+    console.log(itemId + " " + stock);
     if (user && user.id) {
       let cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
@@ -100,7 +111,9 @@ module.exports = (passport, ormModels,sequelize) => {
         });
       }
       cartId = cart.dataValues.id;
-      const item = await Item.findOne({ where: { cartId: cartId, productId:itemId } });
+      const item = await Item.findOne({
+        where: { cartId: cartId, productId: itemId }
+      });
       if (!item) {
         if (!stock) stock = 1;
         await Item.create({
@@ -111,7 +124,7 @@ module.exports = (passport, ormModels,sequelize) => {
       } else {
         await Item.update(
           {
-            stock: item.dataValues.stock+1
+            stock: item.dataValues.stock + 1
           },
           {
             where: {
@@ -126,10 +139,9 @@ module.exports = (passport, ormModels,sequelize) => {
     } else res.sendStatus(403);
   });
 
-
   router.post("/delete-item", async (req, res) => {
-    console.log('test');
-    
+    console.log("test");
+
     const user = req.user;
     const itemId = req.body.id;
     if (user && user.id) {
@@ -140,21 +152,21 @@ module.exports = (passport, ormModels,sequelize) => {
         });
       }
       cartId = cart.dataValues.id;
-      const item = await Item.findOne({ where: { cartId: cartId, productId:itemId } });
+      const item = await Item.findOne({
+        where: { cartId: cartId, productId: itemId }
+      });
       if (!item) {
-        return(422);
+        return 422;
       } else {
-        await Item.destroy(
-          {
-            where: {
-              cartId: cartId,
-              productId: itemId
-            }
+        await Item.destroy({
+          where: {
+            cartId: cartId,
+            productId: itemId
           }
-        );
+        });
       }
       console.log(item);
-      res.sendStatus(200);
+      res.status(200).send({ product: [null] });
     } else res.sendStatus(403);
   });
 

@@ -10,7 +10,8 @@ import {
   Icon,
   Loader,
   Container,
-  Label
+  Label,
+  Dimmer
 } from "semantic-ui-react";
 import { Redirect } from "react-router-dom";
 import "./index.css";
@@ -46,12 +47,12 @@ export default class CartItem extends Component {
     if (product.stock > product.leftStock) {
       this.setState({ notEnoughStock: true });
     }
-    this.setState({ options });
+    this.setState({ options, product });
   }
 
   async updateItemStock() {
     this.setState({ loading: true });
-    const product = this.props.product;
+    const product = this.state.product;
     let res;
     if (this.state.stock > 0)
       res = await post("/cart/update-item", {
@@ -64,7 +65,10 @@ export default class CartItem extends Component {
       });
     }
     if (res.ok) {
-      window.location.reload();
+      let updatedProduct = (await res.json()).product[0];
+      updatedProduct.productTotal = parseFloat(updatedProduct.price * updatedProduct.stock).toFixed(2);
+      this.props.updatedItemHandler(updatedProduct);
+      this.setState({ product: updatedProduct });
     } else {
       alert("Error changing quantity");
     }
@@ -81,7 +85,7 @@ export default class CartItem extends Component {
     });
     console.log(res);
     if (res.ok) {
-      window.location.reload();
+      this.setState({ product: null });
     } else {
       alert("Error removing product");
     }
@@ -94,12 +98,14 @@ export default class CartItem extends Component {
   };
 
   render() {
-    const product = this.props.product;
+    const product = this.state.product;
     if (product && product.stock > 0)
       return (
-        <Segment>
+        <Segment style={{minHeight:"100px"}}>
           {this.state.loading ? (
-            <Loader></Loader>
+            <Dimmer active inverted>
+              <Loader />
+            </Dimmer>
           ) : (
             <Grid>
               <Grid.Row columns={5} className="cart-product-row">

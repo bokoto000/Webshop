@@ -9,7 +9,7 @@ import {
   Divider,
   Grid,
   Segment,
-  Container
+  Loader
 } from "semantic-ui-react";
 import filter from "../../helpers/filters";
 import "./index.css";
@@ -21,45 +21,61 @@ class Cart extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.updatedItemHandler = this.updatedItemHandler.bind(this);
   }
 
   async componentDidMount() {
     let cart = await (await get("/cart/get-cart")).json();
     cart = filter.filterHighestPrice(cart);
     if (cart) {
-      let total = 0;
-      for (let i = 0; i < cart.length; i++) {
-        let productTotal = parseFloat(cart[i].price * cart[i].stock);
-        total += productTotal;
-        cart[i].productTotal = productTotal.toFixed(2);
-      }
-      cart = filter.filterNewest(cart);
-      this.setState({ cart });
-      this.setState({ total });
+      this.calculateTotal(cart);
     } else {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]");
       this.setState({ cart });
     }
   }
 
+  calculateTotal(cart) {
+    let total = 0;
+    for (let i = 0; i < cart.length; i++) {
+      let productTotal = parseFloat(cart[i].price * cart[i].stock);
+      total += productTotal;
+      cart[i].productTotal = productTotal.toFixed(2);
+    }
+    cart = filter.filterNewest(cart);
+    this.setState({ cart });
+    this.setState({ total });
+  }
+
   proceedOrder = async () => {
     try {
       const res = await post("/order/create");
-      console.log(res);
+      console.log("Proceed Order");
       if (res.ok) this.props.history.push("/checkout");
       else {
         const json = await res.json();
         alert(json.error);
       }
     } catch (e) {
-      console.log(e);
       alert("Failed creating order");
     }
   };
 
+  updatedItemHandler(item) {
+    if (item) {
+      this.setState({ recalculatingTotal: true });
+      let cart = this.state.cart;
+      const cartLength = cart.length;
+      for (let i = 0; i < cartLength; i++) {
+        if (cart[i].id == item.id) cart[i] = item;
+      }
+      this.calculateTotal(cart);
+      this.setState({ recalculatingTotal: false });
+    }
+  }
+
   render() {
     const cart = this.state.cart;
-    console.log(cart);
     return (
       <div>
         <Grid>
@@ -77,7 +93,13 @@ class Cart extends Component {
         </Grid>
         {cart
           ? cart.map(product => {
-              return <CartItem key={product.id} product={product}></CartItem>;
+              return (
+                <CartItem
+                  key={product.id}
+                  product={product}
+                  updatedItemHandler={this.updatedItemHandler}
+                ></CartItem>
+              );
             })
           : null}
         <Segment>
@@ -90,10 +112,14 @@ class Cart extends Component {
               <Grid.Column />
               <Grid.Column>Тотал:</Grid.Column>
               <Grid.Column style={{ alignItems: "center" }}>
-                <div className="cart-item-price">
-                  {" "}
-                  {parseFloat(this.state.total).toFixed(2)} лв
-                </div>
+                {this.state.recalculatingTotal ? (
+                  <Loader active></Loader>
+                ) : (
+                  <div className="cart-item-price">
+                    {" "}
+                    {parseFloat(this.state.total).toFixed(2)} лв
+                  </div>
+                )}
               </Grid.Column>
               <Divider />
             </Grid.Row>

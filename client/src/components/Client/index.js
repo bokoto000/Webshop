@@ -40,7 +40,6 @@ class Client extends Component {
   async componentDidMount() {
     this.setState({ loading: true });
     const online = await get("/status/get-status");
-    console.log(online);
     if (!online.ok) {
       this.setState({ online: false });
     } else {
@@ -50,7 +49,6 @@ class Client extends Component {
     const res = await get("/get-sess-info/user");
     if (res.ok) {
       const user = (await res.json()).user;
-      console.log(user);
       this.setState({ isAuth: true, user: user, authenticating: false });
     } else {
       this.setState({ isAuth: false, authenticating: false });

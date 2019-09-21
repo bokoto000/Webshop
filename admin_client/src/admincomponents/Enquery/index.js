@@ -87,7 +87,7 @@ class Enquiry extends Component {
                 <Label basic>Изберете тип:</Label>
                 <Form.Field>
                   <Radio
-                    label="Печалби"
+                    label="Приходи"
                     name="radioGroup"
                     value="profits"
                     checked={this.state.type === "profits"}

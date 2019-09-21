@@ -85,10 +85,12 @@ module.exports = (passport, ormModels, sequelize) => {
           date: { [Op.gte]: startDate, [Op.lte]: endDate }
         }
       });
+      console.log(orders[0]);
       //return res.json(orders);
       if (!orders) {
         return res.sendStatus(403);
       } else {
+        var total = 0;
         for (let i = 0; i < orders.length; i++) {
           const orderId = orders[i].dataValues.id;
           let fullOrder = await sequelize.query(`SELECT "orders".*,
@@ -107,12 +109,9 @@ module.exports = (passport, ormModels, sequelize) => {
                         LEFT OUTER JOIN "products" AS "ordereditems->product"
                          ON "ordereditems"."product_id" = "ordereditems->product"."id";`);
           let itemsCount = fullOrder[0].length;
-          var total = 0;
           for (let i = 0; i < itemsCount; i++) {
-            console.log(fullOrder[0][i]);
             const profit =
               fullOrder[0][i].stock * parseFloat(fullOrder[0][i].orderedPrice);
-            console.log(profit);
             total += profit;
           }
           console.log(total);

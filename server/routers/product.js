@@ -31,7 +31,7 @@ module.exports = (passport, ormModels, sequelize) => {
              "producttags->tags"."tag_id" AS "tagId",
               "producttags->tags"."name" AS "tagName"
                 FROM "products" AS "products" LEFT OUTER JOIN "producttags" AS "producttags" ON "products"."id" = "producttags"."product_id"
-                 LEFT OUTER JOIN "tags" AS "producttags->tags" ON "producttags"."tag_id" = "producttags->tags"."tag_id"`);
+                 LEFT OUTER JOIN "tags" AS "producttags->tags" ON "producttags"."tag_id" = "producttags->tags"."tag_id" WHERE "products"."price">0 `);
     //transforming the query results into good format
     const products = productsQuery[0];
     products.sort(compare);

@@ -35,8 +35,8 @@ module.exports = (passport, ormModels, sequelize) => {
                "product"."stock" AS "product.stock",
                 "product"."stock" AS "leftStock"
                   FROM "items" AS "items"
-                  LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id" WHERE "items"."cart_id" = ${cartId};
-      `);
+                  LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id"
+                   WHERE "items"."cart_id" = ${cartId};`);
       for (let i = 0; i < items[0].length; i++) {
         const stock = items[0][i].stock;
         const leftStock = items[0][i].leftStock;
@@ -81,12 +81,6 @@ module.exports = (passport, ormModels, sequelize) => {
             stock,
             orderedPrice
           });
-          if (orderedItem) {
-            const product = await Product.update(
-              { stock: leftStock - stock },
-              { where: { id: productId } }
-            );
-          }
         }
       }
 
@@ -156,13 +150,38 @@ module.exports = (passport, ormModels, sequelize) => {
         if (updatedOrder) {
           const cart = await Cart.findOne({ where: { userId: user.id } });
           if (cart) await Cart.destroy({ where: { userId: user.id } });
-          console.log(cart);
           if (cart)
             await Item.destroy({ where: { cartId: cart.dataValues.id } });
-          res.sendStatus(200);
-        } else res.send(403);
+
+          const orderedItems = await sequelize.query(`SELECT "ordereditems"."id",
+            "ordereditems"."id" AS "id",
+             "ordereditems"."product_id" AS "productId",
+              "ordereditems"."stock",
+               "product"."id" AS "product.id",
+                "product"."name" AS "product.name",
+                 "product"."description" AS "product.description",
+                  "product"."image" AS "product.image",
+                   "product"."price" AS "orderedPrice",
+                     "product"."stock" AS "leftStock"
+                       FROM "ordereditems" AS "ordereditems"
+                       LEFT OUTER JOIN "products" AS "product" ON "ordereditems"."product_id" = "product"."id"
+                        WHERE "ordereditems"."order_id" = ${order.dataValues.id};`);
+          for (let i = 0; i < orderedItems[0].length; i++) {
+            if (orderedItems[0][i]) {
+              const  item = orderedItems[0][i];
+              const leftStock = item.leftStock;
+              const stock = item.stock;
+              const productId = item.productId;
+              const product = await Product.update(
+                { stock: leftStock - stock },
+                { where: { id: productId } }
+              );
+            }
+          }
+          return res.sendStatus(200);
+        } else return res.send(403);
       }
-    } else res.sendStatus(403);
+    } else return res.sendStatus(403);
   });
 
   return router;
