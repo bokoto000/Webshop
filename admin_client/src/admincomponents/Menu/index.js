@@ -1,6 +1,12 @@
 import React from "react";
 import { Route, Switch, withRouter, BrowserRouter } from "react-router-dom";
-import { Grid, Table, Button } from "semantic-ui-react";
+import {
+  Grid,
+  Table,
+  Button,
+  Menu as SemanticMenu,
+  Dropdown
+} from "semantic-ui-react";
 import Head from "../Head";
 import Body from "../Body";
 import Footer from "../Footer";
@@ -20,7 +26,7 @@ class Menu extends React.Component {
       username: "",
       password: "",
       path: "",
-      activeItem: null
+      activeItem: "account"
     };
   }
 
@@ -44,28 +50,78 @@ class Menu extends React.Component {
     this.props.history.push(`${path}`);
   };
 
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name });
+    this.redirect(name);
+  };
+
   render() {
+    const activeItem = this.state.activeItem;
     return (
       <div>
-        <Table>
-          <Table.Body>
-            <Table.Row onClick={() => this.redirect("/")}>
-              <Table.Cell>Продукти</Table.Cell>
-            </Table.Row>
-            <Table.Row onClick={() => this.redirect("/create-product")}>
-              <Table.Cell>Направи продукт</Table.Cell>
-            </Table.Row>
-            <Table.Row onClick={() => this.redirect("/create-tag")}>
-              <Table.Cell>Тагове</Table.Cell>
-            </Table.Row>
-            <Table.Row onClick={() => this.redirect("/orders")}>
-              <Table.Cell>Поръчки</Table.Cell>
-            </Table.Row>
-            <Table.Row onClick={() => this.redirect("/enquery")}>
-              <Table.Cell>Справки</Table.Cell>
-            </Table.Row>
-          </Table.Body>
-        </Table>
+        <SemanticMenu vertical>
+          <SemanticMenu.Item
+            name="/"
+            active={activeItem === "/"}
+            onClick={this.handleItemClick}
+          >
+            Продукти
+          </SemanticMenu.Item>
+          <SemanticMenu.Item
+            name="/create-product"
+            active={activeItem === "/create-product"}
+            onClick={this.handleItemClick}
+          >
+            Добави продукт
+          </SemanticMenu.Item>
+          <SemanticMenu.Item
+            name="/create-tag"
+            active={activeItem === "/create-tag"}
+            onClick={this.handleItemClick}
+          >
+            Тагове
+          </SemanticMenu.Item>
+          <SemanticMenu.Item
+            name="/orders"
+            active={activeItem === "/orders"}
+            onClick={this.handleItemClick}
+          >
+            Поръчки
+          </SemanticMenu.Item>
+          <SemanticMenu.Item
+            name="enquery"
+            active={activeItem === "enquery"}
+            onClick={this.handleItemClick}
+          >
+            Справки
+          </SemanticMenu.Item>
+          <SemanticMenu.Item>
+            Справки
+            <SemanticMenu.Menu>
+              <SemanticMenu.Item
+                name="/enquery/products"
+                active={activeItem === "/enquery/products"}
+                onClick={this.handleItemClick}
+              >
+                Продукти
+              </SemanticMenu.Item>
+              <SemanticMenu.Item
+                name="/enquery/orders"
+                active={activeItem === "/enquery/orders"}
+                onClick={this.handleItemClick}
+              >
+                Печалби
+              </SemanticMenu.Item>
+              <SemanticMenu.Item
+                name="/enquery/profits"
+                active={activeItem === "/enquery/profits"}
+                onClick={this.handleItemClick}
+              >
+                Печалби
+              </SemanticMenu.Item>
+            </SemanticMenu.Menu>
+          </SemanticMenu.Item>
+        </SemanticMenu>
       </div>
     );
   }

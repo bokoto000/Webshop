@@ -14,6 +14,10 @@ module.exports = sequelize => {
     status: {
       field: "status",
       type: Sequelize.STRING
+    },
+    date: {
+      field: "date",
+      type: Sequelize.STRING
     }
   });
   return Order;

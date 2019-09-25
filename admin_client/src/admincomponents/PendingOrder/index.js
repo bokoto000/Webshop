@@ -28,7 +28,7 @@ export default class PendingOrder extends Component {
       if (res) {
         window.location.reload();
       } else {
-        alert("Error verifying order");
+        alert("Error verifying orsder");
       }
     } else {
       console.log("problem");
@@ -49,15 +49,29 @@ export default class PendingOrder extends Component {
       console.log("problem");
     }
   };
+  
+
 
   render() {
     const order = this.props.order;
+    let date = new Date ;
+    date.setTime(order.date);
+    date.toLocaleString('en-US', { timeZone: 'Europe/Sofia' })
+    const hours = date.getHours()+3;
+    const transformedDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      hours,
+      date.getMinutes()
+    );
     return (
       <Table.Row>
         <Table.Cell>
           {order && order.user ? order.user.username : null}
         </Table.Cell>
         <Table.Cell>{order.status}</Table.Cell>
+        <Table.Cell>{transformedDate.toUTCString()}{"+02:00"}</Table.Cell>
         <Table.Cell>
           <Modal trigger={<Button>Виж</Button>}>
             <Modal.Header>Order: {order.id}</Modal.Header>

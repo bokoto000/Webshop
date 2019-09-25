@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Grid, Table } from "semantic-ui-react";
+import { Grid, Table, Loader } from "semantic-ui-react";
 import ProductDisplay from "../ProductDisplay";
 import Menu from "../Menu";
 import filters from "../../helpers/filters";
@@ -16,10 +16,14 @@ export default class Body extends Component {
   }
 
   async componentDidMount() {
+    this.setState({loading:true});
     this.setState({ products: [], allProducts: [] });
-    let products = (await (await get("/product/get-products")).json()).products;
+    const res = await get("/product/get-products");
+    let products = (await res.json()).products;
+    console.log(products);
     products = filters.filterNewest(products);
     this.setState({ products, allProducts: products });
+    this.setState({loading:false});
   }
 
   setTag = async (tag) =>  {
@@ -39,9 +43,11 @@ export default class Body extends Component {
       }
       this.setState({ products: newProducts });
     }
+
   }
 
   render() {
+    if(!this.state.loading)
     return (
       <div>
         <Grid>
@@ -57,11 +63,21 @@ export default class Body extends Component {
                   </Table.Header>
 
                   <Table.Body>
-                    <Table.Row onClick={() => this.setTag("laptop")}>
+                    <Table.Row onClick={() => this.setTag("Laptop")}>
                       <Table.Cell>Лаптопи</Table.Cell>
                     </Table.Row>
-                    <Table.Row onClick={() => this.setTag("phone")}>
+                    <Table.Row onClick={() => this.setTag("Phone")}>
                       <Table.Cell>Телефони</Table.Cell>
+                    </Table.Row>
+                    <Table.Row onClick={() => this.setTag("PC")}>
+                      <Table.Cell>Компютри
+                      </Table.Cell>
+                    </Table.Row>
+                    <Table.Row onClick={() => this.setTag("Accessory")}>
+                      <Table.Cell>Аксесоари</Table.Cell>
+                    </Table.Row>
+                    <Table.Row onClick={() => this.setTag("Monitor")}>
+                      <Table.Cell>Монитори</Table.Cell>
                     </Table.Row>
                   </Table.Body>
                 </Table>
@@ -76,5 +92,12 @@ export default class Body extends Component {
         </Grid>
       </div>
     );
+    else  {
+      return <div>
+        <Loader active>
+
+        </Loader>
+      </div>
+    }
   }
 }

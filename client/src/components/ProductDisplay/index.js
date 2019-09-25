@@ -180,7 +180,7 @@ class ProductDisplay extends React.Component {
                       name="lowerprice"
                       type="number"
                       onChange={this.handleChange}
-                      value={values.lowerprice ? values.lowerprice : null}
+                      value={values.lowerprice ? values.lowerprice : 0}
                     />
                     -
                     <Input
@@ -191,7 +191,7 @@ class ProductDisplay extends React.Component {
                       name="higherprice"
                       type="number"
                       onChange={this.handleChange}
-                      value={values.higherprice ? values.higherprice : null}
+                      value={values.higherprice ? values.higherprice : 0}
                     />
                     <Button type="submit" onClick={this.filterProducts}>
                       <Icon name="search" />

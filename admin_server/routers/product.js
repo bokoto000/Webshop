@@ -175,7 +175,7 @@ module.exports = (passport, ormModels, sequelize) => {
     for (let i = 0; i <= 10000; i++) {
       fakes.push({
         description: faker.commerce.product(),
-        name: faker.commerce.productName()+faker.commerce.product(),
+        name: faker.commerce.productName() + faker.commerce.product(),
         image: faker.image.image(),
         price: faker.commerce.price(),
         stock: 100
@@ -202,6 +202,34 @@ module.exports = (passport, ormModels, sequelize) => {
       }
     }
     console.log(failed);
+    return res.json(fakes);
+  });
+
+  router.post("/fake-tags", async (req, res, next) => {
+    const tags = (await Tag.findAll());
+    console.log(tags.length);
+    const fakes = [];
+    const productsQuery = await sequelize.query(`SELECT "products"."id", "products"."name",
+     "products"."description",
+      "products"."image",
+       "products"."price",
+        "products"."stock",
+             "producttags->tags"."tag_id" AS "tagId",
+              "producttags->tags"."name" AS "tagName"
+                FROM "products" AS "products" LEFT OUTER JOIN "producttags" AS "producttags" ON "products"."id" = "producttags"."product_id"
+                 LEFT OUTER JOIN "tags" AS "producttags->tags" ON "producttags"."tag_id" = "producttags->tags"."tag_id"`);
+    const products = productsQuery[0];
+    for (i = 0; i < products.length; i++) {
+      let product = products[i];
+      var tag = tags[Math.floor(Math.random()*tags.length)];
+      if(!product.tagId){
+        console.log(product);
+        await ProductTag.create({
+          productId: product.id,
+          tagId: tag.dataValues.id
+        });
+      }
+    }
     return res.json(fakes);
   });
 

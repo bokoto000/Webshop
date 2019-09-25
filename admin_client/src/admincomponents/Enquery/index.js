@@ -55,7 +55,6 @@ class Enquiry extends Component {
     values["start_date"] = start_date.getTime();
     values["end_date"] = end_date.getTime();
     this.props.history.push({
-      pathname: `/enquery/${type}`,
       search: "?" + new URLSearchParams(values).toString()
     });
     window.location.reload();
@@ -84,25 +83,6 @@ class Enquiry extends Component {
               </Form.Group>
 
               <Form.Group inline>
-                <Label basic>Изберете тип:</Label>
-                <Form.Field>
-                  <Radio
-                    label="Приходи"
-                    name="radioGroup"
-                    value="profits"
-                    checked={this.state.type === "profits"}
-                    onChange={this.handleTypeChange}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <Radio
-                    label="Продукти"
-                    name="radioGroup"
-                    value="products"
-                    checked={this.state.type === "products"}
-                    onChange={this.handleTypeChange}
-                  />
-                </Form.Field>
                 <Form.Field fluid control={Button}>
                   Направи справка
                 </Form.Field>

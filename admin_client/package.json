@@ -10,6 +10,7 @@
     "react-paginate": "^6.3.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "^3.0.1",
+    "react-time-picker": "^3.7.2",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.87.3"
   },
