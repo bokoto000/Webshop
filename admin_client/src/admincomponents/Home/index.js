@@ -10,6 +10,7 @@ import ProductForm from "../ProductForm";
 import ProductDisplay from "../ProductDisplay";
 import TagForm from "../TagForm";
 import Enquery from "../Enquery";
+import Permissions from "../Permissions";
 import "./index.css";
 import PendingOrders from "../PendingOrders";
 const post = require("../../helpers/fetch").post;
@@ -58,6 +59,7 @@ export default class Home extends React.Component {
                 />
                 <Route exact path="/orders" component={PendingOrders} />
                 <Route path="/enquery" component={Enquery} />
+                <Route path="/permissions" component={Permissions} />
               </Switch>
             </Grid.Column>
           </Grid.Row>

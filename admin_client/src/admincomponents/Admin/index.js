@@ -23,18 +23,12 @@ export default class Admin extends Component {
     if (res.ok) {
       const userAdmin = (await res.json()).user;
       console.log(userAdmin);
-      if (userAdmin.role == "Admin") {
-        this.setState({
-          isAuthAdmin: true,
-          userAdmin: userAdmin,
-          authenticatingAdmin: false
-        });
-      } else {
-        this.setState({
-          isAuthAdmin: false,
-          authenticatingAdmin: false
-        });
-      }
+
+      this.setState({
+        isAuthAdmin: true,
+        userAdmin: userAdmin,
+        authenticatingAdmin: false
+      });
     } else {
       this.setState({
         isAuthAdmin: false,
@@ -55,11 +49,7 @@ export default class Admin extends Component {
         }}
       >
         {" "}
-        {isAuthAdmin ? (
-          <Home />
-        ) : (
-            <Login />
-        )}{" "}
+        {isAuthAdmin ? <Home /> : <Login />}{" "}
       </div>
     );
   }

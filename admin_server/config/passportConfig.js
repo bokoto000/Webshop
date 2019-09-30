@@ -19,7 +19,9 @@ module.exports = (passport, ormModels, models) => {
     console.log(done);
     const id = userData.id;
     let userFromDb;
-    userFromDb = await ormUser.findByPk(id);
+    userFromDb = await ormAdmin.findByPk(id);
+    console.log(id);
+    console.log(userFromDb);
     const user = {
       id: userFromDb.dataValues.id,
       firstName: userFromDb.dataValues.firstName,
@@ -38,14 +40,13 @@ module.exports = (passport, ormModels, models) => {
     "local-login-admin",
     new LocalStrategy(async function(username, password, done) {
       try {
-        const user = await ormUser.findOne({ where: { username: username } });
+        const user = await ormAdmin.findOne({ where: { username: username } });
         console.log(user);
-        if (user && user.dataValues.role=="Admin") {
+        if (user) {
           const comp = await Admin.validPassword(password, user.password);
           if (!comp) return done(null, false, "Incorrect password");
           return done(null, user);
         } else {
-          console.log("?")
           return done(null, false, "No such user found");
         }
       } catch (e) {

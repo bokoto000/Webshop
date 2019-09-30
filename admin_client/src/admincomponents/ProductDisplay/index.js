@@ -159,13 +159,6 @@ export default class ProductDisplay extends React.Component {
         <div style={{ width: "100%" }}>
           <Form onSubmit={this.handleFormSubmit}>
             <Form.Input
-              placeholder="Search by name..."
-              value={this.state.query}
-              onChange={this.handleInputChange}
-            />
-          </Form>
-          <Form onSubmit={this.handleFormSubmit}>
-            <Form.Input
               placeholder="Search by id..."
               value={this.state.queryCode}
               onChange={this.handleInputCodeChange}

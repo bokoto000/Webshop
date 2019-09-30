@@ -110,14 +110,33 @@ class Menu extends React.Component {
                 active={activeItem === "/enquery/orders"}
                 onClick={this.handleItemClick}
               >
-                Печалби
+                Поръчки
               </SemanticMenu.Item>
+            </SemanticMenu.Menu>
+          </SemanticMenu.Item>
+          <SemanticMenu.Item>
+            Права и роли
+            <SemanticMenu.Menu>
               <SemanticMenu.Item
-                name="/enquery/profits"
-                active={activeItem === "/enquery/profits"}
+                name="/permissions/control"
+                active={activeItem ==="/permissions/control"}
                 onClick={this.handleItemClick}
               >
-                Печалби
+                Контрол на права
+              </SemanticMenu.Item>
+              <SemanticMenu.Item
+                name="/permissions/create-user"
+                active={activeItem === "/permissions/create-user"}
+                onClick={this.handleItemClick}
+              >
+                Създаване на потребител
+              </SemanticMenu.Item>
+              <SemanticMenu.Item
+                name="/permissions/create-permissions"
+                active={activeItem ==="/permissions/create-permissions"}
+                onClick={this.handleItemClick}
+              >
+                Създаване на права
               </SemanticMenu.Item>
             </SemanticMenu.Menu>
           </SemanticMenu.Item>

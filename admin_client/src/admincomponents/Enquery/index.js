@@ -4,7 +4,7 @@ import queryString from "query-string";
 import DatePicker from "react-datepicker";
 import { Grid, Form, Radio, Button, Label } from "semantic-ui-react";
 import Products from "./Products";
-import Profits from "./Profits";
+import Orders from "./Orders";
 import "react-datepicker/dist/react-datepicker.css";
 
 class Enquiry extends Component {
@@ -63,47 +63,18 @@ class Enquiry extends Component {
   render() {
     return (
       <div>
-        <Grid>
-          <Grid.Row>
-            <Form onSubmit={this.onSubmit}>
-              <Form.Group inline>
-                <Form.Field
-                  label="от"
-                  control={DatePicker}
-                  selected={this.state.startDate}
-                  onChange={this.handleChangeStart}
-                ></Form.Field>
-
-                <Form.Field
-                  label="до"
-                  control={DatePicker}
-                  selected={this.state.endDate}
-                  onChange={this.handleChangeEnd}
-                ></Form.Field>
-              </Form.Group>
-
-              <Form.Group inline>
-                <Form.Field fluid control={Button}>
-                  Направи справка
-                </Form.Field>
-              </Form.Group>
-            </Form>
-          </Grid.Row>
-          <Grid.Row>
-            <Switch style={{ minHeight: "80vh" }}>
-              <Route
-                exact
-                path={`${this.props.match.url}/products`}
-                component={Products}
-              />
-              <Route
-                exact
-                path={`${this.props.match.url}/profits`}
-                component={Profits}
-              />
-            </Switch>
-          </Grid.Row>
-        </Grid>
+        <Switch style={{ minHeight: "80vh" }}>
+          <Route
+            exact
+            path={`${this.props.match.url}/products`}
+            component={Products}
+          />
+          <Route
+            exact
+            path={`${this.props.match.url}/orders`}
+            component={Orders}
+          />
+        </Switch>
       </div>
     );
   }

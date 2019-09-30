@@ -56,12 +56,10 @@ export default class ProductCard extends React.Component {
     });
     if (res.ok) {
       NotificationManager.success("Добавен Продукт","", 3000, () => {
-        alert("callback");
       });
     }
     else{
       NotificationManager.error("Проблем при добавянето на продукт ","", 3000, () => {
-        alert("callback");
       });
     }
   }

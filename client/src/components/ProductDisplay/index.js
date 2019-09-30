@@ -141,13 +141,6 @@ class ProductDisplay extends React.Component {
     this.setState({ page: selected });
   };
 
-  sleep(miliseconds) {
-    var currentTime = new Date().getTime();
- 
-    while (currentTime + miliseconds >= new Date().getTime()) {
-    }
- }
-
   render() {
     const data = this.filterProducts();
     const products = data.products;

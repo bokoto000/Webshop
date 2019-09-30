@@ -14,6 +14,8 @@ module.exports = function() {
         console.log("false");
         return res.status(401).send("You do not have permission");
       }
+    } else {
+      return res.sendStatus(403);
     }
   };
 };
