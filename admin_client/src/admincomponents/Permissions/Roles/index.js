@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Container, Segment, Button, Label } from 'semantic-ui-react';
 import AssignRole from "./AssignRole";
+import DeleteRole from "./DeleteRole";
 
 const post = require("../../../helpers/fetch").post;
 
@@ -14,13 +15,11 @@ export default class Roles extends Component {
         const res = await post("/roles/create-role", {
             roleName: this.state.name,
         });
-        console.log(res);
         if (res.ok) {
             window.location.reload();
         } else {
             if (res) {
                 const resJson = await res.json();
-                console.log(resJson);
                 this.setState({ error: resJson.error });
             }
             window.location.reload();
@@ -59,6 +58,7 @@ export default class Roles extends Component {
                     </Segment>
                 </Container>
                 <AssignRole></AssignRole>
+                <DeleteRole></DeleteRole>
             </div>
         );
     }

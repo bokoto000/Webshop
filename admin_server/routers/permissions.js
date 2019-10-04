@@ -9,10 +9,23 @@ router.use(
 );
 
 module.exports = (passport, ormModels) => {
-  router.post("/create-permission", (req, res, next) => {
-   return res.send(200);
+  const Permission = ormModels.Permission;
+  const PermissionRoles = 
+
+  router.post("/create-permission", async (req, res, next) => {
+    const name = req.body.name;
+    const permission = req.body.permission;
+    const newPerm = await Permission.create({ name, permission });
+    if (!newPerm) {
+      return res.send(403);
+    }
+    return res.send(200);
   });
-  
+
+  router.get("/get-permissions", async (req, res, next) => {
+    const permissions = await Permission.findAll();
+    return res.json(permissions);
+  });
 
   return router;
 };

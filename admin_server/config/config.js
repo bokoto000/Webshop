@@ -68,12 +68,28 @@ module.exports = async (app) => {
         CONSTRAINT userroles_pkey PRIMARY KEY (id)
     )`);
 
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS permissionroles
+    (
+        id serial NOT NULL,
+        permission_id int NOT NULL,
+        role_id int NOT NULL,
+        CONSTRAINT permissionroles_pkey PRIMARY KEY (id)
+    )`);
+
 
     await sequelize.query(`CREATE TABLE IF NOT EXISTS tags
     (
         tag_id serial NOT NULL,
         name text UNIQUE NOT NULL, 
         CONSTRAINT tags_pkey PRIMARY KEY (tag_id)
+    )`);
+
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS permissions
+    (
+        id serial NOT NULL,
+        name text UNIQUE NOT NULL,
+        permission text UNIQUE NOT NULL, 
+        CONSTRAINT permissons_pkey PRIMARY KEY (id)
     )`);
 
     await sequelize.query(`CREATE TABLE IF NOT EXISTS producttags

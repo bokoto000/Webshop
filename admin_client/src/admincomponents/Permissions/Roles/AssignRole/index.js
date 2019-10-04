@@ -8,14 +8,14 @@ const get = require("./../../../../helpers/fetch").get;
 export default class AssignRole extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            options:[]
+        };
     }
 
     async componentDidMount() {
         const res = await get(`/admin/get-admins`);
-        console.log(res);
         if (res.ok) {
-            console.log("OK");
             const admins = await res.json();
             let options = [];
             for (let i = 0; i < admins.length; i++) {
@@ -42,13 +42,11 @@ export default class AssignRole extends Component {
             roleId: this.state.roleId,
             userId: this.state.userId
         });
-        console.log(res);
         if (res.ok) {
             window.location.reload();
         } else {
             if (res) {
                 const resJson = await res.json();
-                console.log(resJson);
                 this.setState({ error: resJson.error });
             }
         }

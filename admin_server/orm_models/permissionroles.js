@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 module.exports = sequelize => {
-    const UserRoles = sequelize.define(
-        "userroles",
+    const PermissionRoles = sequelize.define(
+        "permissionsroles",
         {
             id: {
                 field: "id",
@@ -9,8 +9,8 @@ module.exports = sequelize => {
                 autoIncrement: true,
                 primaryKey: true
             },
-            userId: {
-                field: "user_id",
+            permissionId: {
+                field: "permission_id",
                 type: Sequelize.INTEGER
             },
             roleId: {
@@ -19,5 +19,5 @@ module.exports = sequelize => {
             }
         }
     );
-    return UserRoles;
+    return PermissionRoles;
 };

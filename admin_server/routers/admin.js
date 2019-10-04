@@ -12,14 +12,12 @@ module.exports = (passport, ormModels) => {
   const Admin = ormModels.Admin;
 
   router.post("/login", (req, res, next) => {
-    console.log("Admin Login");
     try {
       passport.authenticate("local-login-admin", function (err, user) {
         if (err) {
           console.error(err);
           return res.status(400).send();
         }
-        console.log(user);
         req.logIn(user, err => {
           if (err) {
             console.error(err);

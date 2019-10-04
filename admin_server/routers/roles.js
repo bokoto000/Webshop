@@ -19,9 +19,22 @@ module.exports = (passport, ormModels) => {
     try {
       await Role.create({ role: roleName });
     } catch (e) {
-      console.log(e);
+      return res.sendStatus(403);
     }
-    console.log(roleName);
+    return res.sendStatus(200);
+  });
+
+  router.post("/delete-role", async (req, res, next) => {
+    const roleId = req.body.roleId;
+    console.log("TEST");
+    try {
+      await Role.destroy({ where:{id: roleId }});
+      const allRoles = await UserRole.destroy({where:{roleId}});
+      console.log("test");
+    } catch (e) {
+      return res.sendStatus(403);
+    }
+    return res.sendStatus(200);
   });
 
   router.get("/get-roles", async (req, res, next) => {
@@ -34,7 +47,11 @@ module.exports = (passport, ormModels) => {
     const adminId = req.body.userId;
     const roleId = req.body.roleId;
     const admin = await Admin.findOne({ where: { id: adminId } });
-    if (admin) {
+    const hasUserRole = await UserRole.findOne({where:{userId:adminId,roleId:roleId}});
+    if(hasUserRole){
+      return res.status(403).send({error:"Error"})
+    }
+    if (admin&&!hasUserRole) {
       const userRole = await UserRole.create({ userId: adminId, roleId })
       if (userRole) {
         return res.sendStatus(200);

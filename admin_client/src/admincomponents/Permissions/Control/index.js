@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import CreatePermission from "./CreatePermission";
+import AddPermission from "./AddPermission";
 
 export default class Control extends Component {
   constructor(props) {
@@ -7,6 +9,13 @@ export default class Control extends Component {
   }
 
   render() {
-    return <div></div>;
+    return <div>
+      <CreatePermission>
+
+      </CreatePermission>
+      <AddPermission>
+
+      </AddPermission>
+    </div>;
   }
 }
