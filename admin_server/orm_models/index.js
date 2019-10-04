@@ -1,17 +1,20 @@
-module.exports =  (sequelize) => {
+module.exports = (sequelize) => {
     const User = require('./user')(sequelize);
     const Admin = require('./admin')(sequelize);
     const Product = require('./product')(sequelize);
-    const Tag = require ('./tag')(sequelize);
+    const Tag = require('./tag')(sequelize);
     const Order = require('./order')(sequelize);
     const OrderedItem = require('./ordered_item')(sequelize);
-    const ProductTag = require ('./producttags')(sequelize);
+    const ProductTag = require('./producttags')(sequelize);
 
-    ProductTag.hasMany(Tag,{foreignKey:'tag_id'})
-    Tag.hasMany(ProductTag,{foreignKey:'tag_id'})
+    const Role = require('./roles')(sequelize);
+    const UserRole = require('./userroles')(sequelize);
 
-    Product.hasMany(ProductTag,{foreignKey:'productId'})
-    ProductTag.belongsTo(Product, {foreignKey:'productId'})
+    ProductTag.hasMany(Tag, { foreignKey: 'tag_id' })
+    Tag.hasMany(ProductTag, { foreignKey: 'tag_id' })
+
+    Product.hasMany(ProductTag, { foreignKey: 'productId' })
+    ProductTag.belongsTo(Product, { foreignKey: 'productId' })
 
 
     return {
@@ -21,6 +24,8 @@ module.exports =  (sequelize) => {
         Tag,
         ProductTag,
         Order,
-        OrderedItem
+        OrderedItem,
+        Role,
+        UserRole
     }
 }

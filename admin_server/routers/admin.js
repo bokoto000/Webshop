@@ -9,10 +9,12 @@ router.use(
 );
 
 module.exports = (passport, ormModels) => {
+  const Admin = ormModels.Admin;
+
   router.post("/login", (req, res, next) => {
     console.log("Admin Login");
     try {
-      passport.authenticate("local-login-admin", function(err, user) {
+      passport.authenticate("local-login-admin", function (err, user) {
         if (err) {
           console.error(err);
           return res.status(400).send();
@@ -33,7 +35,7 @@ module.exports = (passport, ormModels) => {
   });
 
   router.post("/register", (req, res, next) => {
-    passport.authenticate("local-signup-admin", function(err, user) {
+    passport.authenticate("local-signup-admin", function (err, user) {
       if (err) {
         return res.status(400).send();
       }
@@ -46,11 +48,16 @@ module.exports = (passport, ormModels) => {
       });
     })(req, res, next);
   });
-  
+
   router.get("/logout", (req, res, next) => {
     req.logout();
     return res.json();
   });
+
+  router.get("/get-admins", async (req, res, next) => {
+    const admins = await Admin.findAll({ attributes: ['id', 'username', 'first_name', 'last_name', 'email'] });
+    return res.status(200).json(admins);
+  })
 
   return router;
 };

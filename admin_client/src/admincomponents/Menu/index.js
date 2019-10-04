@@ -132,11 +132,11 @@ class Menu extends React.Component {
                 Създаване на потребител
               </SemanticMenu.Item>
               <SemanticMenu.Item
-                name="/permissions/create-permissions"
-                active={activeItem ==="/permissions/create-permissions"}
+                name="/permissions/roles"
+                active={activeItem ==="/permissions/roles"}
                 onClick={this.handleItemClick}
               >
-                Създаване на права
+                Създаване на роли
               </SemanticMenu.Item>
             </SemanticMenu.Menu>
           </SemanticMenu.Item>

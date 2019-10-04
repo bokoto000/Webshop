@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 let credentials;
 credentials = {
     dbname: process.env.DBNAME || 'webshop',
-    username: process.env.DBUserId || 'admin',
+    username: process.env.DBUserId || 'postgres',
     password: process.env.DBPASS || 'admin',
     hostname: process.env.DBCON || 'localhost',
     port: process.env.DBPORT || '5432'

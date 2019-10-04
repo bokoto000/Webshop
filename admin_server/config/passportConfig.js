@@ -64,13 +64,19 @@ module.exports = (passport, ormModels, models) => {
         passReqToCallback: true
       },
       async function(req, username, password, done) {
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        const email = req.body.email;
         const user = await ormAdmin.findOne({ where: { username: username } });
         if (user) {
           return done(null, false, "User already exists");
         } else {
           const user = await Admin.createUser(
             username,
-            password
+            password,
+            firstName,
+            lastName,
+            email
           );
           if (user) {
             return done(null, user);

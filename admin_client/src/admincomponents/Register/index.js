@@ -1,57 +1,144 @@
-import React from 'react';
-import { Grid, Form, Image, Segment, Divider, Header, Button } from 'semantic-ui-react';
-import './index.css'
+import React from "react";
+import {
+  Container,
+  Checkbox,
+  Popup,
+  Form,
+  Segment,
+  Button,
+  Label
+} from "semantic-ui-react";
+import "./index.css";
 
-const post = require('../../helpers/fetch').post;
-
+const post = require("../../helpers/fetch").post;
 
 export default class Register extends React.Component {
+  constructor(props) {
+    super(props);
 
-    constructor(props) {
-        super(props);
+    this.verifyCallback = this.verifyCallback.bind(this);
 
-        this.state = {
-            username: "",
-            password: ""
-        };
+    this.state = {
+      username: "",
+      password: "",
+      isVerified: false,
+      hasAcceptedTerms: false,
+      error: null
+    };
+  }
+
+  onChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+
+  recaptchaLoaded() {
+    console.log("recaptcha loaded");
+  }
+
+  verifyCallback(response) {
+    console.log(response);
+    try {
+      if (response) {
+        this.setState({
+          isVerified: true
+        });
+      }
+    } catch (e) {
+      console.log(e);
     }
+    console.log(this.state.isVerified);
+  }
 
-
-    onChange = (event) => {
-        this.setState({ [event.target.name]: event.target.value })
+  onSubmit = async () => {
+    const res = await post("/admin/register", {
+      username: this.state.username,
+      password: this.state.password,
+      email: this.state.email,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName
+    });
+    console.log(res);
+    if (res.ok) {
+      window.location.reload();
+    } else {
+      if (res) {
+        const resJson = await res.json();
+        console.log(resJson);
+        this.setState({ error: resJson.error });
+      }
     }
+  };
+  toggle = () =>
+    this.setState(prevState => ({
+      hasAcceptedTerms: !prevState.hasAcceptedTerms
+    }));
 
-    onSubmit = async () => {
-        const res = await post('/admin/register', {
-            username: this.state.username,
-            password: this.state.password
-        })
-        if (res.ok) {
-            window.location.reload();
-        }
-    }
+  render() {
+    return (
+      <div>
+        <Container style={{ padding: "1em 0em" }}>
+          <Segment>
+            <Form onSubmit={this.onSubmit}>
+              <Form.Field>
+                <label> Потребителско име</label>
+                <input
+                  placeholder="Потребителско име"
+                  required
+                  name="username"
+                  onChange={this.onChange}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label> Собствено име</label>
+                <input
+                  placeholder="Собствено име"
+                  required
+                  name="firstName"
+                  onChange={this.onChange}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label> Фамилия</label>
+                <input
+                  placeholder="Фамилия"
+                  required
+                  name="lastName"
+                  onChange={this.onChange}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label> E-mail </label>
+                <input
+                  type="email"
+                  placeholder="E-mail"
+                  required
+                  name="email"
+                  onChange={this.onChange}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label> Парола </label>
+                <input
+                  type="password"
+                  placeholder="Парола"
+                  required
+                  name="password"
+                  onChange={this.onChange}
+                />
+              </Form.Field>
 
-    render() {
-        return (
-            <div style={{ height: '100vh' }}>
-                <Grid verticalAlign='middle' columns={4} centered>
-                    <Grid.Row>
-                        <Grid.Column>
-                            <Segment textAlign='center' className='login-form'>
-                                <Header >Регистрация</Header>
-                                <Divider />
-                                <Segment basic textAlign='left'>
-                                    <Form onSubmit={this.onSubmit}>
-                                        <Form.Input fluid label='Потребителско име' placeholder='Потребителско име' name='username' onChange={this.onChange} />
-                                        <Form.Input fluid type='password' label='Парола' placeholder='Парола' name='password' onChange={this.onChange} />
-                                        <Form.Field fluid control={Button}>Регистрирай</Form.Field>
-                                    </Form>
-                                </Segment>
-                            </Segment>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </div>
-        )
-    }
-} 
+              <Form.Field>
+                <Button fluid type="submit">
+                  Регистрирай се!
+                </Button>
+              </Form.Field>
+              {this.state.error ? (
+                <Label color="red">{this.state.error}</Label>
+              ) : null}
+            </Form>
+          </Segment>
+        </Container>
+      </div>
+    );
+  }
+}

@@ -1,4 +1,4 @@
-const Sequelize = require ('sequelize');
+const Sequelize = require("sequelize");
 module.exports = sequelize => {
   const User = sequelize.define(
     "admins",
@@ -17,9 +17,17 @@ module.exports = sequelize => {
         field: "password",
         type: Sequelize.STRING
       },
-      auth:{
-        field:"auth",
-        type: Sequelize.BOOLEAN
+      firstName: {
+        field: "first_name",
+        type: Sequelize.STRING
+      },
+      lastName: {
+        field: "last_name",
+        type: Sequelize.STRING
+      },
+      email: {
+        field: "email",
+        type: Sequelize.STRING
       }
     },
     {

@@ -27,16 +27,18 @@ module.exports = async (app) => {
         email text NOT NULL UNIQUE,
         username text NOT NULL UNIQUE,
         password text  NOT NULL,
-        role text NOT NULL,
+        email text NOT NULL UNIQUE,
         CONSTRAINT users_pkey PRIMARY KEY (id)
     )`);
 
     await sequelize.query(`CREATE TABLE IF NOT EXISTS admins
     (
         id serial NOT NULL,
+        first_name text ,
+        last_name text ,
+        email text NOT NULL UNIQUE,
         username text NOT NULL,
         password text  NOT NULL,
-        auth BOOLEAN,
         CONSTRAINT admins_pkey PRIMARY KEY (id)
     )`);
 
@@ -49,6 +51,21 @@ module.exports = async (app) => {
         price numeric(15,2) NOT NULL,
         stock int NOT NULL,
         CONSTRAINT products_pkey PRIMARY KEY (id)
+    )`);
+
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS roles
+    (
+        id serial NOT NULL,
+        role text NOT NULL,
+        CONSTRAINT roles_pkey PRIMARY KEY (id)
+    )`);
+
+    await sequelize.query(`CREATE TABLE IF NOT EXISTS userroles
+    (
+        id serial NOT NULL,
+        user_id int NOT NULL,
+        role_id int NOT NULL,
+        CONSTRAINT userroles_pkey PRIMARY KEY (id)
     )`);
 
 

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import Control from "./Control";
 import CreateUser from "./CreateUser";
+import Roles from "./Roles";
 
 export default class Permissions extends Component {
   constructor(props) {
@@ -22,6 +23,11 @@ export default class Permissions extends Component {
             exact
             path={`${this.props.match.url}/create-user`}
             component={CreateUser}
+          />
+          <Route
+            exact
+            path={`${this.props.match.url}/roles`}
+            component={Roles}
           />
         </Switch>
       </div>

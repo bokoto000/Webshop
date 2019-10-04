@@ -26,7 +26,7 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/create", async (req, res, next) => {
     const user = req.user;
-    if (user.auth) {
+    if (user) {
       const image = req.body.image;
       const description = req.body.description;
       const name = req.body.name;
