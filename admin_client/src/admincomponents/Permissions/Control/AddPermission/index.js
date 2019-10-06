@@ -49,9 +49,9 @@ export default class AddPermission extends Component {
   }
 
   onSubmit = async () => {
-    const res = await post("/role/grant-permission", {
-      name: this.state.name,
-      permission: this.state.permission
+    const res = await post("/roles/grant-permission", {
+      roleId: this.state.roleId,
+      permId: this.state.permissionId
     });
     if (res.ok) {
       window.location.reload();
@@ -80,7 +80,7 @@ export default class AddPermission extends Component {
                 search
                 selection
                 name="roleId"
-                placeholder="Права"
+                placeholder="Роля"
                 value={this.state.value}
                 onChange={this.handleChange}
                 options={this.state.rolesOptions}

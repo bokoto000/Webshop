@@ -16,12 +16,9 @@ module.exports = (passport, ormModels, models) => {
   });
 
   passport.deserializeUser(async (userData, done) => {
-    console.log(done);
     const id = userData.id;
     let userFromDb;
     userFromDb = await ormAdmin.findByPk(id);
-    console.log(id);
-    console.log(userFromDb);
     const user = {
       id: userFromDb.dataValues.id,
       firstName: userFromDb.dataValues.firstName,
@@ -41,7 +38,6 @@ module.exports = (passport, ormModels, models) => {
     new LocalStrategy(async function(username, password, done) {
       try {
         const user = await ormAdmin.findOne({ where: { username: username } });
-        console.log(user);
         if (user) {
           const comp = await Admin.validPassword(password, user.password);
           if (!comp) return done(null, false, "Incorrect password");

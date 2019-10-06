@@ -13,6 +13,8 @@ module.exports = (passport, ormModels) => {
   const Role = ormModels.Role;
   const UserRole = ormModels.UserRole;
   const Admin = ormModels.Admin;
+  const PermissionRole = ormModels.PermissionRoles;
+  const Permission = ormModels.Permission;
 
   router.post("/create-role", async (req, res, next) => {
     const roleName = req.body.roleName;
@@ -28,8 +30,8 @@ module.exports = (passport, ormModels) => {
     const roleId = req.body.roleId;
     console.log("TEST");
     try {
-      await Role.destroy({ where:{id: roleId }});
-      const allRoles = await UserRole.destroy({where:{roleId}});
+      await Role.destroy({ where: { id: roleId } });
+      const allRoles = await UserRole.destroy({ where: { roleId } });
       console.log("test");
     } catch (e) {
       return res.sendStatus(403);
@@ -47,11 +49,11 @@ module.exports = (passport, ormModels) => {
     const adminId = req.body.userId;
     const roleId = req.body.roleId;
     const admin = await Admin.findOne({ where: { id: adminId } });
-    const hasUserRole = await UserRole.findOne({where:{userId:adminId,roleId:roleId}});
-    if(hasUserRole){
-      return res.status(403).send({error:"Error"})
+    const hasUserRole = await UserRole.findOne({ where: { userId: adminId, roleId: roleId } });
+    if (hasUserRole) {
+      return res.status(403).send({ error: "Error" })
     }
-    if (admin&&!hasUserRole) {
+    if (admin && !hasUserRole) {
       const userRole = await UserRole.create({ userId: adminId, roleId })
       if (userRole) {
         return res.sendStatus(200);
@@ -61,6 +63,32 @@ module.exports = (passport, ormModels) => {
       }
     }
   })
+
+  router.post("/grant-permission", async (req, res, next) => {
+    const roleId = req.body.roleId;
+    const permId = req.body.permId;
+    const role = await Role.findOne({ where: { id: roleId } });
+    const perm = await Permission.findOne({ where: { id: permId } });
+    if (role && perm) {
+      const permRole = await PermissionRole.create({ roleId, permissionId: permId });
+      if(permRole){
+        return res.sendStatus(200);
+      }
+    }
+    if (hasUserRole) {
+      return res.status(403).send({ error: "Error" })
+    }
+    if (admin && !hasUserRole) {
+      const userRole = await UserRole.create({ userId: adminId, roleId })
+      if (userRole) {
+        return res.sendStatus(200);
+      }
+      else {
+        return res.status(403).send({ error: "Error" });
+      }
+    }
+  })
+
 
 
   return router;

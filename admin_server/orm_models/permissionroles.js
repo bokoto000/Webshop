@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 module.exports = sequelize => {
     const PermissionRoles = sequelize.define(
-        "permissionsroles",
+        "permissionroles",
         {
             id: {
                 field: "id",

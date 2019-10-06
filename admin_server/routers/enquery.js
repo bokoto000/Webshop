@@ -11,6 +11,8 @@ router.use(
 );
 
 const Op = Sequelize.Op;
+const checkPermission = require("../helpers/checkPermissions");
+router.use(checkPermission());
 
 module.exports = (passport, ormModels, sequelize) => {
   const Order = ormModels.Order;
