@@ -9,7 +9,6 @@ router.use(
 );
 
 module.exports = (passport, ormModels) => {
-
   const Role = ormModels.Role;
   const UserRole = ormModels.UserRole;
   const Admin = ormModels.Admin;
@@ -49,20 +48,41 @@ module.exports = (passport, ormModels) => {
     const adminId = req.body.userId;
     const roleId = req.body.roleId;
     const admin = await Admin.findOne({ where: { id: adminId } });
-    const hasUserRole = await UserRole.findOne({ where: { userId: adminId, roleId: roleId } });
+    const hasUserRole = await UserRole.findOne({
+      where: { userId: adminId, roleId: roleId }
+    });
     if (hasUserRole) {
-      return res.status(403).send({ error: "Error" })
+      return res.status(403).send({ error: "User already has that role" });
     }
     if (admin && !hasUserRole) {
-      const userRole = await UserRole.create({ userId: adminId, roleId })
+      const userRole = await UserRole.create({ userId: adminId, roleId });
       if (userRole) {
         return res.sendStatus(200);
-      }
-      else {
-        return res.status(403).send({ error: "Error" });
+      } else {
+        return res
+          .status(403)
+          .send({ error: "There was an error creating the user role" });
       }
     }
-  })
+  });
+
+  router.post("/cancel-role", async (req, res, next) => {
+    const adminId = req.body.userId;
+    const roleId = req.body.roleId;
+    const admin = await Admin.findOne({ where: { id: adminId } });
+    const hasUserRole = await UserRole.findOne({
+      where: { userId: adminId, roleId: roleId }
+    });
+    if (hasUserRole && admin) {
+      const role = await UserRole.destroy({
+        where: { userId: adminId, roleId: roleId }
+      });
+      if (role)
+        return res.sendStatus(200);
+      else return res.send(403);
+    }
+    return res.send(401);
+  });
 
   router.post("/grant-permission", async (req, res, next) => {
     const roleId = req.body.roleId;
@@ -70,26 +90,26 @@ module.exports = (passport, ormModels) => {
     const role = await Role.findOne({ where: { id: roleId } });
     const perm = await Permission.findOne({ where: { id: permId } });
     if (role && perm) {
-      const permRole = await PermissionRole.create({ roleId, permissionId: permId });
-      if(permRole){
+      const permRole = await PermissionRole.create({
+        roleId,
+        permissionId: permId
+      });
+      if (permRole) {
         return res.sendStatus(200);
       }
     }
     if (hasUserRole) {
-      return res.status(403).send({ error: "Error" })
+      return res.status(403).send({ error: "Error" });
     }
     if (admin && !hasUserRole) {
-      const userRole = await UserRole.create({ userId: adminId, roleId })
+      const userRole = await UserRole.create({ userId: adminId, roleId });
       if (userRole) {
         return res.sendStatus(200);
-      }
-      else {
+      } else {
         return res.status(403).send({ error: "Error" });
       }
     }
-  })
-
-
+  });
 
   return router;
 };

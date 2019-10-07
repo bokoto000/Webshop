@@ -11,8 +11,9 @@ import ProductDisplay from "../ProductDisplay";
 import TagForm from "../TagForm";
 import Enquery from "../Enquery";
 import Permissions from "../Permissions";
-import "./index.css";
 import PendingOrders from "../PendingOrders";
+import EditUser from "../EditUser";
+import "./index.css";
 const post = require("../../helpers/fetch").post;
 const get = require("../../helpers/fetch").get;
 
@@ -60,6 +61,7 @@ export default class Home extends React.Component {
                 <Route exact path="/orders" component={PendingOrders} />
                 <Route path="/enquery" component={Enquery} />
                 <Route path="/permissions" component={Permissions} />
+                <Route path="/admin/edit-user/:id" component={EditUser} />
               </Switch>
             </Grid.Column>
           </Grid.Row>

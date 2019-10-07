@@ -9,7 +9,7 @@ const UserRole = ormModels.UserRole;
 
 module.exports = function () {
     return async (req, res, next) => {
-
+        console.log("Check permission");
         if (req.user) {
             const id = req.user.id;
             let permissions = await sequelize.query(`SELECT "userroles".*,"roles".*, "permissions".*,"permissionroles".*,"admins".*
@@ -25,22 +25,25 @@ module.exports = function () {
                    LEFT OUTER JOIN "permissionroles" AS "permissionroles" ON "roles"."id" = "permissionroles"."role_id"
                    LEFT OUTER JOIN "permissions" AS "permissions" ON "permissionroles"."permission_id" = "permissions"."id"
                    ;`);
-
-            console.log(req.originalUrl);
+            originalUrl = req.originalUrl;
             let permLength = permissions[0].length;
             for(let i=0;i<permLength;i++){
                 const perm = permissions[0][i].permission;
                 const regex = new RegExp(`^${perm}.*$`);
-                if(regex.test(perm)){
+                if(regex.test(originalUrl)){
+                    console.log(perm);
+                    console.log(regex);
                     return next();
                 }
             }
             if (permissions.includes(req.originalUrl)) {
                 next();
             } else {
+                console.log("No permission");
                 return res.status(401).send("You do not have permission");
             }
         } else {
+            Console.log("No user")
             return res.sendStatus(403);
         }
     };

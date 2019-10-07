@@ -7,6 +7,9 @@ router.use(
     extended: true
   })
 );
+const checkPermission = require("../helpers/checkPermissions");
+router.use(checkPermission());
+
 
 module.exports = (passport, ormModels, sequelize) => {
   const Item = ormModels.Item;

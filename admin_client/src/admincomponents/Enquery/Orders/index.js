@@ -30,7 +30,9 @@ for (let i = 0; i <= 24; i++) {
 export default class Orders extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      originalOrders:[]
+    };
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -226,7 +228,7 @@ export default class Orders extends Component {
                   search
                   selection
                   name="startHour"
-                  value={this.state.startDate}
+                  value={this.state.startHour}
                   onChange={this.handleHourChange}
                   options={hourDropdown}
                 ></Dropdown>

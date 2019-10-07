@@ -97,7 +97,7 @@ export default class AddPermission extends Component {
 
               <Form.Field>
                 <Button fluid type="submit">
-                  Направи право
+                  Дай право
                 </Button>
               </Form.Field>
               {this.state.error ? (
