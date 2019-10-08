@@ -5,7 +5,9 @@ import {
   Segment,
   Button,
   Label,
-  Dropdown
+  Dropdown,
+  Table,
+  Checkbox
 } from "semantic-ui-react";
 
 const post = require("./../../../../helpers/fetch").post;
@@ -33,6 +35,7 @@ export default class AddPermission extends Component {
           value: permission.id
         });
       }
+      this.setState({ permissions, originalPermissions:permissions });
       this.setState({ options });
     }
     const rolesRes = await get(`/roles/get-roles`);
@@ -49,9 +52,10 @@ export default class AddPermission extends Component {
   }
 
   onSubmit = async () => {
+    const permissions = this.state.permissions;
     const res = await post("/roles/grant-permission", {
       roleId: this.state.roleId,
-      permId: this.state.permissionId
+      perms: this.state.permissions
     });
     if (res.ok) {
       window.location.reload();
@@ -69,31 +73,76 @@ export default class AddPermission extends Component {
   };
   handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
+  handleRoleChange = async (e, { name, value }) => {
+    const res = await get(`/roles/get-role-permissions/${value}`);
+    this.setState({roleId:value});
+    if(res.ok){
+      const rolePermissions = await res.json();
+      console.log(rolePermissions);
+      var originalPermissions = this.state.originalPermissions;
+      console.log(originalPermissions);
+      const originalPermissionsLength = originalPermissions.length;
+      const rolePermissionsLength = rolePermissions.length;
+      for(let i=0;i<originalPermissionsLength;i++){
+        originalPermissions[i].isTicked = false;
+        for(let j=0;j<rolePermissionsLength;j++){
+          if(originalPermissions[i].id == rolePermissions[j].permissionId){
+            originalPermissions[i].isTicked=true;
+          }
+        }
+      }
+      console.log(originalPermissions);
+      this.setState({permissions:originalPermissions});
+    }
+  };
+
+  ToggleCheckbox = (id) => {
+    console.log(id);
+    var permissions = this.state.permissions;
+    for(let i=0;i<permissions.length;i++){
+      if(permissions[i].id==id){
+        permissions[i].isTicked=!permissions[i].isTicked;
+      }
+    }
+    this.setState({permissions});
+    //this.setState((prevState) => ({ checked: !prevState.checked }))
+  }
+
   render() {
-    console.log(this.state.roleId);
     return (
       <div>
         <Container style={{ padding: "1em 0em" }}>
           <Segment>
             <Form onSubmit={this.onSubmit}>
-            <Dropdown
+              <Dropdown
                 search
                 selection
                 name="roleId"
                 placeholder="Роля"
                 value={this.state.value}
-                onChange={this.handleChange}
+                onChange={this.handleRoleChange}
                 options={this.state.rolesOptions}
               ></Dropdown>
-              <Dropdown
-                search
-                selection
-                name="permissionId"
-                placeholder="Права"
-                value={this.state.value}
-                onChange={this.handleChange}
-                options={this.state.options}
-              ></Dropdown>
+              <Table>
+                <Table.Header>
+                  <Table.HeaderCell>Име</Table.HeaderCell>
+                  <Table.HeaderCell>Дадено право</Table.HeaderCell>
+                </Table.Header>
+                <Table.Body>
+                  {this.state.permissions
+                    ? this.state.permissions.map(permission => {
+                        return (
+                          <Table.Row>
+                            <Table.Cell>{permission.name}</Table.Cell>
+                            <Table.Cell>
+                              <Checkbox  onChange={()=>this.ToggleCheckbox(permission.id)} checked={permission.isTicked}></Checkbox>
+                            </Table.Cell>
+                          </Table.Row>
+                        );
+                      })
+                    : null}
+                </Table.Body>
+              </Table>
 
               <Form.Field>
                 <Button fluid type="submit">

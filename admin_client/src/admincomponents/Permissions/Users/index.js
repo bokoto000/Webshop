@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import { Header, Table, Button } from "semantic-ui-react";
+import { Header, Table, Button, Modal } from "semantic-ui-react";
+import Register from "./../../Register";
+
 import { withRouter } from "react-router-dom";
 import { get } from "./../../../helpers/fetch";
 
@@ -20,7 +22,7 @@ class Users extends Component {
     }
   }
 
-  handleEdit= id => {
+  handleEdit = id => {
     this.props.history.push(`/admin/edit-user/${id}`);
   };
 
@@ -29,6 +31,12 @@ class Users extends Component {
 
     return (
       <div>
+        <Modal trigger={<Button>Register</Button>}>
+          <Modal.Header>Register</Modal.Header>
+          <Modal.Content>
+            <Register></Register>
+          </Modal.Content>
+        </Modal>
         <Header>Потребители:</Header>
         <Table celled>
           <Table.Header>

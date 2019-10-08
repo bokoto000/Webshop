@@ -44,6 +44,13 @@ module.exports = (passport, ormModels) => {
     else return res.sendStatus(403);
   });
 
+  router.get("/get-role-permissions/:id", async (req, res, next) => {
+    const roleId = req.params.id;
+    const permissions = await PermissionRole.findAll({ where: { roleId } });
+    if (permissions) return res.json(permissions);
+    else return res.sendStatus(403);
+  });
+
   router.post("/assign-role", async (req, res, next) => {
     const adminId = req.body.userId;
     const roleId = req.body.roleId;
@@ -77,8 +84,7 @@ module.exports = (passport, ormModels) => {
       const role = await UserRole.destroy({
         where: { userId: adminId, roleId: roleId }
       });
-      if (role)
-        return res.sendStatus(200);
+      if (role) return res.sendStatus(200);
       else return res.send(403);
     }
     return res.send(401);
@@ -86,29 +92,42 @@ module.exports = (passport, ormModels) => {
 
   router.post("/grant-permission", async (req, res, next) => {
     const roleId = req.body.roleId;
-    const permId = req.body.permId;
+    const perms = req.body.perms;
+    console.log(perms[0]);
     const role = await Role.findOne({ where: { id: roleId } });
-    const perm = await Permission.findOne({ where: { id: permId } });
-    if (role && perm) {
-      const permRole = await PermissionRole.create({
-        roleId,
-        permissionId: permId
+    const permsLength = perms.length;
+    console.log(permsLength);
+    var hasErrors = 0;
+    for (let i = 0; i < permsLength; i++) {
+      const permId = perms[i].id;
+      console.log(permId+" "+perms[i].isTicked);
+      const perm = await Permission.findOne({ where: { id: permId } });
+      const permRole = await PermissionRole.findOne({
+        where: { permissionId:permId, roleId }
       });
-      if (permRole) {
-        return res.sendStatus(200);
-      }
-    }
-    if (hasUserRole) {
-      return res.status(403).send({ error: "Error" });
-    }
-    if (admin && !hasUserRole) {
-      const userRole = await UserRole.create({ userId: adminId, roleId });
-      if (userRole) {
-        return res.sendStatus(200);
+      if (role && perm) {
+        if (!permRole && perms[i].isTicked == true)
+          await PermissionRole.create({
+            roleId,
+            permissionId: permId
+          });
+        if (permRole && !perms[i].isTicked ) {
+          await PermissionRole.destroy({
+            where: {
+              roleId,
+              permissionId: permId
+            }
+          });
+        }
       } else {
-        return res.status(403).send({ error: "Error" });
+        hasErrors++;
       }
     }
+    if (hasErrors == 0) return res.sendStatus(200);
+    else
+      return res.status(200).send({
+        error: `There were a few permissions that could not be given`
+      });
   });
 
   return router;
