@@ -31,7 +31,6 @@ export default class Products extends Component {
     });
   };
   handleChangeEnd = date => {
-    console.log(date.getTime());
     this.setState({
       endDate: date
     });
@@ -71,26 +70,6 @@ export default class Products extends Component {
   };
 
   async componentDidMount() {
-    if (false) {
-      let values = queryString.parse(this.props.location.search);
-      const res = await get(
-        `/enquery/products/${values.start_date}/${values.end_date}`
-      );
-      const data = await res.json();
-      console.log(Date(data.startDate) + " " + Date(data.endDate));
-      let startDate = new Date();
-      startDate.setTime(data.startDate);
-      let endDate = new Date();
-      endDate.setTime(data.endDate);
-      if (data) {
-        this.setState({
-          products: data.productsArr,
-          startDate: startDate.toString(),
-          endDate: endDate.toString()
-        });
-      }
-      console.log(data);
-    }
   }
 
   handleInputCodeChange = e => {
@@ -110,7 +89,6 @@ export default class Products extends Component {
 
   render() {
     const products = this.state.products;
-    console.log(products);
     return (
       <div>
         <Header>Справка продукти:</Header>

@@ -88,13 +88,6 @@ class Menu extends React.Component {
           >
             Поръчки
           </SemanticMenu.Item>
-          <SemanticMenu.Item
-            name="enquery"
-            active={activeItem === "enquery"}
-            onClick={this.handleItemClick}
-          >
-            Справки
-          </SemanticMenu.Item>
           <SemanticMenu.Item>
             Справки
             <SemanticMenu.Menu>

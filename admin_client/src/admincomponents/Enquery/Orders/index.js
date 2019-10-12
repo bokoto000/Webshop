@@ -17,7 +17,7 @@ import DatePicker from "react-datepicker";
 import queryString from "query-string";
 import { get } from "../../../helpers/fetch";
 
-var hourDropdown = [];
+let hourDropdown = [];
 const options = [
   { key: 1, text: "Sent", value: "Sent" },
   { key: 2, text: "Verified", value: "Verified" },
@@ -31,7 +31,7 @@ export default class Orders extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      originalOrders:[]
+      originalOrders: []
     };
     this.onSubmit = this.onSubmit.bind(this);
   }
@@ -53,13 +53,8 @@ export default class Orders extends Component {
   }
 
   handleChangePrice = async (e, { name, value }) => {
-    await this.setState({ loading: true });
-    let values = queryString.parse(this.props.location.search);
-    values[name] = value;
-    this.props.history.push({
-      search: "?" + new URLSearchParams(values).toString()
-    });
-    await this.setState({ loading: false });
+    this.setSearchParams(name, value);
+    this.setState({ [name]: value });
   };
 
   handleChangeStart = date => {
@@ -91,45 +86,31 @@ export default class Orders extends Component {
   };
 
   handleHourChange = (e, { name, value }) => {
+
+    this.setSearchParams(name, value);
     this.setState({ [name]: value });
   };
 
   onSubmit() {
-    let orders = [];
-    const values = queryString.parse(this.props.location.search);
-    const higherprice = values.higherprice,
-      lowerprice = values.lowerprice;
-    if (
-      this.state.startDate &&
-      this.state.endDate &&
-      this.state.startHour >= 0 &&
-      this.state.endHour >= 0
-    ) {
-      const startDate = this.state.startDate.getTime();
-      const endDate = this.state.endDate.getTime();
-      const startHour = this.state.startHour;
-      const endHour = this.state.endHour;
-      for (let i = 0; i < this.state.originalOrders.length; i++) {
-        let order = this.state.originalOrders[i];
-        let orderDate = new Date();
-        let orderTime = parseInt(order.date);
-        orderDate.setTime(orderTime);
-        const orderHour = parseInt(orderDate.getHours());
-        if (
-          orderTime > startDate &&
-          orderTime < endDate &&
-          startHour <= orderHour &&
-          orderHour < endHour
-        ) {
-          if (higherprice >= 0 && lowerprice >= 0) {
-            if (order.total >= lowerprice && order.total <= higherprice)
-              orders.push(order);
-          } else {
-            orders.push(order);
-          }
-        }
+    const values = queryString.parse(this.props.location.search),
+      higherprice = this.state.higherprice,
+      lowerprice = this.state.lowerprice;
+    if (this.state.startDate && this.state.endDate && this.state.startHour >= 0 && this.state.endHour >= 0) {
+      const startDate = this.state.startDate.getTime(),
+        endDate = this.state.endDate.getTime(),
+        startHour = this.state.startHour,
+        endHour = this.state.endHour;
+      values["start_date"] = startDate;
+      values["end_date"] = endDate;
+      values["start_hour"] = startHour;
+      values["end_hour"] = endHour;
+      if (higherprice >= 0 && lowerprice >= 0) {
+        values["higherprice"] = higherprice;
+        values["loweprice"] = higherprice;
       }
-      this.setState({ orders });
+      this.props.history.push({
+        search: "?" + new URLSearchParams(values).toString()
+      });
     } else {
       alert("Изберете дати и часове");
     }
@@ -154,12 +135,59 @@ export default class Orders extends Component {
     this.setState({ loading: false });
   };
 
+  setSearchParams(name, value) {
+    let values = queryString.parse(this.props.location.search);
+    values[name] = value;
+    this.props.history.push({
+      search: "?" + new URLSearchParams(values).toString()
+    });
+  }
+
+  filterOrders = () => {
+    let orders = [];
+    const values = queryString.parse(this.props.location.search);
+    const higherprice = values["higherprice"],
+      lowerprice = values["lowerprice"];
+    const startDate = values["start_date"];
+    const endDate = values["end_date"];
+    const startHour = values["start_hour"];
+    const endHour = values["end_hour"];
+    if (
+      startDate &&
+      endDate &&
+      startHour >= 0 &&
+      endHour >= 0
+    ) {
+      for (let i = 0; i < this.state.originalOrders.length; i++) {
+        let order = this.state.originalOrders[i];
+        let orderDate = new Date();
+        let orderTime = parseInt(order.date);
+        orderDate.setTime(orderTime);
+        const orderHour = parseInt(orderDate.getHours());
+        if (
+          orderTime > startDate &&
+          orderTime < endDate &&
+          startHour <= orderHour &&
+          orderHour < endHour
+        ) {
+          if (higherprice >= 0 && lowerprice >= 0) {
+            if (order.total >= lowerprice && order.total <= higherprice)
+              orders.push(order);
+          } else {
+            orders.push(order);
+          }
+        }
+      }
+    }
+    return orders;
+  }
+
   render() {
-    const orders = this.state.orders;
+    const orders = this.filterOrders();
 
     const values = queryString.parse(this.props.location.search);
     return (
-      <div style={{ minHeight: "80vh", width: "100%" }}>
+      <div>
         <Header>Справка поръчки:</Header>
         <Grid>
           <Grid.Row columns={2}>
@@ -181,7 +209,7 @@ export default class Orders extends Component {
                   <Input
                     className="price-box"
                     placeholder={
-                      values.lowerprice
+                      values.lowerprice >= 0
                         ? values.lowerprice
                         : "от тотал на поръчката"
                     }
@@ -194,7 +222,7 @@ export default class Orders extends Component {
                   <Input
                     className="price-box"
                     placeholder={
-                      values.higherprice
+                      values.higherprice >= 0
                         ? values.higherprice
                         : "до тотал на поръчката"
                     }
@@ -228,7 +256,7 @@ export default class Orders extends Component {
                   search
                   selection
                   name="startHour"
-                  value={this.state.startHour}
+                  value={this.state.startHour ? this.state.startHour : values["start_hour"]}
                   onChange={this.handleHourChange}
                   options={hourDropdown}
                 ></Dropdown>
@@ -236,7 +264,7 @@ export default class Orders extends Component {
                   search
                   selection
                   name="endHour"
-                  value={this.state.endHour}
+                  value={this.state.endHour ? this.state.endHour : values["end_hour"]}
                   onChange={this.handleHourChange}
                   options={hourDropdown}
                 ></Dropdown>
@@ -261,8 +289,8 @@ export default class Orders extends Component {
               <Table.Body>
                 {orders
                   ? orders.map(order => {
-                      return <Order key={order.id} order={order}></Order>;
-                    })
+                    return <Order key={order.id} order={order}></Order>;
+                  })
                   : null}
               </Table.Body>
             </Table>

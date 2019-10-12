@@ -12,7 +12,7 @@ const options = [
   { key: 3, text: "Canceled", value: "Canceled" }
 ];
 
-var hourDropdown = [];
+let hourDropdown = [];
 for (let i = 0; i <= 24; i++) {
   hourDropdown.push({ id: i, value: i, text: i + ":00" });
 }

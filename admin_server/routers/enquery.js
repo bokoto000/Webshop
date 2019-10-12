@@ -21,8 +21,6 @@ module.exports = (passport, ormModels, sequelize) => {
   router.get("/products/:startDate/:endDate", async (req, res, next) => {
     const startDate = req.params.startDate;
     const endDate = req.params.endDate;
-    console.log(startDate);
-    console.log(endDate);
     const user = req.user;
     const status = req.params.status;
     let productsData = [];
@@ -34,8 +32,6 @@ module.exports = (passport, ormModels, sequelize) => {
           date: { [Op.gte]: startDate, [Op.lte]: endDate }
         }
       });
-      console.log(orders);
-      //return res.json(orders);
       if (!orders) {
         return res.sendStatus(403);
       } else {
@@ -72,53 +68,6 @@ module.exports = (passport, ormModels, sequelize) => {
           if (productsData[i] != null) productsArr.push(productsData[i]);
         }
         res.status(200).json({ productsArr, startDate, endDate });
-      }
-    } else res.sendStatus(403);
-  });
-
-  router.get("/profits/:startDate/:endDate", async (req, res, next) => {
-    const startDate = req.params.startDate;
-    const endDate = req.params.endDate;
-    const user = req.user;
-    if (user && user.id) {
-      let orders = await Order.findAll({
-        where: {
-          status: "Verified",
-          date: { [Op.gte]: startDate, [Op.lte]: endDate }
-        }
-      });
-      console.log(orders[0]);
-      //return res.json(orders);
-      if (!orders) {
-        return res.sendStatus(403);
-      } else {
-        var total = 0;
-        for (let i = 0; i < orders.length; i++) {
-          const orderId = orders[i].dataValues.id;
-          let fullOrder = await sequelize.query(`SELECT "orders".*,
-           "ordereditems"."product_id" AS "productId", 
-           "ordereditems"."stock" AS "stock",
-            "ordereditems"."ordered_price" AS "orderedPrice",
-              "ordereditems->product"."name" AS "productName",
-               "ordereditems->product"."description" AS "productDescription",
-                "ordereditems->product"."image" AS "productImage"
-                    FROM (SELECT "orders"."id",
-                      "orders"."status"
-                       FROM "orders" AS "orders" 
-                       WHERE "orders"."status" = 'Verified' AND "orders"."id" = ${orderId} LIMIT 1)
-                        AS "orders"
-                        LEFT OUTER JOIN "ordereditems" AS "ordereditems" ON "orders"."id" = "ordereditems"."order_id" 
-                        LEFT OUTER JOIN "products" AS "ordereditems->product"
-                         ON "ordereditems"."product_id" = "ordereditems->product"."id";`);
-          let itemsCount = fullOrder[0].length;
-          for (let i = 0; i < itemsCount; i++) {
-            const profit =
-              fullOrder[0][i].stock * parseFloat(fullOrder[0][i].orderedPrice);
-            total += profit;
-          }
-          console.log(total);
-        }
-        res.status(200).json({ total, startDate, endDate });
       }
     } else res.sendStatus(403);
   });

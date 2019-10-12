@@ -41,7 +41,6 @@ onChange = event => {
 };
 
   render() {
-    console.log(this.state.roleId);
     return (
       <div>
         <Container style={{ padding: "1em 0em" }}>

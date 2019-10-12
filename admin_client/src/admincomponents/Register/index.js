@@ -31,24 +31,6 @@ export default class Register extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  recaptchaLoaded() {
-    console.log("recaptcha loaded");
-  }
-
-  verifyCallback(response) {
-    console.log(response);
-    try {
-      if (response) {
-        this.setState({
-          isVerified: true
-        });
-      }
-    } catch (e) {
-      console.log(e);
-    }
-    console.log(this.state.isVerified);
-  }
-
   onSubmit = async () => {
     const res = await post("/admin/register", {
       username: this.state.username,
@@ -57,13 +39,11 @@ export default class Register extends React.Component {
       firstName: this.state.firstName,
       lastName: this.state.lastName
     });
-    console.log(res);
     if (res.ok) {
       window.location.reload();
     } else {
       if (res) {
         const resJson = await res.json();
-        console.log(resJson);
         this.setState({ error: resJson.error });
       }
     }

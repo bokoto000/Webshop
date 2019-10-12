@@ -22,7 +22,6 @@ class Enquiry extends Component {
     });
   };
   handleChangeEnd = date => {
-    console.log(date.getTime());
     this.setState({
       endDate: date
     });
@@ -63,7 +62,7 @@ class Enquiry extends Component {
   render() {
     return (
       <div>
-        <Switch style={{ minHeight: "80vh" }}>
+        <Switch >
           <Route
             exact
             path={`${this.props.match.url}/products`}

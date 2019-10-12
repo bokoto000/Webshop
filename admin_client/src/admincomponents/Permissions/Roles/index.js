@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Form, Container, Segment, Button, Label } from 'semantic-ui-react';
-import AssignRole from "./AssignRole";
 import DeleteRole from "./DeleteRole";
 
 const post = require("../../../helpers/fetch").post;
@@ -57,7 +56,6 @@ export default class Roles extends Component {
                         </Form>
                     </Segment>
                 </Container>
-                <AssignRole></AssignRole>
                 <DeleteRole></DeleteRole>
             </div>
         );

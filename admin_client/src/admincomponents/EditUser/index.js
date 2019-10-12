@@ -8,7 +8,7 @@ import {
   Modal,
   Icon
 } from "semantic-ui-react";
-import { addMinutes } from "date-fns/esm";
+import AssignRole from "./AssignRole";
 
 const get = require("../../helpers/fetch").get;
 const post = require("../../helpers/fetch").post;
@@ -46,14 +46,12 @@ export default class EditUser extends Component {
     const res = await get(`/admin/get-admin/${id}`);
     if (res.ok) {
       const user = await res.json();
-      console.log(user);
       this.setState({ user });
     }
   }
 
   render() {
     const user = this.state.user;
-    console.log(this.state.modalOpen);
     return (
       <div>
         <Header>
@@ -65,8 +63,11 @@ export default class EditUser extends Component {
           {/*<Container>
             //Възстановяване на парола: <Button size="tiny">възстанови</Button>
           //</Container>*/}
+          <AssignRole user={user}>
+
+          </AssignRole>
           <Container>
-            <Table>
+            <Table celled>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>Роля</Table.HeaderCell>{" "}

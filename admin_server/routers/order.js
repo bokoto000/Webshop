@@ -21,7 +21,6 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/create", async (req, res) => {
     const user = req.user;
-    console.log(user.id);
     if (user && user.id) {
       const cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
@@ -67,9 +66,6 @@ module.exports = (passport, ormModels, sequelize) => {
           });
         }
       }
-
-      //console.log(items);
-      //console.log(cart);
       res.json(items[0]);
     } else res.sendStatus(403);
   });
@@ -77,17 +73,14 @@ module.exports = (passport, ormModels, sequelize) => {
   router.get("/get-all/:status", async (req, res) => {
     const user = req.user;
     const status = req.params.status;
-    console.log(status);
     if (user && user.id) {
       let orders = await Order.findAll({
         where: { status }
       });
-      //return res.json(orders);
       if (!orders) {
         return res.sendStatus(403);
       } else {
         for (let i = 0; i < orders.length; i++) {
-          console.log(orders[i]);
           const orderId = orders[i].dataValues.id;
           let fullOrder = await sequelize.query(`SELECT "orders".*,
            "ordereditems"."product_id" AS "productId", 
@@ -116,7 +109,6 @@ module.exports = (passport, ormModels, sequelize) => {
           fullOrder[2] = total;
           orders[i].dataValues.fullOrder = fullOrder[0];
           orders[i].dataValues.total = fullOrder[2];
-          console.log(orders[i].dataValues.userId);
           const user = await User.findOne({
             attributes: ["id", "username", "first_name", "last_name", "email"],
             where: { id: orders[i].dataValues.userId }
@@ -139,12 +131,9 @@ module.exports = (passport, ormModels, sequelize) => {
         const orderedItems = await OrderedItem.findAll({ where: { orderId } });
         const orderedItemsLength = orderedItems.length;
         for (let i = 0; i < orderedItemsLength; i++) {
-          console.log(`///////////////////////////////////////`);
-          console.log(orderedItems[i].dataValues);
           const productId = orderedItems[i].dataValues.productId;
           const stock = orderedItems[i].dataValues.stock;
           const product = await Product.findOne({ where: { id: productId } });
-          console.log(product.dataValues);
           await Product.update({ stock: product.dataValues.stock + stock },{where:{id:productId}});
         }
       }

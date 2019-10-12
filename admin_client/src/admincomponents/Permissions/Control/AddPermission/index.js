@@ -22,6 +22,7 @@ export default class AddPermission extends Component {
     };
   }
 
+  //Setting roles and permissions data
   async componentDidMount() {
     const res = await get(`/permissions/get-permissions`);
     if (res.ok) {
@@ -35,7 +36,7 @@ export default class AddPermission extends Component {
           value: permission.id
         });
       }
-      this.setState({ permissions, originalPermissions:permissions });
+      this.setState({ permissions, originalPermissions: permissions });
       this.setState({ options });
     }
     const rolesRes = await get(`/roles/get-roles`);
@@ -51,8 +52,8 @@ export default class AddPermission extends Component {
     }
   }
 
+  //Submit form which grants permissions
   onSubmit = async () => {
-    const permissions = this.state.permissions;
     const res = await post("/roles/grant-permission", {
       roleId: this.state.roleId,
       perms: this.state.permissions
@@ -71,41 +72,35 @@ export default class AddPermission extends Component {
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
-  handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
-  handleRoleChange = async (e, { name, value }) => {
+  handleRoleChange = async (e, { value }) => {
     const res = await get(`/roles/get-role-permissions/${value}`);
-    this.setState({roleId:value});
-    if(res.ok){
+    this.setState({ roleId: value });
+    if (res.ok) {
       const rolePermissions = await res.json();
-      console.log(rolePermissions);
-      var originalPermissions = this.state.originalPermissions;
-      console.log(originalPermissions);
+      let originalPermissions = this.state.originalPermissions;
       const originalPermissionsLength = originalPermissions.length;
       const rolePermissionsLength = rolePermissions.length;
-      for(let i=0;i<originalPermissionsLength;i++){
+      for (let i = 0; i < originalPermissionsLength; i++) {
         originalPermissions[i].isTicked = false;
-        for(let j=0;j<rolePermissionsLength;j++){
-          if(originalPermissions[i].id == rolePermissions[j].permissionId){
-            originalPermissions[i].isTicked=true;
+        for (let j = 0; j < rolePermissionsLength; j++) {
+          if (originalPermissions[i].id == rolePermissions[j].permissionId) {
+            originalPermissions[i].isTicked = true;
           }
         }
       }
-      console.log(originalPermissions);
-      this.setState({permissions:originalPermissions});
+      this.setState({ permissions: originalPermissions });
     }
   };
 
   ToggleCheckbox = (id) => {
-    console.log(id);
-    var permissions = this.state.permissions;
-    for(let i=0;i<permissions.length;i++){
-      if(permissions[i].id==id){
-        permissions[i].isTicked=!permissions[i].isTicked;
+    let permissions = this.state.permissions;
+    for (let i = 0; i < permissions.length; i++) {
+      if (permissions[i].id == id) {
+        permissions[i].isTicked = !permissions[i].isTicked;
       }
     }
-    this.setState({permissions});
-    //this.setState((prevState) => ({ checked: !prevState.checked }))
+    this.setState({ permissions });
   }
 
   render() {
@@ -131,15 +126,15 @@ export default class AddPermission extends Component {
                 <Table.Body>
                   {this.state.permissions
                     ? this.state.permissions.map(permission => {
-                        return (
-                          <Table.Row>
-                            <Table.Cell>{permission.name}</Table.Cell>
-                            <Table.Cell>
-                              <Checkbox  onChange={()=>this.ToggleCheckbox(permission.id)} checked={permission.isTicked}></Checkbox>
-                            </Table.Cell>
-                          </Table.Row>
-                        );
-                      })
+                      return (
+                        <Table.Row>
+                          <Table.Cell>{permission.name}</Table.Cell>
+                          <Table.Cell>
+                            <Checkbox onChange={() => this.ToggleCheckbox(permission.id)} checked={permission.isTicked}></Checkbox>
+                          </Table.Cell>
+                        </Table.Row>
+                      );
+                    })
                     : null}
                 </Table.Body>
               </Table>

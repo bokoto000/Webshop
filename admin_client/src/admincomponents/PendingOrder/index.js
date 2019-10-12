@@ -20,7 +20,6 @@ export default class PendingOrder extends Component {
   }
 
   proceedOrder = async id => {
-    console.log(id);
     if (id) {
       const res = await post(`/order/update-status/Verified`, {
         orderId: id
@@ -31,11 +30,10 @@ export default class PendingOrder extends Component {
         alert("Error verifying orsder");
       }
     } else {
-      console.log("problem");
+      alert("No order provided");
     }
   };
   cancelOrder = async id => {
-    console.log(id);
     if (id) {
       const res = await post(`/order/update-status/Canceled`, {
         orderId: id
@@ -46,7 +44,7 @@ export default class PendingOrder extends Component {
         alert("Error verifying order");
       }
     } else {
-      console.log("problem");
+      alert("No order provided");
     }
   };
   

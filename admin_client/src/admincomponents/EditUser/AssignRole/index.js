@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { Form, Container, Segment, Button, Label, Dropdown } from 'semantic-ui-react';
 
-const post = require("./../../../../helpers/fetch").post;
+const post = require("./../../../helpers/fetch").post;
 
-const get = require("./../../../../helpers/fetch").get;
+const get = require("./../../../helpers/fetch").get;
 
 export default class AssignRole extends Component {
     constructor(props) {
@@ -14,18 +14,8 @@ export default class AssignRole extends Component {
     }
 
     async componentDidMount() {
-        const res = await get(`/admin/get-admins`);
-        if (res.ok) {
-            const admins = await res.json();
-            let options = [];
-            for (let i = 0; i < admins.length; i++) {
-                const admin = admins[i];
-                options.push({ key: admin.id, text: admin.username, value: admin.id })
-            }
-            this.setState({ options });
-        }
         const rolesRes = await get(`/roles/get-roles`);
-        if (res.ok) {
+        if (rolesRes.ok) {
             const roles = await rolesRes.json();
             let options = [];
             for (let i = 0; i < roles.length; i++) {
@@ -38,9 +28,12 @@ export default class AssignRole extends Component {
     }
 
     onSubmit = async () => {
+        const user = this.props.user;
+        console.log(user);
+        const userId = this.props.user.id;
         const res = await post("/roles/assign-role", {
             roleId: this.state.roleId,
-            userId: this.state.userId
+            userId
         });
         if (res.ok) {
             window.location.reload();
@@ -66,15 +59,7 @@ export default class AssignRole extends Component {
                 <Container style={{ padding: "1em 0em" }}>
                     <Segment>
                         <Form onSubmit={this.onSubmit}>
-                            <Dropdown
-                                search
-                                selection
-                                name="userId"
-                                placeholder="Потребител"
-                                value={this.state.value}
-                                onChange={this.handleChange}
-                                options={this.state.options}
-                            ></Dropdown>
+                            
                             <Dropdown
                                 search
                                 selection

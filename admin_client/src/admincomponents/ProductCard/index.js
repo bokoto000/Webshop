@@ -34,7 +34,6 @@ export default class ProductCard extends React.Component {
   handleClose = () => this.setState({ modalOpen: false });
 
   async onSubmit() {
-    console.log("update-stock")
     const res = await post("/product/update-stock", {
       stock: this.state.stock,
       id: this.props.product.id
@@ -42,8 +41,9 @@ export default class ProductCard extends React.Component {
     if (res.ok) {
       this.setState({ stockEdit: this.state.stock });
       this.handleClose();
+    } else{
+      alert("Error updating stock");
     }
-    console.log(res);
   }
 
   onChange = event => {

@@ -13,7 +13,7 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/login", (req, res, next) => {
     try {
-      passport.authenticate("local-login-admin", function(err, user) {
+      passport.authenticate("local-login-admin", function (err, user) {
         if (err) {
           console.error(err);
           return res.status(400).send();
@@ -33,7 +33,7 @@ module.exports = (passport, ormModels, sequelize) => {
   });
 
   router.post("/register", (req, res, next) => {
-    passport.authenticate("local-signup-admin", function(err, user) {
+    passport.authenticate("local-signup-admin", function (err, user) {
       if (err) {
         return res.status(400).send();
       }
@@ -60,7 +60,7 @@ module.exports = (passport, ormModels, sequelize) => {
   });
 
   router.get("/get-admins-with-roles", async (req, res, next) => {
-    let admins = (await sequelize.query(`SELECT "userroles".*,"roles".*,"admins".*
+    const admins = (await sequelize.query(`SELECT "userroles".*,"roles".*,"admins".*
             FROM (SELECT "admins"."id",
             "admins"."first_name" as "firstName",
             "admins"."last_name" as "lastName",
@@ -86,16 +86,13 @@ module.exports = (passport, ormModels, sequelize) => {
     "admins"."email" as "email",
     "admins"."username" as "username"
           FROM "admins" WHERE "admins"."id"=${id} LIMIT 1;`))[0][0];
-          ;
-    admin.roles=[];
+    admin.roles = [];
     let roles = (await sequelize.query(`
     SELECT "userroles".*,"roles".* FROM
     ( SELECT "userroles".* FROM "userroles" WHERE "userroles"."user_id"=${id}) AS "userroles"
     LEFT OUTER JOIN "roles" AS "roles" ON "userroles"."role_id" = "roles"."id";`))[0];
-    console.log(roles);
-    admin.roles=roles;
-    console.log(admin);
-    if(admin) return res.status(200).json(admin);
+    admin.roles = roles;
+    if (admin) return res.status(200).json(admin);
     return res.sendStatus(403);
   });
 

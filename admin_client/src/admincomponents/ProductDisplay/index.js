@@ -62,9 +62,6 @@ export default class ProductDisplay extends React.Component {
     this.setState({ page: selected });
   };
 
-  handleFormSubmit = () => {
-    console.log("search:", this.state.query);
-  };
 
   handleInputChange = e => {
     this.setState({
@@ -156,8 +153,8 @@ export default class ProductDisplay extends React.Component {
     const isLoading = this.state.isLoading;
     if (!isLoading)
       return (
-        <div style={{ width: "100%" }}>
-          <Form onSubmit={this.handleFormSubmit}>
+        <div>
+          <Form>
             <Form.Input
               placeholder="Search by id..."
               value={this.state.queryCode}

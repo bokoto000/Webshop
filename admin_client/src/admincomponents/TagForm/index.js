@@ -37,7 +37,6 @@ export default withRouter(
     };
 
     render() {
-      console.log(this.props.tags);
       return (
         <div style={{ minWidth: "400px" }}>
           <Grid verticalAlign="middle" centered>

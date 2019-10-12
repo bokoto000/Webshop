@@ -27,11 +27,9 @@ module.exports = (passport, ormModels) => {
 
   router.post("/delete-role", async (req, res, next) => {
     const roleId = req.body.roleId;
-    console.log("TEST");
     try {
       await Role.destroy({ where: { id: roleId } });
       const allRoles = await UserRole.destroy({ where: { roleId } });
-      console.log("test");
     } catch (e) {
       return res.sendStatus(403);
     }
@@ -93,14 +91,11 @@ module.exports = (passport, ormModels) => {
   router.post("/grant-permission", async (req, res, next) => {
     const roleId = req.body.roleId;
     const perms = req.body.perms;
-    console.log(perms[0]);
     const role = await Role.findOne({ where: { id: roleId } });
     const permsLength = perms.length;
-    console.log(permsLength);
-    var hasErrors = 0;
+    let hasErrors = 0;
     for (let i = 0; i < permsLength; i++) {
       const permId = perms[i].id;
-      console.log(permId+" "+perms[i].isTicked);
       const perm = await Permission.findOne({ where: { id: permId } });
       const permRole = await PermissionRole.findOne({
         where: { permissionId:permId, roleId }
