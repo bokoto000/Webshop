@@ -20,7 +20,6 @@ export default class Body extends Component {
     this.setState({ products: [], allProducts: [] });
     const res = await get("/product/get-products");
     let products = (await res.json()).products;
-    console.log(products);
     products = filters.filterNewest(products);
     this.setState({ products, allProducts: products });
     this.setState({loading:false});

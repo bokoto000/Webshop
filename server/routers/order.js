@@ -83,9 +83,6 @@ module.exports = (passport, ormModels, sequelize) => {
           });
         }
       }
-
-      //console.log(items);
-      //console.log(cart);
       return res.sendStatus(200).json(items[0]);
     } else
       res
@@ -95,8 +92,6 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.get("/get", async (req, res) => {
     const user = req.user;
-    console.log("--------------------");
-    console.log(user);
     if (user && user.id) {
       const order = await Order.findOne({
         where: { userId: user.id, status: "New" }
@@ -126,7 +121,6 @@ module.exports = (passport, ormModels, sequelize) => {
             parseInt(fullOrder[0][i].stock) *
             parseFloat(fullOrder[0][i].orderedPrice);
           total += productTotal;
-          console.log(productTotal);
           fullOrder[0][i].productTotal = productTotal;
         }
         fullOrder[2] = total;

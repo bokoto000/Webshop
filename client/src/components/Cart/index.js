@@ -50,7 +50,6 @@ class Cart extends Component {
   proceedOrder = async () => {
     try {
       const res = await post("/order/create");
-      console.log("Proceed Order");
       if (res.ok) this.props.history.push("/checkout");
       else {
         const json = await res.json();
@@ -77,7 +76,7 @@ class Cart extends Component {
   render() {
     const cart = this.state.cart;
     return (
-      <div>
+      <div style={{minHeight:"80vh"}}>
         <Grid>
           <Grid.Row columns={5} className="cart-product-row">
             <Grid.Column />

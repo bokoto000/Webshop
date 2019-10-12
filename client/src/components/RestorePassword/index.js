@@ -30,7 +30,6 @@ class RestorePassword extends Component {
   };
 
   onSubmit = async () => {
-    console.log("Clicked");
     if (this.state.password != this.state.verifyPassword) {
       this.setState({ passwordNotVerified: true });
       return;

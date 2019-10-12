@@ -25,14 +25,11 @@ export default class ForgotPassword extends Component {
   };
 
   onSubmit = async () => {
-    console.log(this.state.email);
     const res = await post("/resetpassword/forget-password", {
       email: this.state.email
     });
-    console.log(res);
     if (res.ok) {
       this.setState({success:true});
-      console.log("test");
     } else {
       this.setState({ error: true });
     }

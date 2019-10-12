@@ -23,7 +23,6 @@ export default class ProductPage extends Component {
     const { id } = this.props.match.params;
     const product = (await (await get(`/product/get-product/${id}`)).json())
       .product;
-    console.log(product);
     this.setState({ product });
   }
 

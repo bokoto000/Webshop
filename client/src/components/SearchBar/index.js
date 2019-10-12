@@ -39,10 +39,8 @@ class SearchBar extends Component {
 
   handleSearchChange = (e, { value }) => {
     this.setState({ isLoading: true, value });
-
     setTimeout(() => {
       if (this.state.value.length < 1) return this.setState(initialState);
-
       const re = new RegExp(_.escapeRegExp(this.state.value), "i");
       const isMatch = result => re.test(result.name);
       this.setState({

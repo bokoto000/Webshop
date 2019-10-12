@@ -29,7 +29,6 @@ export default class Profile extends Component {
     const res = await get("get-sess-info/user");
     if (res.ok) {
       const user = (await res.json()).user;
-      console.log(user);
       this.setState({ isAuth: true, user: user, authenticating: false });
       this.setState({
         email: user.email,
@@ -59,19 +58,16 @@ export default class Profile extends Component {
   };
 
   passwordChange = async () => {
-    console.log(
-      this.state.password +
-        " " +
-        this.state.newPassword +
-        " " +
-        this.state.newPasswordVerify
-    );
     const res = await post('/user/change-password',{
       password:this.state.password,
       newPassword:this.state.newPassword,
       newPasswordVerify:this.state.newPasswordVerify
     });
-    console.log(res);
+    if(res.ok){
+      window.location.reload();
+    } else {
+      alert("Error changing password");
+    }
 
   };
 

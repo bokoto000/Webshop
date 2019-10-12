@@ -49,14 +49,13 @@ class Client extends Component {
     const res = await get("/get-sess-info/user");
     if (res.ok) {
       const user = (await res.json()).user;
-      this.setState({ isAuth: true, user: user, authenticating: false });
+      this.setState({ user: user, authenticating: false });
     } else {
-      this.setState({ isAuth: false, authenticating: false });
+      this.setState({ authenticating: false });
     }
   }
 
   render() {
-    const isAuth = this.state.isAuth;
     const user = this.state.user;
     const authenticating = this.state.authenticating;
     if (!this.state.loading)
@@ -67,7 +66,7 @@ class Client extends Component {
               <Head user={user} authenticating={authenticating} />
               <Divider />
               <NotificationContainer />
-              <Switch style={{ minHeight: "80vh" }}>
+              <Switch style={{ minHeight: "80vh!important" }}>
                 <Route exact path="/" component={Body} />
                 <Route exact path="/cart" component={Cart} />
                 <Route path="/order" component={Order} />
@@ -88,8 +87,8 @@ class Client extends Component {
               <Footer />
             </div>
           ) : (
-            <Maintance></Maintance>
-          )}
+              <Maintance></Maintance>
+            )}
         </div>
       );
     else {

@@ -119,7 +119,6 @@ module.exports = (passport, ormModels, models) => {
           if (user) {
             const comp = await modelUser.validPassword(password, user.password);
             if (!comp) {
-              console.log("Wrong pass")
               res.sendStatus(403).send("Incorrect password");
             } else {
               if (newPassword == newPasswordVerify) {

@@ -26,8 +26,6 @@ module.exports = (passport, ormModels, sequelize) => {
       const errors = validationResult(req);
       let user = null;
       if (!errors.isEmpty()) {
-        console.error("Validation errors");
-        console.log(req.body.email);
         return res.status(422).json({ errors: errors.array() });
       } else {
         user = await User.findOne({
@@ -36,7 +34,6 @@ module.exports = (passport, ormModels, sequelize) => {
           }
         });
         if (!user) {
-          console.log("No user for email (forgot password)");
           return res.sendStatus(422);
         }
         const token = crypto.randomBytes(20).toString("hex");
@@ -74,18 +71,16 @@ module.exports = (passport, ormModels, sequelize) => {
             subject: "Reset Password",
             text: `Hello ${user.username},\nReset pasword\nhttp://borisvelkovski.com:3000/restorepassword/${token}`
           };
-          console.log("sending mail");
           transporter.sendMail(mailOptions, function(err, response) {
             if (err) {
               console.error(`Error resseting password`, err);
               res.sendStatus(403);
             } else {
-              console.log(`Email res:`, response);
               res.sendStatus(200);
             }
           });
         } catch (e) {
-          console.log("err");
+          console.error(e);
           res.sendStatus(403);
         }
       }

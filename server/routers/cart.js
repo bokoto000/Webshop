@@ -46,11 +46,9 @@ module.exports = (passport, ormModels, sequelize) => {
   });
 
   router.post("/update-item", async (req, res) => {
-    console.log("test");
     const user = req.user;
     const itemId = req.body.id;
     stock = req.body.stock;
-    console.log(itemId + " " + stock);
     if (user && user.id) {
       const cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
@@ -98,11 +96,9 @@ module.exports = (passport, ormModels, sequelize) => {
   });
 
   router.post("/buy-item", async (req, res) => {
-    console.log("test");
     const user = req.user;
     const itemId = req.body.id;
     stock = req.body.stock;
-    console.log(itemId + " " + stock);
     if (user && user.id) {
       let cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
@@ -134,14 +130,11 @@ module.exports = (passport, ormModels, sequelize) => {
           }
         );
       }
-      //console.log(cart);
       res.json(cart);
     } else res.sendStatus(403);
   });
 
   router.post("/delete-item", async (req, res) => {
-    console.log("test");
-
     const user = req.user;
     const itemId = req.body.id;
     if (user && user.id) {
@@ -165,7 +158,6 @@ module.exports = (passport, ormModels, sequelize) => {
           }
         });
       }
-      console.log(item);
       res.status(200).send({ product: [null] });
     } else res.sendStatus(403);
   });

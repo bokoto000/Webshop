@@ -25,7 +25,6 @@ class Checkout extends Component {
     this.setState({ Loading: true });
     const res = await (await get("/order/get")).json();
     if (res[0].length > 0) {
-      //console.log(res[0]);
       this.setState({ order: res[0] });
       this.setState({ total: res[2] });
     }
@@ -34,7 +33,6 @@ class Checkout extends Component {
   }
 
   proceedOrder = async () => {
-    console.log("test");
     try {
       const res = await post("/order/finish");
       if (res.ok) {

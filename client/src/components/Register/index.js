@@ -33,11 +33,9 @@ export default class Register extends React.Component {
   };
 
   recaptchaLoaded() {
-    console.log("recaptcha loaded");
   }
 
   verifyCallback(response) {
-    console.log(response);
     try {
       if (response) {
         this.setState({
@@ -45,9 +43,8 @@ export default class Register extends React.Component {
         });
       }
     } catch (e) {
-      console.log(e);
+      
     }
-    console.log(this.state.isVerified);
   }
 
   onSubmit = async () => {

@@ -76,14 +76,11 @@ export default class CartItem extends Component {
   }
 
   deleteItem = async () => {
-    console.log("delete");
     this.setState({ loading: true });
     const product = this.props.product;
-    console.log(this.state.stock);
     const res = await post("/cart/delete-item", {
       id: product.id
     });
-    console.log(res);
     if (res.ok) {
       this.setState({ product: null });
     } else {
