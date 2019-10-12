@@ -55,7 +55,7 @@ class Users extends Component {
     if (admins) {
       let filteredAdmins = [];
       let values = queryString.parse(this.props.location.search);
-      if (values["user_type"] != "undefined") {
+      if (values["user_type"] != "undefined" && values["user_type"]!=undefined) {
         const filterRole = values["user_type"];
         for (let i = 0; i < admins.length; i++) {
           if (admins[i].role_id == filterRole) {
