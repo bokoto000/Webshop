@@ -34,11 +34,22 @@ class Checkout extends Component {
 
   proceedOrder = async () => {
     try {
-      const res = await post("/order/finish");
-      if (res.ok) {
-        this.props.history.push("/success-order");
-      } else {
-        alert("There was an error placing your order");
+      if (false) {
+        const paypal = await post("/paypal/pay");
+        console.log(paypal);
+        if (paypal.ok) {
+          const redirect = await paypal.json();
+          window.location.href = redirect.href;
+          console.log(redirect);
+        }
+      }
+      if (true) {
+        const res = await post("/order/finish");
+        if (res.ok) {
+          this.props.history.push("/success-order");
+        } else {
+          alert("There was an error placing your order");
+        }
       }
     } catch (e) {
       alert("There was an error placing your order");
@@ -68,43 +79,43 @@ class Checkout extends Component {
               </Grid>
               {cart
                 ? cart.map(product => {
-                    return (
-                      <Segment>
-                        <Grid>
-                          <Grid.Row columns={5} className="cart-product-row">
-                            <Grid.Column>
-                              <div style={{ width: "70px", height: "70px" }}>
-                                <Image
-                                  src={product.productImage}
-                                  size="tiny"
-                                  verticalAlign="top"
-                                />
-                              </div>
-                            </Grid.Column>
+                  return (
+                    <Segment>
+                      <Grid>
+                        <Grid.Row columns={5} className="cart-product-row">
+                          <Grid.Column>
+                            <div style={{ width: "70px", height: "70px" }}>
+                              <Image
+                                src={product.productImage}
+                                size="tiny"
+                                verticalAlign="top"
+                              />
+                            </div>
+                          </Grid.Column>
 
-                            <Grid.Column>{product.productName}</Grid.Column>
-                            <Grid.Column style={{ alignItems: "center" }}>
-                              <Container>
-                                <div className="cart-item-price">
-                                  {" "}
-                                  {product.orderedPrice} лв
-                                </div>
-                              </Container>
-                            </Grid.Column>
-
-                            <Grid.Column>{product.stock}</Grid.Column>
-                            <Grid.Column style={{ alignItems: "center" }}>
+                          <Grid.Column>{product.productName}</Grid.Column>
+                          <Grid.Column style={{ alignItems: "center" }}>
+                            <Container>
                               <div className="cart-item-price">
                                 {" "}
-                                {parseFloat(product.productTotal).toFixed(2)} лв
+                                {product.orderedPrice} лв
+                                </div>
+                            </Container>
+                          </Grid.Column>
+
+                          <Grid.Column>{product.stock}</Grid.Column>
+                          <Grid.Column style={{ alignItems: "center" }}>
+                            <div className="cart-item-price">
+                              {" "}
+                              {parseFloat(product.productTotal).toFixed(2)} лв
                               </div>
-                            </Grid.Column>
-                            <Divider />
-                          </Grid.Row>
-                        </Grid>
-                      </Segment>
-                    );
-                  })
+                          </Grid.Column>
+                          <Divider />
+                        </Grid.Row>
+                      </Grid>
+                    </Segment>
+                  );
+                })
                 : null}
               <Segment>
                 <Grid>

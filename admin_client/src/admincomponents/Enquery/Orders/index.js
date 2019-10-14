@@ -15,8 +15,13 @@ import Order from "./Order";
 import TimePicker from "react-time-picker";
 import DatePicker from "react-datepicker";
 import queryString from "query-string";
+import downloadOrders from "./../DownloadExcel/DownloadOrders";
+import ReactExport from "react-export-excel";
 import { get } from "../../../helpers/fetch";
 
+
+
+const ExcelFile = ReactExport.ExcelFile;
 let hourDropdown = [];
 const options = [
   { key: 1, text: "Sent", value: "Sent" },
@@ -274,6 +279,8 @@ export default class Orders extends Component {
               </Form.Group>
             </Form>
             <Button onClick={() => this.resetFilters()}>Изтрий филтрите</Button>
+
+            <ExcelFile element={<Button>Download Data</Button>}>{downloadOrders(orders)}</ExcelFile>
           </Grid.Row>
           <Grid.Row>
             <Table celled>

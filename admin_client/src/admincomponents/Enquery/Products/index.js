@@ -8,13 +8,14 @@ import {
   Table,
   Header
 } from "semantic-ui-react";
-
+import DownloadProducts from "./../DownloadExcel/DownloadProducts";
 import _ from "lodash";
 import DatePicker from "react-datepicker";
 import queryString from "query-string";
-const get = require("../../../helpers/fetch").get;
+import ReactExport from "react-export-excel";
 
-const initialState = { isLoading: false, results: [], value: "" };
+const get = require("../../../helpers/fetch").get;
+const ExcelFile = ReactExport.ExcelFile;
 
 export default class Products extends Component {
   constructor(props) {
@@ -37,7 +38,7 @@ export default class Products extends Component {
   };
 
   onSubmit = async () => {
-    const  values = queryString.parse(this.props.location.search);
+    const values = queryString.parse(this.props.location.search);
     const startDate = new Date(this.state.startDate);
     const endDate = new Date(this.state.endDate);
     const start_date = new Date(
@@ -75,7 +76,7 @@ export default class Products extends Component {
   handleInputCodeChange = e => {
     this.setState({ isLoading: true, value: e.target.value });
     const value = e.target.value;
-    if (value.length < 1) return this.setState({products:this.state.originalProducts});
+    if (value.length < 1) return this.setState({ products: this.state.originalProducts });
     const re = new RegExp(_.escapeRegExp(value), "i");
     const isMatch = result => re.test(result.id);
     const products = _.filter(this.state.originalProducts, isMatch);
@@ -122,6 +123,7 @@ export default class Products extends Component {
             value={this.state.queryCode}
             onChange={this.handleInputCodeChange}
           />
+          <ExcelFile element={<Button>Download Data</Button>}>{DownloadProducts(products)}</ExcelFile>
         </Form>
         <Table>
           <Table.Header>
@@ -132,14 +134,14 @@ export default class Products extends Component {
           <Table.Body>
             {products && products.length > 0
               ? products.map(product => {
-                  return (
-                    <Table.Row>
-                      <Table.Cell>{product.name}</Table.Cell>
-                      <Table.Cell>{product.id}</Table.Cell>
-                      <Table.Cell>-{product.stock}</Table.Cell>
-                    </Table.Row>
-                  );
-                })
+                return (
+                  <Table.Row>
+                    <Table.Cell>{product.name}</Table.Cell>
+                    <Table.Cell>{product.id}</Table.Cell>
+                    <Table.Cell>-{product.stock}</Table.Cell>
+                  </Table.Row>
+                );
+              })
               : null}
           </Table.Body>
         </Table>

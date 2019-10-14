@@ -88,4 +88,5 @@ module.exports = async app => {
   const models = require("../models/index")(ormModels);
   require("./passportConfig")(passport, ormModels, models);
   require("./routersConfig")(app, ormModels, passport, sequelize, models);
+  //require("./paypalConfig")();
 };
