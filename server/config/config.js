@@ -84,6 +84,15 @@ module.exports = async app => {
       CONSTRAINT ordereditems_pkey PRIMARY KEY (id)
     )`);
 
+  await sequelize.query(`CREATE TABLE IF NOT EXISTS pendingpayments
+    (
+      id serial NOT NULL,
+      order_id int NOT NULL,
+      payment_id text NOT NULL UNIQUE,
+      total text NOT NULL,
+      CONSTRAINT pendingpayments_pkey PRIMARY KEY (id)
+    )`);
+
   const ormModels = require("../orm_models/index")(sequelize);
   const models = require("../models/index")(ormModels);
   require("./passportConfig")(passport, ormModels, models);

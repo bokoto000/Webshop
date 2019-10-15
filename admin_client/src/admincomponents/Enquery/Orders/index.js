@@ -26,7 +26,8 @@ let hourDropdown = [];
 const options = [
   { key: 1, text: "Sent", value: "Sent" },
   { key: 2, text: "Verified", value: "Verified" },
-  { key: 3, text: "Canceled", value: "Canceled" }
+  { key: 3, text: "Canceled", value: "Canceled" },
+  { key: 3, text: "Paid", value: "Paid" }
 ];
 
 for (let i = 0; i <= 24; i++) {

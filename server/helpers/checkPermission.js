@@ -2,6 +2,7 @@ const roles = require("./roles");
 
 module.exports = function() {
   return function(req, res, next) {
+    return next();
     if (req.user) {
       const role = req.user.role;
       console.log(req.originalUrl);

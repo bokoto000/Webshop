@@ -16,8 +16,6 @@ export default class Register extends React.Component {
   constructor(props) {
     super(props);
 
-    this.verifyCallback = this.verifyCallback.bind(this);
-
     this.state = {
       username: "",
       password: "",

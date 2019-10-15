@@ -7,7 +7,8 @@ import {
   Grid,
   Segment,
   Container,
-  Loader
+  Loader,
+  Checkbox
 } from "semantic-ui-react";
 import { withRouter } from "react-router-dom";
 import { get, post } from "../../helpers/fetch";
@@ -34,7 +35,7 @@ class Checkout extends Component {
 
   proceedOrder = async () => {
     try {
-      if (false) {
+      if (this.state.payWithPaypal) {
         const paypal = await post("/paypal/pay");
         console.log(paypal);
         if (paypal.ok) {
@@ -43,7 +44,7 @@ class Checkout extends Component {
           console.log(redirect);
         }
       }
-      if (true) {
+      else {
         const res = await post("/order/finish");
         if (res.ok) {
           this.props.history.push("/success-order");
@@ -56,13 +57,27 @@ class Checkout extends Component {
     }
   };
 
+  toggle = (e,{name})=>{
+    if(this.state[name]=="true"){
+      this.setState({[name]:"false"});
+    }
+    else {
+      this.setState({[name]:"true"});
+    }
+  }
+
+
   render() {
     const cart = this.state.order;
     if (!this.state.Loading)
       return (
         <div style={{ minHeight: "80vh" }}>
           <Grid columns={2}>
-            <Grid.Column width={5}></Grid.Column>
+            <Grid.Column width={5}>
+              <Segment>
+                <Checkbox label="Плати чрез Paypal?" onChange={this.toggle} name="payWithPaypal" active={this.state.payWithPaypal} />
+              </Segment>
+            </Grid.Column>
             <Grid.Column width={11}>
               <Grid>
                 <Grid.Row columns={5} className="cart-product-row">

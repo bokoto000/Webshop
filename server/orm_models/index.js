@@ -6,6 +6,7 @@ module.exports =  (sequelize) => {
     const Order = require('./order')(sequelize);
     const OrderedItem = require('./ordered_item')(sequelize);
     const ResetPasswordToken = require('./resetpassword')(sequelize);
+    const PendingPayment = require('./pending_payment')(sequelize);
 
     Item.hasOne(Product,{foreignKey:'id'})
     Product.belongsTo(Item, {foreignKey:'id'})
@@ -20,6 +21,7 @@ module.exports =  (sequelize) => {
         Cart,
         ResetPasswordToken,
         Order,
-        OrderedItem
+        OrderedItem,
+        PendingPayment
     }
 }
