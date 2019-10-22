@@ -32,7 +32,6 @@ export default class CreatePermission extends Component {
             const resJson = await res.json();
             this.setState({ error: resJson.error });
         }
-        window.location.reload();
     }
 };
 

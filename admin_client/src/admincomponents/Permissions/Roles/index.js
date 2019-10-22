@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Container, Segment, Button, Label } from 'semantic-ui-react';
+import { Form, Container, Segment, Button, Label, Header } from 'semantic-ui-react';
 import DeleteRole from "./DeleteRole";
 
 const post = require("../../../helpers/fetch").post;
@@ -20,8 +20,9 @@ export default class Roles extends Component {
             if (res) {
                 const resJson = await res.json();
                 this.setState({ error: resJson.error });
+            } else{
+                alert("Проблем със създаването на роля.")
             }
-            window.location.reload();
         }
     };
 
@@ -32,6 +33,9 @@ export default class Roles extends Component {
     render() {
         return (
             <div>
+                <Header textAlign='center'>
+                    Създаване на роли
+                </Header>
                 <Container style={{ padding: "1em 0em" }}>
                     <Segment>
                         <Form onSubmit={this.onSubmit}>

@@ -56,7 +56,7 @@ module.exports = async (app) => {
     await sequelize.query(`CREATE TABLE IF NOT EXISTS roles
     (
         id serial NOT NULL,
-        role text NOT NULL,
+        role text NOT NULL UNIQUE,
         CONSTRAINT roles_pkey PRIMARY KEY (id)
     )`);
 

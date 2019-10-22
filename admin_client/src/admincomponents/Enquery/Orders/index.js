@@ -30,6 +30,11 @@ const options = [
   { key: 3, text: "Paid", value: "Paid" }
 ];
 
+const groupOptions = [
+  { key: 1, text: "None", value: "None" },
+  { key: 1, text: "Status", value: "Status" },
+];
+
 for (let i = 0; i <= 24; i++) {
   hourDropdown.push({ id: i, value: i, text: i + ":00" });
 }
@@ -97,7 +102,16 @@ export default class Orders extends Component {
     this.setState({ [name]: value });
   };
 
-  onSubmit() {
+  testEnquery = async ()=>{
+    const values = queryString.parse(this.props.location.search);
+    const res = await get(`/enquery/orders/?${new URLSearchParams(values).toString()}`);
+      if(res.ok){
+        const orders = await res.json();
+        console.log(orders);
+      }
+  }
+
+  onSubmit = async () => {
     const values = queryString.parse(this.props.location.search),
       higherprice = this.state.higherprice,
       lowerprice = this.state.lowerprice;
@@ -117,12 +131,18 @@ export default class Orders extends Component {
       this.props.history.push({
         search: "?" + new URLSearchParams(values).toString()
       });
+      const res = await get(`/enquery/orders/?${new URLSearchParams(values).toString()}`);
+      if(res.ok){
+        const orders = await res.json();
+        console.log(orders);
+      }
     } else {
       alert("Изберете дати и часове");
     }
   }
 
   handleChange = (e, { name, value }) => {
+    this.setSearchParams(name, value);
     this.getOrders(value);
   };
 
@@ -196,22 +216,37 @@ export default class Orders extends Component {
       <div>
         <Header>Справка поръчки:</Header>
         <Grid>
+          <Button onClick={this.testEnquery}></Button>
           <Grid.Row columns={2}>
             <label style={{ marginBottom: "auto", marginTop: "auto" }}>
               Status:
             </label>
             <Dropdown
               selection
-              name="default"
+              name="status"
               options={options}
               placeholder="Status"
               onChange={this.handleChange}
             />
           </Grid.Row>
           <Grid.Row>
+            <Form onSubmit={this.onSubmit}>
+              <Form.Group inline>
+                <Dropdown
+                  search
+                  selection
+                  name="groupBy"
+                  value={this.state.groupBy >= 0 ? this.state.endHour : values["group_by"]}
+                  onChange={this.handleHourChange}
+                  options={groupOptions}
+                ></Dropdown>
+              </Form.Group>
+            </Form>
+          </Grid.Row>
+          <Grid.Row>
             <Form>
               <Segment.Inline>
-                <Form.Field>
+                <Form.Field inline>
                   <Input
                     className="price-box"
                     placeholder={
@@ -262,7 +297,7 @@ export default class Orders extends Component {
                   search
                   selection
                   name="startHour"
-                  value={this.state.startHour ? this.state.startHour : values["start_hour"]}
+                  value={this.state.startHour >= 0 ? this.state.startHour : values["start_hour"]}
                   onChange={this.handleHourChange}
                   options={hourDropdown}
                 ></Dropdown>
@@ -270,7 +305,7 @@ export default class Orders extends Component {
                   search
                   selection
                   name="endHour"
-                  value={this.state.endHour ? this.state.endHour : values["end_hour"]}
+                  value={this.state.endHour >= 0 ? this.state.endHour : values["end_hour"]}
                   onChange={this.handleHourChange}
                   options={hourDropdown}
                 ></Dropdown>

@@ -22,8 +22,6 @@ export default class Admin extends Component {
     const res = await get("/get-sess-info/admin");
     if (res.ok) {
       const userAdmin = (await res.json()).user;
-      console.log(userAdmin);
-
       this.setState({
         isAuthAdmin: true,
         userAdmin: userAdmin,

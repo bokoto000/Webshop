@@ -20,7 +20,7 @@ module.exports = (passport, ormModels) => {
     try {
       await Role.create({ role: roleName });
     } catch (e) {
-      return res.sendStatus(403);
+      return res.status(401).json({error:"Ролята вече съществува"});
     }
     return res.sendStatus(200);
   });

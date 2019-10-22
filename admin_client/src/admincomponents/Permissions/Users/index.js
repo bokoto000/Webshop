@@ -75,6 +75,9 @@ class Users extends Component {
 
     return (
       <div>
+        <Header textAlign='center'>
+          Потребители
+        </Header>
         <Modal trigger={<Button>Register</Button>}>
           <Modal.Header>Register</Modal.Header>
           <Modal.Content>

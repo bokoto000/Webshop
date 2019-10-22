@@ -20,7 +20,7 @@ module.exports = (passport, ormModels) => {
             name
         });
       } catch (e) {
-        console.log(e);
+        return res.status(403).json({error:"Тагът вече съществува!"})
       }
       res.send(200);
     } else {

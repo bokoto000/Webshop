@@ -15,9 +15,10 @@ module.exports = (passport, ormModels) => {
   router.post("/create-permission", async (req, res, next) => {
     const name = req.body.name;
     const permission = req.body.permission;
+    try{
     const newPerm = await Permission.create({ name, permission });
-    if (!newPerm) {
-      return res.send(403);
+    } catch (e){
+      return res.status(403).json({error:"Проблем при създаването на роля"});
     }
     return res.send(200);
   });

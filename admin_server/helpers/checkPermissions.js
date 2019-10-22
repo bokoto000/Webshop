@@ -43,7 +43,7 @@ module.exports = function () {
                 return res.status(401).send("You do not have permission");
             }
         } else {
-            Console.log("No user")
+            console.log("No user")
             return res.sendStatus(403);
         }
     };

@@ -41,6 +41,8 @@ export default withRouter(
       });
       if (res.ok) {
         window.location.reload();
+      } else{
+        alert("Имаше проблем със създаването на продукта!");
       }
     };
 

@@ -115,6 +115,11 @@ export default class PendingOrders extends Component {
     return (
       <div style={{ minHeight: "80vh", width: "100%" }}>
         <Grid>
+          <Grid.Row>
+            <Header>
+              Поръчки:
+            </Header>
+          </Grid.Row>
           <Grid.Row columns={2}>
             <label style={{marginBottom:"auto", marginTop:"auto"}}>Status:</label>
             <Dropdown

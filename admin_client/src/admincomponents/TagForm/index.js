@@ -33,6 +33,9 @@ export default withRouter(
       });
       if (res.ok) {
         window.location.reload();
+      } else{
+        const resJson = await res.json();
+        alert(resJson.error);
       }
     };
 

@@ -40,7 +40,6 @@ export default class ProductDisplay extends React.Component {
   async componentDidMount() {
     const products = (await (await get("/product/get-products")).json())
       .products;
-
     this.setState({ products, originalProducts: products });
     const pageCount = products.length / this.state.perPage;
     this.setState({ pageCount });
@@ -154,6 +153,9 @@ export default class ProductDisplay extends React.Component {
     if (!isLoading)
       return (
         <div>
+          <Header>
+            Продукти:
+          </Header>
           <Form>
             <Form.Input
               placeholder="Search by id..."

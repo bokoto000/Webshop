@@ -8,7 +8,8 @@ import {
   Button,
   Input,
   Segment,
-  Form
+  Form,
+  Header
 } from "semantic-ui-react";
 import { Redirect, withRouter } from "react-router-dom";
 import queryString from "query-string";

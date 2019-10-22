@@ -127,9 +127,11 @@ export default class Products extends Component {
         </Form>
         <Table>
           <Table.Header>
-            <Table.HeaderCell>Име</Table.HeaderCell>
-            <Table.HeaderCell>Код</Table.HeaderCell>
-            <Table.HeaderCell>Наличност</Table.HeaderCell>
+            <Table.Row>
+              <Table.HeaderCell>Име</Table.HeaderCell>
+              <Table.HeaderCell>Код</Table.HeaderCell>
+              <Table.HeaderCell>Наличност</Table.HeaderCell>
+            </Table.Row>
           </Table.Header>
           <Table.Body>
             {products && products.length > 0

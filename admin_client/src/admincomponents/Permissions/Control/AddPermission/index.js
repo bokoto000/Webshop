@@ -18,7 +18,8 @@ export default class AddPermission extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      options: []
+      options: [],
+      rolesOptions: []
     };
   }
 
@@ -90,6 +91,8 @@ export default class AddPermission extends Component {
         }
       }
       this.setState({ permissions: originalPermissions });
+    } else {
+      alert("Неуспешно добавени права!");
     }
   };
 
@@ -111,23 +114,25 @@ export default class AddPermission extends Component {
             <Form onSubmit={this.onSubmit}>
               <Dropdown
                 search
+                options={this.state.rolesOptions}
                 selection
                 name="roleId"
                 placeholder="Роля"
                 value={this.state.value}
                 onChange={this.handleRoleChange}
-                options={this.state.rolesOptions}
               ></Dropdown>
               <Table>
                 <Table.Header>
-                  <Table.HeaderCell>Име</Table.HeaderCell>
-                  <Table.HeaderCell>Дадено право</Table.HeaderCell>
+                  <Table.Row>
+                    <Table.HeaderCell>Име</Table.HeaderCell>
+                    <Table.HeaderCell>Дадено право</Table.HeaderCell>
+                  </Table.Row>
                 </Table.Header>
                 <Table.Body>
                   {this.state.permissions
                     ? this.state.permissions.map(permission => {
                       return (
-                        <Table.Row>
+                        <Table.Row key={permission.id}>
                           <Table.Cell>{permission.name}</Table.Cell>
                           <Table.Cell>
                             <Checkbox onChange={() => this.ToggleCheckbox(permission.id)} checked={permission.isTicked}></Checkbox>

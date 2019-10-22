@@ -36,6 +36,8 @@ export default withRouter(
       });
       if (res.ok) {
         window.location.reload();
+      } else{
+        alert("Грешно потребителско име или парола");
       }
     };
 
