@@ -11,33 +11,18 @@ import {
   Icon
 } from "semantic-ui-react";
 import Order from "./Order";
-
-import TimePicker from "react-time-picker";
-import DatePicker from "react-datepicker";
 import queryString from "query-string";
-import downloadOrders from "./../DownloadExcel/DownloadOrders";
 import ReactExport from "react-export-excel";
 import { get } from "../../../helpers/fetch";
-
-
+import downloadOrders from "./../DownloadExcel/DownloadOrders";
+import DateIntervalPicker from "./DateIntervalPicker";
+import HourIntervalPicker from "./HourIntervalPicker";
+import PriceIntervalPicker from "./PriceIntervalPicker";
+import StatusPicker from "./StatusPicker";
+import GroupByPicker from "../GroupByPicker";
 
 const ExcelFile = ReactExport.ExcelFile;
-let hourDropdown = [];
-const options = [
-  { key: 1, text: "Sent", value: "Sent" },
-  { key: 2, text: "Verified", value: "Verified" },
-  { key: 3, text: "Canceled", value: "Canceled" },
-  { key: 3, text: "Paid", value: "Paid" }
-];
 
-const groupOptions = [
-  { key: 1, text: "None", value: "None" },
-  { key: 1, text: "Status", value: "Status" },
-];
-
-for (let i = 0; i <= 24; i++) {
-  hourDropdown.push({ id: i, value: i, text: i + ":00" });
-}
 export default class Orders extends Component {
   constructor(props) {
     super(props);
@@ -63,59 +48,27 @@ export default class Orders extends Component {
     }
   }
 
-  handleChangePrice = async (e, { name, value }) => {
-    this.setSearchParams(name, value);
-    this.setState({ [name]: value });
-  };
-
-  handleChangeStart = date => {
-    try {
-      const startDate = date;
-      startDate.setHours(0);
-      startDate.setMinutes(0);
-      startDate.setSeconds(0);
-      this.setState({
-        startDate
-      });
-    } catch (e) {
-      alert("Моля изберете валидна дата");
-    }
-  };
-
-  handleChangeEnd = date => {
-    try {
-      const endDate = date;
-      endDate.setHours(23);
-      endDate.setMinutes(59);
-      endDate.setSeconds(59);
-      this.setState({
-        endDate
-      });
-    } catch (e) {
-      alert("Моля изберете валидна дата");
-    }
-  };
-
-  handleHourChange = (e, { name, value }) => {
-
-    this.setSearchParams(name, value);
-    this.setState({ [name]: value });
-  };
-
-  testEnquery = async ()=>{
+  testEnquery = async () => {
     const values = queryString.parse(this.props.location.search);
-    const res = await get(`/enquery/orders/?${new URLSearchParams(values).toString()}`);
-      if(res.ok){
-        const orders = await res.json();
-        console.log(orders);
-      }
-  }
+    const res = await get(
+      `/enquery/orders/?${new URLSearchParams(values).toString()}`
+    );
+    if (res.ok) {
+      const orders = await res.json();
+      console.log(orders);
+    }
+  };
 
   onSubmit = async () => {
     const values = queryString.parse(this.props.location.search),
       higherprice = this.state.higherprice,
       lowerprice = this.state.lowerprice;
-    if (this.state.startDate && this.state.endDate && this.state.startHour >= 0 && this.state.endHour >= 0) {
+    if (
+      this.state.startDate &&
+      this.state.endDate &&
+      this.state.startHour >= 0 &&
+      this.state.endHour >= 0
+    ) {
       const startDate = this.state.startDate.getTime(),
         endDate = this.state.endDate.getTime(),
         startHour = this.state.startHour,
@@ -131,19 +84,16 @@ export default class Orders extends Component {
       this.props.history.push({
         search: "?" + new URLSearchParams(values).toString()
       });
-      const res = await get(`/enquery/orders/?${new URLSearchParams(values).toString()}`);
-      if(res.ok){
+      const res = await get(
+        `/enquery/orders/?${new URLSearchParams(values).toString()}`
+      );
+      if (res.ok) {
         const orders = await res.json();
         console.log(orders);
       }
     } else {
       alert("Изберете дати и часове");
     }
-  }
-
-  handleChange = (e, { name, value }) => {
-    this.setSearchParams(name, value);
-    this.getOrders(value);
   };
 
   resetFilters = () => {
@@ -152,12 +102,7 @@ export default class Orders extends Component {
     this.props.history.push({
       search: ""
     });
-    this.setState({
-      startDate: null,
-      endDate: null,
-      startHour: null,
-      endHour: null
-    });
+    this.setState({ clearFilters: !this.state.clearFilters });
     this.setState({ loading: false });
   };
 
@@ -178,12 +123,7 @@ export default class Orders extends Component {
     const endDate = values["end_date"];
     const startHour = values["start_hour"];
     const endHour = values["end_hour"];
-    if (
-      startDate &&
-      endDate &&
-      startHour >= 0 &&
-      endHour >= 0
-    ) {
+    if (startDate && endDate && startHour >= 0 && endHour >= 0) {
       for (let i = 0; i < this.state.originalOrders.length; i++) {
         let order = this.state.originalOrders[i];
         let orderDate = new Date();
@@ -206,7 +146,7 @@ export default class Orders extends Component {
       }
     }
     return orders;
-  }
+  };
 
   render() {
     const orders = this.filterOrders();
@@ -218,97 +158,22 @@ export default class Orders extends Component {
         <Grid>
           <Button onClick={this.testEnquery}></Button>
           <Grid.Row columns={2}>
-            <label style={{ marginBottom: "auto", marginTop: "auto" }}>
-              Status:
-            </label>
-            <Dropdown
-              selection
-              name="status"
-              options={options}
-              placeholder="Status"
-              onChange={this.handleChange}
-            />
+            <StatusPicker {...this.props}></StatusPicker>
           </Grid.Row>
           <Grid.Row>
+            <GroupByPicker {...this.props}></GroupByPicker>
+          </Grid.Row>
+          <Grid.Row>
+            <PriceIntervalPicker
+              clearFilters={this.state.clearFilters}
+              {...this.props}
+            ></PriceIntervalPicker>
+          </Grid.Row>
+          <Grid.Row>
+            <DateIntervalPicker {...this.props}></DateIntervalPicker>
+            <HourIntervalPicker {...this.props}></HourIntervalPicker>
             <Form onSubmit={this.onSubmit}>
               <Form.Group inline>
-                <Dropdown
-                  search
-                  selection
-                  name="groupBy"
-                  value={this.state.groupBy >= 0 ? this.state.endHour : values["group_by"]}
-                  onChange={this.handleHourChange}
-                  options={groupOptions}
-                ></Dropdown>
-              </Form.Group>
-            </Form>
-          </Grid.Row>
-          <Grid.Row>
-            <Form>
-              <Segment.Inline>
-                <Form.Field inline>
-                  <Input
-                    className="price-box"
-                    placeholder={
-                      values.lowerprice >= 0
-                        ? values.lowerprice
-                        : "от тотал на поръчката"
-                    }
-                    name="lowerprice"
-                    type="number"
-                    min={0}
-                    onChange={this.handleChangePrice}
-                    value={values.lowerprice}
-                  />
-                  <Input
-                    className="price-box"
-                    placeholder={
-                      values.higherprice >= 0
-                        ? values.higherprice
-                        : "до тотал на поръчката"
-                    }
-                    name="higherprice"
-                    type="number"
-                    min={0}
-                    onChange={this.handleChangePrice}
-                    value={values.higherprice}
-                  />
-                </Form.Field>
-              </Segment.Inline>
-            </Form>
-          </Grid.Row>
-          <Grid.Row>
-            <Form onSubmit={this.onSubmit}>
-              <Form.Group inline>
-                <Form.Field
-                  label="от"
-                  control={DatePicker}
-                  selected={this.state.startDate}
-                  onChange={this.handleChangeStart}
-                ></Form.Field>
-                <Form.Field
-                  label="до"
-                  control={DatePicker}
-                  selected={this.state.endDate}
-                  onChange={this.handleChangeEnd}
-                ></Form.Field>
-                Между:
-                <Dropdown
-                  search
-                  selection
-                  name="startHour"
-                  value={this.state.startHour >= 0 ? this.state.startHour : values["start_hour"]}
-                  onChange={this.handleHourChange}
-                  options={hourDropdown}
-                ></Dropdown>
-                <Dropdown
-                  search
-                  selection
-                  name="endHour"
-                  value={this.state.endHour >= 0 ? this.state.endHour : values["end_hour"]}
-                  onChange={this.handleHourChange}
-                  options={hourDropdown}
-                ></Dropdown>
                 <Form.Field fluid control={Button}>
                   Търси
                 </Form.Field>
@@ -316,7 +181,9 @@ export default class Orders extends Component {
             </Form>
             <Button onClick={() => this.resetFilters()}>Изтрий филтрите</Button>
 
-            <ExcelFile element={<Button>Download Data</Button>}>{downloadOrders(orders)}</ExcelFile>
+            <ExcelFile element={<Button>Download Data</Button>}>
+              {downloadOrders(orders)}
+            </ExcelFile>
           </Grid.Row>
           <Grid.Row>
             <Table celled>
@@ -332,8 +199,8 @@ export default class Orders extends Component {
               <Table.Body>
                 {orders
                   ? orders.map(order => {
-                    return <Order key={order.id} order={order}></Order>;
-                  })
+                      return <Order key={order.id} order={order}></Order>;
+                    })
                   : null}
               </Table.Body>
             </Table>
