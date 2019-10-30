@@ -1,8 +1,6 @@
-module.exports = (ormModels)=>{
-    const User = require('./user')(ormModels);
-    const Admin = require ('./admin')(ormModels);
+module.exports = (sequelize)=>{
+    const User = require('./user')(sequelize);
     return {
-        User,
-        Admin
+        User
     }
 }

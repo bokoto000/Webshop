@@ -101,8 +101,8 @@ module.exports = async (app) => {
     )`);
 
     const ormModels = require('../orm_models/index')(sequelize);
-    const models = require ('../models/index')(ormModels);
+    const models = require ('../models/index')(sequelize);
     require ('./passportConfig')(passport,ormModels, models);
-    require('./routersConfig')(app, ormModels, passport, sequelize);
+    require('./routersConfig')(app, ormModels, passport, sequelize, models);
 
 }

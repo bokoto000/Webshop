@@ -10,7 +10,6 @@ router.use(
 
 module.exports = (passport, ormModels) => {
   const Permission = ormModels.Permission;
-  const PermissionRoles = 
 
   router.post("/create-permission", async (req, res, next) => {
     const name = req.body.name;

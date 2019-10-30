@@ -1,10 +1,8 @@
 const LocalStrategy = require("passport-local");
 
 module.exports = (passport, ormModels, models) => {
-  const ormUser = ormModels.User;
-  const User = models.User;
   const ormAdmin = ormModels.Admin;
-  const Admin = models.Admin;
+  const Admin = models.User;
 
   passport.serializeUser((user, done) => {
     const userData = {
@@ -18,14 +16,14 @@ module.exports = (passport, ormModels, models) => {
   passport.deserializeUser(async (userData, done) => {
     const id = userData.id;
     let userFromDb;
-    userFromDb = await ormAdmin.findByPk(id);
+    userFromDb = await Admin.findByPk(id);
+    console.log(userData);
     const user = {
-      id: userFromDb.dataValues.id,
-      firstName: userFromDb.dataValues.firstName,
-      lastName: userFromDb.dataValues.lastName,
-      email: userFromDb.dataValues.email,
-      username: userFromDb.dataValues.username,
-      role: userFromDb.dataValues.role
+      id: userFromDb.id,
+      firstName: userFromDb.first_name,
+      lastName: userFromDb.last_name,
+      email: userFromDb.email,
+      username: userFromDb.username
     };
     if (user) done(null, user);
     else {
@@ -37,9 +35,9 @@ module.exports = (passport, ormModels, models) => {
     "local-login-admin",
     new LocalStrategy(async function(username, password, done) {
       try {
-        const user = await ormAdmin.findOne({ where: { username: username } });
+        const user = await Admin.findOne(username);
         if (user) {
-          const comp = await Admin.validPassword(password, user.password);
+          const comp = await Admin.validPassword(username, password, user.password);
           if (!comp) return done(null, false, "Incorrect password");
           return done(null, user);
         } else {
@@ -47,6 +45,7 @@ module.exports = (passport, ormModels, models) => {
         }
       } catch (e) {
         console.log("passport");
+        console.error(e);
       }
     })
   );
@@ -63,16 +62,17 @@ module.exports = (passport, ormModels, models) => {
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
         const email = req.body.email;
-        const user = await ormAdmin.findOne({ where: { username: username } });
+        const user = await Admin.findOne(username);
         if (user) {
           return done(null, false, "User already exists");
         } else {
+          console.log(email);
           const user = await Admin.createUser(
             username,
             password,
+            email,
             firstName,
-            lastName,
-            email
+            lastName
           );
           if (user) {
             return done(null, user);

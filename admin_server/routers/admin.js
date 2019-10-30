@@ -8,8 +8,8 @@ router.use(
   })
 );
 
-module.exports = (passport, ormModels, sequelize) => {
-  const Admin = ormModels.Admin;
+module.exports = (passport, models, sequelize) => {
+  const User = models.User;
 
   router.post("/login", (req, res, next) => {
     try {
@@ -53,9 +53,7 @@ module.exports = (passport, ormModels, sequelize) => {
   });
 
   router.get("/get-admins", async (req, res, next) => {
-    const admins = await Admin.findAll({
-      attributes: ["id", "username", "first_name", "last_name", "email"]
-    });
+    const admins = await User.findAll();
     return res.status(200).json(admins);
   });
 

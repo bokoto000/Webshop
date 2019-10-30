@@ -41,6 +41,7 @@ export default class Register extends React.Component {
       window.location.reload();
     } else {
       if (res) {
+        console.log(res);
         const resJson = await res.json();
         this.setState({ error: resJson.error });
       }
@@ -52,6 +53,7 @@ export default class Register extends React.Component {
     }));
 
   render() {
+    console.log(this.state.email);
     return (
       <div>
         <Container style={{ padding: "1em 0em" }}>

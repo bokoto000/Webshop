@@ -2,11 +2,6 @@
 const sequelize = require('../config/dbConfig');
 const ormModels = require('../orm_models/index')(sequelize);
 
-const User = ormModels.Admin;
-const Role = ormModels.Role;
-const UserRole = ormModels.UserRole;
-
-
 module.exports = function () {
     return async (req, res, next) => {
         console.log("Check permission");
@@ -31,8 +26,6 @@ module.exports = function () {
                 const perm = permissions[0][i].permission;
                 const regex = new RegExp(`^${perm}.*$`);
                 if(regex.test(originalUrl)){
-                    console.log(perm);
-                    console.log(regex);
                     return next();
                 }
             }
