@@ -17,6 +17,7 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/create", async (req, res) => {
     const user = req.user;
+    let total =0;
     if (user && user.id) {
       const cart = await Cart.findOne({ where: { userId: user.id } });
       if (!cart) {
@@ -33,13 +34,16 @@ module.exports = (passport, ormModels, sequelize) => {
              "product"."image" AS "product.image",
               "product"."price" AS "orderedPrice",
                "product"."stock" AS "product.stock",
-                "product"."stock" AS "leftStock"
+                "product"."stock" AS "leftStock",
+                  "product"."price" AS "price"
                   FROM "items" AS "items"
                   LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id"
                    WHERE "items"."cart_id" = ${cartId};`);
       for (let i = 0; i < items[0].length; i++) {
         const stock = items[0][i].stock;
+        const price = items[0][i].price;
         const leftStock = items[0][i].leftStock;
+        total+=(stock*price);
         if (stock > leftStock) {
           return res.status(422).send({
             error:
@@ -56,13 +60,15 @@ module.exports = (passport, ormModels, sequelize) => {
         await Order.create({
           userId: user.id,
           status: "New",
-          date: Date.now()
+          date: Date.now(),
+          total
         });
       } else {
         await Order.create({
           userId: user.id,
           status: "New",
-          date: Date.now()
+          date: Date.now(),
+          total
         });
       }
       const newOrder = await Order.findOne({
@@ -75,11 +81,13 @@ module.exports = (passport, ormModels, sequelize) => {
           const stock = items[0][i].stock;
           const leftStock = items[0][i].leftStock;
           const orderedPrice = items[0][i].orderedPrice;
+          const orderedTotal = stock*orderedPrice;
           const orderedItem = await OrderedItem.create({
             orderId: newOrderId,
             productId,
             stock,
-            orderedPrice
+            orderedPrice,
+            orderedTotal
           });
         }
       }
@@ -143,10 +151,10 @@ module.exports = (passport, ormModels, sequelize) => {
         );
         if (updatedOrder) {
           const cart = await Cart.findOne({ where: { userId: user.id } });
-          if (cart) await Cart.destroy({ where: { userId: user.id } });
-          if (cart)
+          if (cart){
             await Item.destroy({ where: { cartId: cart.dataValues.id } });
-
+            await Cart.destroy({ where: { userId: user.id } });
+          }
           const orderedItems = await sequelize.query(`SELECT "ordereditems"."id",
             "ordereditems"."id" AS "id",
              "ordereditems"."product_id" AS "productId",

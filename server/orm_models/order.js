@@ -18,6 +18,10 @@ module.exports = sequelize => {
     date: {
       field: "date",
       type: Sequelize.STRING
+    },
+    total:{
+      field:"total",
+      type:Sequelize.DECIMAL
     }
   });
   return Order;

@@ -22,6 +22,10 @@ module.exports = sequelize => {
     orderedPrice: {
       field: "ordered_price",
       type: Sequelize.DECIMAL
+    },
+    orderedTotal:{
+      field:"ordered_total",
+      type: Sequelize.DECIMAL
     }
   });
   return OrderedItem;

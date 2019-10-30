@@ -19,8 +19,8 @@ function compare(a, b) {
   return 0;
 }
 
-const checkPermission = require("../helpers/checkPermissions");
-router.use(checkPermission());
+//const checkPermission = require("../helpers/checkPermissions");
+//router.use(checkPermission());
 
 module.exports = (passport, ormModels, sequelize) => {
   const Product = ormModels.Product;
@@ -175,7 +175,7 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.post("/fake", async (req, res, next) => {
     const fakes = [];
-    for (let i = 0; i <= 10000; i++) {
+    for (let i = 0; i <= 30000; i++) {
       fakes.push({
         description: faker.commerce.product(),
         name: faker.commerce.productName() + faker.commerce.product(),
