@@ -1,18 +1,23 @@
 module.exports = (sequelize) => {
 
+    async function create(name){
+        const results = (await sequelize.query(`INSERT INTO roles (name) VALUES ('${name}')`));
+        return results;
+    }
+
     async function findOne() {
-        const user = (await sequelize.query(``))[0][0];
-        return user;
+        const role = (await sequelize.query(``))[0][0];
+        return role;
     }
 
     async function findByPk(id) {
-        const user = (await sequelize.query(``))[0][0];
-        return user;
+        const role = (await sequelize.query(``))[0][0];
+        return role;
     }
 
     async function findAll() {
-        const user = (await sequelize.query(``))[0][0];
-        return user;
+        const role = (await sequelize.query(``))[0][0];
+        return role;
     }
     return { findOne, findByPk, findAll };
 }

@@ -63,16 +63,17 @@ export default class Orders extends Component {
     const values = queryString.parse(this.props.location.search),
       higherprice = this.state.higherprice,
       lowerprice = this.state.lowerprice;
+
     if (
-      this.state.startDate &&
-      this.state.endDate &&
-      this.state.startHour >= 0 &&
-      this.state.endHour >= 0
+      values.startDate &&
+      values.endDate &&
+      values.startHour >= 0 &&
+      values.endHour >= 0
     ) {
-      const startDate = this.state.startDate.getTime(),
-        endDate = this.state.endDate.getTime(),
-        startHour = this.state.startHour,
-        endHour = this.state.endHour;
+      const startDate = values.startDate,
+        endDate = values.endDate,
+        startHour =values.startHour,
+        endHour = values.endHour;
       values["start_date"] = startDate;
       values["end_date"] = endDate;
       values["start_hour"] = startHour;

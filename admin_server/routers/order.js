@@ -11,22 +11,18 @@ router.use(
 
 
 module.exports = (passport, ormModels, sequelize) => {
-  const Item = ormModels.Item;
-  const Cart = ormModels.Cart;
   const OrderedItem = ormModels.OrderedItem;
   const Order = ormModels.Order;
   const User = ormModels.User;
   const Product = ormModels.Product;
 
   router.get("/get-all/:status", async (req, res) => {
-    const user = {id:1}//req.user;
+    const user = req.user;
     const status = req.params.status;
     if (user && user.id) {
       let orders = await Order.findAll({
         where: { status }
       });
-      console.log(status);
-      console.log(orders);
       if (!orders) {
         return res.sendStatus(403);
       } else {

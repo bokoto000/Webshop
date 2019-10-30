@@ -55,8 +55,8 @@ module.exports = (passport, ormModels, sequelize) => {
         where: { userId: user.id, status: "New" }
       });
       if (order) {
-        await Order.destroy({ where: { id: order.dataValues.id } });
         await OrderedItem.destroy({ where: { orderId: order.dataValues.id } });
+        await Order.destroy({ where: { id: order.dataValues.id } });
         await Order.create({
           userId: user.id,
           status: "New",

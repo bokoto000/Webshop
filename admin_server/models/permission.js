@@ -1,18 +1,14 @@
 module.exports = (sequelize) => {
 
-    async function findOne() {
-        const user = (await sequelize.query(``))[0][0];
-        return user;
+    async function create(name, permission){
+        const perm = (await sequelize.query(`INSERT INTO permissions ('name','permission') VALUES ('${name}','${permission}')`))
+        return perm[0];
     }
 
-    async function findByPk(id) {
-        const user = (await sequelize.query(``))[0][0];
-        return user;
+    async function findAll(){
+        const results = (await sequelize.query(`SELECT * FROM permissions`))[0];
+        return results;
     }
 
-    async function findAll() {
-        const user = (await sequelize.query(``))[0][0];
-        return user;
-    }
-    return { findOne, findByPk, findAll };
+    return {create};
 }

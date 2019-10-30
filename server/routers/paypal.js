@@ -133,7 +133,6 @@ module.exports = (sequelize, ormModels) => {
           console.log(error.response);
           throw error;
         } else {
-          await PendingPayment.destroy({ where: { paymentId } });
           if (orderId) {
             const order = await Order.findOne({
               where: { id: orderId, status: "New" }
@@ -148,9 +147,9 @@ module.exports = (sequelize, ormModels) => {
               );
               if (updatedOrder) {
                 const cart = await Cart.findOne({ where: { userId } });
-                if (cart) await Cart.destroy({ where: { userId } });
-                if (cart)
+                if (cart){
                   await Item.destroy({ where: { cartId: cart.dataValues.id } });
+                  await Cart.destroy({ where: { userId } });}
 
                 const orderedItems = await sequelize.query(`SELECT "ordereditems"."id",
                 "ordereditems"."id" AS "id",
@@ -177,6 +176,7 @@ module.exports = (sequelize, ormModels) => {
                     );
                   }
                 }
+                await PendingPayment.destroy({ where: { paymentId } });
                 return res.redirect("http://localhost:3000/success-order");
               } else return res.send(403);
             }

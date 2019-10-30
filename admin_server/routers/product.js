@@ -19,8 +19,8 @@ function compare(a, b) {
   return 0;
 }
 
-//const checkPermission = require("../helpers/checkPermissions");
-//router.use(checkPermission());
+const checkPermission = require("../helpers/checkPermissions");
+router.use(checkPermission());
 
 module.exports = (passport, ormModels, sequelize) => {
   const Product = ormModels.Product;

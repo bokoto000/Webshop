@@ -16,8 +16,7 @@ router.use(checkPermission());
 
 module.exports = (passport, ormModels, sequelize) => {
   const Order = ormModels.Order;
-  const User = ormModels.User;
-
+  
   router.get("/products/:startDate/:endDate", async (req, res, next) => {
     const startDate = req.params.startDate;
     const endDate = req.params.endDate;
