@@ -8,20 +8,20 @@ router.use(
   })
 );
 
-module.exports = (passport, ormModels,models) => {
+module.exports = (passport, ormModels, models) => {
   const Role = models.Role;
-  const UserRole = ormModels.UserRole;
-  const Admin = ormModels.Admin;
-  const PermissionRole = ormModels.PermissionRoles;
-  const Permission = ormModels.Permission;
+  const UserRole = models.UserRole;
+  const Admin = models.Admin;
+  const PermissionRole = models.PermissionRole;
+  const Permission = models.Permission;
 
   router.post("/create-role", async (req, res, next) => {
     const roleName = req.body.roleName;
     try {
-      await Role.create( roleName);
+      await Role.create(roleName);
     } catch (e) {
       console.error(e);
-      return res.status(401).json({error:"Ролята вече съществува"});
+      return res.status(401).json({ error: "Ролята вече съществува" });
     }
     return res.sendStatus(200);
   });
@@ -29,8 +29,9 @@ module.exports = (passport, ormModels,models) => {
   router.post("/delete-role", async (req, res, next) => {
     const roleId = req.body.roleId;
     try {
-      await Role.destroy({ where: { id: roleId } });
-      const allRoles = await UserRole.destroy({ where: { roleId } });
+      await Role.deleteById(roleId);
+      await UserRole.deleteAllById(roleId);
+      await PermissionRoles.deleteAllByRole(roleId);
     } catch (e) {
       return res.sendStatus(403);
     }
@@ -45,7 +46,8 @@ module.exports = (passport, ormModels,models) => {
 
   router.get("/get-role-permissions/:id", async (req, res, next) => {
     const roleId = req.params.id;
-    const permissions = await PermissionRole.findAll({ where: { roleId } });
+    const permissions = await PermissionRole.findAllByRole(roleId);
+    console.log(permissions);
     if (permissions) return res.json(permissions);
     else return res.sendStatus(403);
   });
@@ -53,18 +55,20 @@ module.exports = (passport, ormModels,models) => {
   router.post("/assign-role", async (req, res, next) => {
     const adminId = req.body.userId;
     const roleId = req.body.roleId;
-    const admin = await Admin.findOne({ where: { id: adminId } });
-    const hasUserRole = await UserRole.findOne({
-      where: { userId: adminId, roleId: roleId }
-    });
+    const admin = await Admin.findByPk(adminId);
+    const hasUserRole = await UserRole.findOne(adminId, roleId);
+    console.log(hasUserRole);
     if (hasUserRole) {
       return res.status(403).send({ error: "User already has that role" });
     }
     if (admin && !hasUserRole) {
-      const userRole = await UserRole.create({ userId: adminId, roleId });
-      if (userRole) {
+      try {
+        const userRole = await UserRole.create(adminId, roleId);
         return res.sendStatus(200);
-      } else {
+      }
+      catch (e) {
+        console.error(e);
+
         return res
           .status(403)
           .send({ error: "There was an error creating the user role" });
@@ -75,14 +79,10 @@ module.exports = (passport, ormModels,models) => {
   router.post("/cancel-role", async (req, res, next) => {
     const adminId = req.body.userId;
     const roleId = req.body.roleId;
-    const admin = await Admin.findOne({ where: { id: adminId } });
-    const hasUserRole = await UserRole.findOne({
-      where: { userId: adminId, roleId: roleId }
-    });
+    const admin = await Admin.findByPk(adminId);
+    const hasUserRole = await UserRole.findOne(adminId, roleId);
     if (hasUserRole && admin) {
-      const role = await UserRole.destroy({
-        where: { userId: adminId, roleId: roleId }
-      });
+      const role = await UserRole.deleteOne(adminId, roleId);
       if (role) return res.sendStatus(200);
       else return res.send(403);
     }
@@ -92,28 +92,22 @@ module.exports = (passport, ormModels,models) => {
   router.post("/grant-permission", async (req, res, next) => {
     const roleId = req.body.roleId;
     const perms = req.body.perms;
-    const role = await Role.findOne(roleId );
+    const role = await Role.findOne(roleId);
     const permsLength = perms.length;
+    console.log(perms);
     let hasErrors = 0;
     for (let i = 0; i < permsLength; i++) {
       const permId = perms[i].id;
-      const perm = await Permission.findOne({ where: { id: permId } });
-      const permRole = await PermissionRole.findOne({
-        where: { permissionId:permId, roleId }
-      });
-      if (role && perm) {
+      const permRole = await PermissionRole.findOne(permId, roleId);
+      console.log(role);
+      if (role ) {
         if (!permRole && perms[i].isTicked == true)
           await PermissionRole.create({
             roleId,
             permissionId: permId
           });
-        if (permRole && !perms[i].isTicked ) {
-          await PermissionRole.destroy({
-            where: {
-              roleId,
-              permissionId: permId
-            }
-          });
+        if (permRole && !perms[i].isTicked) {
+          await PermissionRole.deletePermission(permId, roleId);
         }
       } else {
         hasErrors++;

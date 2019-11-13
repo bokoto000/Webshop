@@ -82,10 +82,12 @@ export default class AddPermission extends Component {
       let originalPermissions = this.state.originalPermissions;
       const originalPermissionsLength = originalPermissions.length;
       const rolePermissionsLength = rolePermissions.length;
+      console.log(originalPermissions);
+      console.log(rolePermissions);
       for (let i = 0; i < originalPermissionsLength; i++) {
         originalPermissions[i].isTicked = false;
         for (let j = 0; j < rolePermissionsLength; j++) {
-          if (originalPermissions[i].id == rolePermissions[j].permissionId) {
+          if (originalPermissions[i].id == rolePermissions[j].permission_id) {
             originalPermissions[i].isTicked = true;
           }
         }

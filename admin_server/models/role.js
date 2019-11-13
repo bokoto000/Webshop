@@ -1,6 +1,6 @@
 module.exports = (sequelize) => {
 
-    async function create(name){
+    async function create(name) {
         const results = (await sequelize.query(`INSERT INTO roles (role) VALUES ('${name}')`));
         return results;
     }
@@ -19,5 +19,11 @@ module.exports = (sequelize) => {
         const role = (await sequelize.query(`SELECT * FROM roles`))[0];
         return role;
     }
-    return { findOne, findByPk, findAll,create };
+
+    async function deleteById(id) {
+        const role = (await sequelize.query(`DELETE FROM roles WHERE id='${id}'`));
+        return role;
+    }
+
+    return { findOne, findByPk, findAll, create, deleteById };
 }
