@@ -10,5 +10,5 @@ module.exports = (sequelize) => {
         return results;
     }
 
-    return {create};
+    return {create, findAll};
 }

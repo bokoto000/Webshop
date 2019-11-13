@@ -66,9 +66,14 @@ export default class CartItem extends Component {
     }
     if (res.ok) {
       let updatedProduct = (await res.json()).product[0];
-      updatedProduct.productTotal = parseFloat(updatedProduct.price * updatedProduct.stock).toFixed(2);
-      this.props.updatedItemHandler(updatedProduct);
-      this.setState({ product: updatedProduct });
+      if (updatedProduct) {
+        updatedProduct.productTotal = parseFloat(updatedProduct.price * updatedProduct.stock).toFixed(2);
+        this.props.updatedItemHandler(updatedProduct);
+        this.setState({ product: updatedProduct });
+      }  else{
+        this.props.updatedItemHandler(null);
+        this.setState({ product: null });
+      }
     } else {
       alert("Error changing quantity");
     }
@@ -98,65 +103,65 @@ export default class CartItem extends Component {
     const product = this.state.product;
     if (product && product.stock > 0)
       return (
-        <Segment style={{minHeight:"100px"}}>
+        <Segment style={{ minHeight: "100px" }}>
           {this.state.loading ? (
             <Dimmer active inverted>
               <Loader />
             </Dimmer>
           ) : (
-            <Grid>
-              <Grid.Row columns={5} className="cart-product-row">
-                <Grid.Column>
-                  <div style={{ width: "70px", height: "70px" }}>
-                    <Image
-                      src={product.image}
-                      size="tiny"
-                      verticalAlign="top"
-                    />
-                  </div>
-                </Grid.Column>
-
-                <Grid.Column>
-                  {product.name}
-                  <br></br>
-                  Код:{product.id}
-                </Grid.Column>
-
-                <Grid.Column style={{ alignItems: "center" }}>
-                  <Container>
-                    <div className="cart-item-price"> {product.price} лв</div>
-                  </Container>
-                </Grid.Column>
-
-                <Grid.Column>
-                  {" "}
-                  <Dropdown
-                    onChange={this.handleChange}
-                    options={this.state.options}
-                    selection
-                    value={product.stock}
-                  />
-                  <Button color="red" onClick={this.deleteItem}>
-                    <Icon disabled name="x" />
-                  </Button>
-                  {this.state.notEnoughStock ? (
-                    <Label basic color="red">
-                      Остават само {product.leftStock} продукта.
-                    </Label>
-                  ) : null}
-                </Grid.Column>
-                <Grid.Column style={{ alignItems: "center" }}>
-                  <Container>
-                    <div className="cart-item-price">
-                      {" "}
-                      {product.productTotal} лв
+              <Grid>
+                <Grid.Row columns={5} className="cart-product-row">
+                  <Grid.Column>
+                    <div style={{ width: "70px", height: "70px" }}>
+                      <Image
+                        src={product.image}
+                        size="tiny"
+                        verticalAlign="top"
+                      />
                     </div>
-                  </Container>
-                </Grid.Column>
-                <Divider />
-              </Grid.Row>
-            </Grid>
-          )}
+                  </Grid.Column>
+
+                  <Grid.Column>
+                    {product.name}
+                    <br></br>
+                    Код:{product.id}
+                  </Grid.Column>
+
+                  <Grid.Column style={{ alignItems: "center" }}>
+                    <Container>
+                      <div className="cart-item-price"> {product.price} лв</div>
+                    </Container>
+                  </Grid.Column>
+
+                  <Grid.Column>
+                    {" "}
+                    <Dropdown
+                      onChange={this.handleChange}
+                      options={this.state.options}
+                      selection
+                      value={product.stock}
+                    />
+                    <Button color="red" onClick={this.deleteItem}>
+                      <Icon disabled name="x" />
+                    </Button>
+                    {this.state.notEnoughStock ? (
+                      <Label basic color="red">
+                        Остават само {product.leftStock} продукта.
+                    </Label>
+                    ) : null}
+                  </Grid.Column>
+                  <Grid.Column style={{ alignItems: "center" }}>
+                    <Container>
+                      <div className="cart-item-price">
+                        {" "}
+                        {product.productTotal} лв
+                    </div>
+                    </Container>
+                  </Grid.Column>
+                  <Divider />
+                </Grid.Row>
+              </Grid>
+            )}
         </Segment>
       );
     else {

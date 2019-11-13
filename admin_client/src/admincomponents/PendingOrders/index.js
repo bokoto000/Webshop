@@ -21,7 +21,9 @@ for (let i = 0; i <= 24; i++) {
 export default class PendingOrders extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      originalOrders:[]
+    };
     this.onSubmit = this.onSubmit.bind(this);
   }
 

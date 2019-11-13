@@ -10,12 +10,58 @@ router.use(
 
 
 
-module.exports = (passport, ormModels, sequelize) => {
+module.exports = (passport, models, sequelize) => {
+  const Order = models.Order;
+  const User = models.User;
+  const OrderedItem = models.OrderedItem;
+  const Product = models.Product;
+
+  router.get("/get-all/:status", async (req, res) => {
+    const user = req.user;
+    const status = req.params.status;
+    let orders = await Order.findAllByStatus(status);
+    if (!orders) {
+      return res.sendStatus(403);
+    } else {
+      for (let i = 0; i < orders.length; i++) {
+        const orderId = orders[i].id;
+        let fullOrder = await Order.findFullOrderByPk(orderId);
+        orders[i].fullOrder = fullOrder;
+        const user = await User.findOne(orders[i].user_id);
+        orders[i].user = user;
+      }
+      return res.status(200).json(orders);
+    }
+  });
+
+  router.post("/update-status/:status", async function (req, res) {
+    const status = req.params.status;
+    const orderId = req.body.orderId;
+    const update = await Order.updateStatus(orderId, status);
+    if (status == "Canceled") {
+      const orderedItems = await OrderedItem.findAllByOrderPk(orderId);
+      const orderedItemsLength = orderedItems.length;
+      for (let i = 0; i < orderedItemsLength; i++) {
+        const productId = orderedItems[i].product_id;
+        const stock = orderedItems[i].stock;
+        console.log(orderedItems[i]);
+        console.log(productId);
+        const product = await Product.findByPk(productId);
+        await Product.updateStock(productId, product.stock + stock);
+      }
+    }
+    if (update) {
+      return res.sendStatus(200);
+    } else {
+      return res.sendStatus(403);
+    }
+  })
+  /*
   const OrderedItem = ormModels.OrderedItem;
   const Order = ormModels.Order;
   const User = ormModels.User;
   const Product = ormModels.Product;
-
+ 
   router.get("/get-all/:status", async (req, res) => {
     const user = req.user;
     const status = req.params.status;
@@ -60,14 +106,14 @@ module.exports = (passport, ormModels, sequelize) => {
             attributes: ["id", "username", "first_name", "last_name", "email"],
             where: { id: orders[i].dataValues.userId }
           });
-
+ 
           orders[i].dataValues.user = user;
         }
         res.status(200).json(orders);
       }
     } else res.sendStatus(403);
   });
-
+ 
   router.post("/update-status/:status", async function(req, res) {
     const user = req.user;
     const status = req.params.status;
@@ -91,6 +137,7 @@ module.exports = (passport, ormModels, sequelize) => {
       }
     }
   });
+  */
 
   return router;
 };

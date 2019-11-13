@@ -1,7 +1,7 @@
 module.exports = (app, ormModels, passport, sequelize, models) => {
     app.use('/admin', require('../routers/admin')(passport, models, sequelize));
     app.use('/product',require('../routers/product') (passport, ormModels, sequelize));
-    app.use('/order',require('../routers/order') (passport, ormModels, sequelize));
+    app.use('/order',require('../routers/order') (passport, models, sequelize));
     app.use('/tag',require('../routers/tag') (passport, ormModels));
     app.use('/roles',require('../routers/roles') (passport, ormModels));
     app.use('/permissions',require('../routers/permissions') (passport, ormModels));

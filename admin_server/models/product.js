@@ -11,10 +11,11 @@ module.exports = sequelize => {
     return product;
   }
 
-  async function updateStock(stock, id) {
+  async function updateStock( id, stock) {
     const update = await sequelize.query(
       `UPDATE products SET stock='${stock}' WHERE id='${id}'`
     );
+    return update;
   }
 
   async function create(image, name, description, price, stock) {
