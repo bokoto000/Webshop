@@ -1,7 +1,7 @@
 module.exports = (sequelize) => {
 
     async function create(name, permission){
-        const perm = (await sequelize.query(`INSERT INTO permissions ('name','permission') VALUES ('${name}','${permission}')`))
+        const perm = (await sequelize.query(`INSERT INTO permissions ("name","permission") VALUES ('${name}','${permission}')`))
         return perm[0];
     }
 

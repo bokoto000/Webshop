@@ -22,10 +22,10 @@ function compare(a, b) {
 const checkPermission = require("../helpers/checkPermissions");
 router.use(checkPermission());
 
-module.exports = (passport, ormModels, sequelize) => {
-  const Product = ormModels.Product;
-  const Tag = ormModels.Tag;
-  const ProductTag = ormModels.ProductTag;
+module.exports = (passport, ormModels, models, sequelize) => {
+  const Product = models.Product;
+  const Tag = models.Tag;
+  const ProductTag = models.ProductTag;
 
   router.post("/create", async (req, res, next) => {
     const user = req.user;
@@ -36,13 +36,7 @@ module.exports = (passport, ormModels, sequelize) => {
       const price = req.body.price;
       const stock = req.body.stock;
       try {
-        await Product.create({
-          image,
-          name,
-          description,
-          price,
-          stock
-        });
+        await Product.create(image, name, description, price, stock);
       } catch (e) {
         console.log(e);
       }
@@ -53,17 +47,9 @@ module.exports = (passport, ormModels, sequelize) => {
   });
 
   router.get("/get-products", async (req, res, next) => {
-    const productsQuery = await sequelize.query(`SELECT "products"."id", "products"."name",
-     "products"."description",
-      "products"."image",
-       "products"."price",
-        "products"."stock",
-             "producttags->tags"."tag_id" AS "tagId",
-              "producttags->tags"."name" AS "tagName"
-                FROM "products" AS "products" LEFT OUTER JOIN "producttags" AS "producttags" ON "products"."id" = "producttags"."product_id"
-                 LEFT OUTER JOIN "tags" AS "producttags->tags" ON "producttags"."tag_id" = "producttags->tags"."tag_id"`);
+    const products = await Product.findAll();
     //transforming the query results into good format
-    const products = productsQuery[0];
+    //vuprosche moga li direktno ot query da obedinqvam rezultati
     products.sort(compare);
     productsRes = [];
     product = products[0];
@@ -107,7 +93,7 @@ module.exports = (passport, ormModels, sequelize) => {
       }
     }
     //console.log(productsRes);
-    res.json({ products: productsRes });
+    return res.json({ products: productsRes });
   });
 
   router.post("/update-stock", async (req, res, next) => {
@@ -117,11 +103,11 @@ module.exports = (passport, ormModels, sequelize) => {
       const id = req.body.id;
       const stock = req.body.stock;
       try {
-        await Product.update({ stock: stock }, { where: { id: id } });
+        await Product.updateStock(id, stock);
       } catch (e) {
         console.error(e);
       }
-      res.sendStatus(200);
+      return res.sendStatus(200);
     }
   });
 
@@ -136,40 +122,22 @@ module.exports = (passport, ormModels, sequelize) => {
       const tags = req.body.tags;
       try {
         for (i = 0; i < tags.length; i++) {
-          const test = await ProductTag.findAll({
-            where: {
-              productId: id,
-              tagId: tags[i].id
-            }
-          });
-          console.log(test);
+          const test = await ProductTag.findOne(id, tags[i].id);
           if (test.length == 0) {
-            console.log("after test");
-            await ProductTag.create({
-              productId: id,
-              tagId: tags[i].id
-            });
+            await ProductTag.create(id, tags[i].id);
           }
         }
       } catch (e) {
         console.log(e);
       }
       try {
-        await Product.update(
-          {
-            image,
-            name,
-            description,
-            price
-          },
-          { where: { id: id } }
-        );
+        await Product.update(id, image, name, description, price);
       } catch (e) {
         console.log(e);
       }
-      res.send(200);
+      return res.send(200);
     } else {
-      res.sendStatus(400);
+      return res.sendStatus(400);
     }
   });
 
@@ -209,7 +177,7 @@ module.exports = (passport, ormModels, sequelize) => {
   });
 
   router.post("/fake-tags", async (req, res, next) => {
-    const tags = (await Tag.findAll());
+    const tags = await Tag.findAll();
     console.log(tags.length);
     const fakes = [];
     const productsQuery = await sequelize.query(`SELECT "products"."id", "products"."name",
@@ -224,8 +192,8 @@ module.exports = (passport, ormModels, sequelize) => {
     const products = productsQuery[0];
     for (i = 0; i < products.length; i++) {
       let product = products[i];
-      var tag = tags[Math.floor(Math.random()*tags.length)];
-      if(!product.tagId){
+      var tag = tags[Math.floor(Math.random() * tags.length)];
+      if (!product.tagId) {
         console.log(product);
         await ProductTag.create({
           productId: product.id,

@@ -8,8 +8,8 @@ router.use(
   })
 );
 
-module.exports = (passport, ormModels) => {
-  const Role = ormModels.Role;
+module.exports = (passport, ormModels,models) => {
+  const Role = models.Role;
   const UserRole = ormModels.UserRole;
   const Admin = ormModels.Admin;
   const PermissionRole = ormModels.PermissionRoles;
@@ -18,8 +18,9 @@ module.exports = (passport, ormModels) => {
   router.post("/create-role", async (req, res, next) => {
     const roleName = req.body.roleName;
     try {
-      await Role.create({ role: roleName });
+      await Role.create( roleName);
     } catch (e) {
+      console.error(e);
       return res.status(401).json({error:"Ролята вече съществува"});
     }
     return res.sendStatus(200);
@@ -37,7 +38,7 @@ module.exports = (passport, ormModels) => {
   });
 
   router.get("/get-roles", async (req, res, next) => {
-    const roles = await Role.findAll({});
+    const roles = await Role.findAll();
     if (roles) return res.json(roles);
     else return res.sendStatus(403);
   });
@@ -91,7 +92,7 @@ module.exports = (passport, ormModels) => {
   router.post("/grant-permission", async (req, res, next) => {
     const roleId = req.body.roleId;
     const perms = req.body.perms;
-    const role = await Role.findOne({ where: { id: roleId } });
+    const role = await Role.findOne(roleId );
     const permsLength = perms.length;
     let hasErrors = 0;
     for (let i = 0; i < permsLength; i++) {

@@ -1,7 +1,7 @@
 module.exports = sequelize => {
 
     async function findOne(productId, tagId) {
-        const results = (await sequelize.query(`SELECT * FROM producttags WHERE product_id='${productId}' tag_id='${tagId}' `))[0];
+        const results = (await sequelize.query(`SELECT * FROM producttags WHERE "product_id"='${productId}' AND "tag_id"='${tagId}' LIMIT 1`))[0];
         return results;
       }
 
@@ -10,6 +10,6 @@ module.exports = sequelize => {
         return results;
     }
     
-    return { findOne, findByPk, findAll, create, updateStock};
+    return { findOne, create};
   };
   

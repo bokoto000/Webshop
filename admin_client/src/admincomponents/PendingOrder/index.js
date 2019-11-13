@@ -128,7 +128,7 @@ export default class PendingOrder extends Component {
                                   <Grid.Column>{product.stock}</Grid.Column>
                                   <Grid.Column style={{ alignItems: "center" }}>
                                     <div className="cart-item-price">
-                                      {parseFloat(product.productTotal).toFixed(
+                                      {parseFloat(product.total).toFixed(
                                         2
                                       )}
                                       лв
