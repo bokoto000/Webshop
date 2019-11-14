@@ -8,18 +8,18 @@ router.use(
   })
 );
 
-module.exports = (passport, ormModels, sequelize) => {
-  const Item = ormModels.Item;
-  const Cart = ormModels.Cart;
-  const OrderedItem = ormModels.OrderedItem;
-  const Order = ormModels.Order;
-  const Product = ormModels.Product;
+module.exports = (passport, models, sequelize) => {
+  const Item = models.Item;
+  const Cart = models.Cart;
+  const OrderedItem = models.OrderedItem;
+  const Order = models.Order;
+  const Product = models.Product;
 
   router.post("/create", async (req, res) => {
     const user = req.user;
-    let total =0;
+    let total = 0;
     if (user && user.id) {
-      const cart = await Cart.findOne({ where: { userId: user.id } });
+      const cart = await Cart.findOneByUserId(user.id);
       if (!cart) {
         return res.sendStatus(422);
       }
@@ -43,7 +43,7 @@ module.exports = (passport, ormModels, sequelize) => {
         const stock = items[0][i].stock;
         const price = items[0][i].price;
         const leftStock = items[0][i].leftStock;
-        total+=(stock*price);
+        total += stock * price;
         if (stock > leftStock) {
           return res.status(422).send({
             error:
@@ -51,44 +51,30 @@ module.exports = (passport, ormModels, sequelize) => {
           });
         }
       }
-      const order = await Order.findOne({
-        where: { userId: user.id, status: "New" }
-      });
+      const order = await Order.findNewOrderByUserId(user.id);
       if (order) {
-        await OrderedItem.destroy({ where: { orderId: order.dataValues.id } });
-        await Order.destroy({ where: { id: order.dataValues.id } });
-        await Order.create({
-          userId: user.id,
-          status: "New",
-          date: Date.now(),
-          total
-        });
+        await OrderedItem.destroy(order.id);
+        await Order.destroy(order.id);
+        await Order.create(user.id, total);
       } else {
-        await Order.create({
-          userId: user.id,
-          status: "New",
-          date: Date.now(),
-          total
-        });
+        await Order.create(user.id, total);
       }
-      const newOrder = await Order.findOne({
-        where: { userId: user.id, status: "New" }
-      });
+      const newOrder = await Order.findNewOrderByUserId(user.id);
       if (newOrder) {
-        newOrderId = newOrder.dataValues.id;
+        newOrderId = newOrder.id;
         for (let i = 0; i < items[0].length; i++) {
           const productId = items[0][i].productId;
           const stock = items[0][i].stock;
           const leftStock = items[0][i].leftStock;
           const orderedPrice = items[0][i].orderedPrice;
-          const orderedTotal = stock*orderedPrice;
-          const orderedItem = await OrderedItem.create({
-            orderId: newOrderId,
+          const orderedTotal = stock * orderedPrice;
+          const orderedItem = await OrderedItem.create(
+            newOrderId,
             productId,
             stock,
             orderedPrice,
             orderedTotal
-          });
+          );
         }
       }
       return res.sendStatus(200).json(items[0]);
@@ -101,9 +87,7 @@ module.exports = (passport, ormModels, sequelize) => {
   router.get("/get", async (req, res) => {
     const user = req.user;
     if (user && user.id) {
-      const order = await Order.findOne({
-        where: { userId: user.id, status: "New" }
-      });
+      const order = await Order.findNewOrderByUserId(user.id);
       if (!order) {
         return res.sendStatus(403);
       } else {
@@ -139,21 +123,16 @@ module.exports = (passport, ormModels, sequelize) => {
   router.post("/finish", async (req, res) => {
     const user = req.user;
     if (user && user.id) {
-      const order = await Order.findOne({
-        where: { userId: user.id, status: "New" }
-      });
+      const order = await Order.findNewOrderByUserId(user.id);
       if (!order) {
         return res.sendStatus(403);
       } else {
-        const updatedOrder = await Order.update(
-          { status: "Sent" },
-          { where: { id: order.dataValues.id } }
-        );
+        const updatedOrder = await Order.updateStatus("Sent", order.id);
         if (updatedOrder) {
-          const cart = await Cart.findOne({ where: { userId: user.id } });
-          if (cart){
-            await Item.destroy({ where: { cartId: cart.dataValues.id } });
-            await Cart.destroy({ where: { userId: user.id } });
+          const cart = await Cart.findOneByUserId(user.id);
+          if (cart) {
+            await Item.destroyAllByCartId(cart.dataValues.id);
+            await Cart.destroy(user.id);
           }
           const orderedItems = await sequelize.query(`SELECT "ordereditems"."id",
             "ordereditems"."id" AS "id",
@@ -170,13 +149,13 @@ module.exports = (passport, ormModels, sequelize) => {
                         WHERE "ordereditems"."order_id" = ${order.dataValues.id};`);
           for (let i = 0; i < orderedItems[0].length; i++) {
             if (orderedItems[0][i]) {
-              const  item = orderedItems[0][i];
+              const item = orderedItems[0][i];
               const leftStock = item.leftStock;
               const stock = item.stock;
               const productId = item.productId;
-              const product = await Product.update(
-                { stock: leftStock - stock },
-                { where: { id: productId } }
+              const product = await Product.updateStock(
+                productId,
+                leftStock - stock
               );
             }
           }

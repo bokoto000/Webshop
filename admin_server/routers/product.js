@@ -160,13 +160,13 @@ module.exports = (passport, ormModels, models, sequelize) => {
         const description = fakes[i].description;
         const price = fakes[i].price;
         const stock = fakes[i].stock;
-        const product = await Product.create({
+        const product = await Product.create(
           image,
           name,
           description,
           price,
           stock
-        });
+        );
       } catch (e) {
         console.log(e);
         failed++;
@@ -178,7 +178,6 @@ module.exports = (passport, ormModels, models, sequelize) => {
 
   router.post("/fake-tags", async (req, res, next) => {
     const tags = await Tag.findAll();
-    console.log(tags.length);
     const fakes = [];
     const productsQuery = await sequelize.query(`SELECT "products"."id", "products"."name",
      "products"."description",
@@ -195,10 +194,7 @@ module.exports = (passport, ormModels, models, sequelize) => {
       var tag = tags[Math.floor(Math.random() * tags.length)];
       if (!product.tagId) {
         console.log(product);
-        await ProductTag.create({
-          productId: product.id,
-          tagId: tag.dataValues.id
-        });
+        await ProductTag.create(product.id, tag.dataValues.id);
       }
     }
     return res.json(fakes);

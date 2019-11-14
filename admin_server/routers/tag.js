@@ -8,31 +8,28 @@ router.use(
   })
 );
 
-module.exports = (passport, ormModels) => {
-  const Tag = ormModels.Tag;
+module.exports = (passport, models) => {
+  const Tag = models.Tag;
 
   router.post("/create", async (req, res, next) => {
     const user = req.user;
     if (user) {
       const name = req.body.name;
       try {
-        await Tag.create({
-            name
-        });
+        await Tag.create(name);
       } catch (e) {
-        return res.status(403).json({error:"Тагът вече съществува!"})
+        return res.status(403).json({ error: "Тагът вече съществува!" });
       }
-      res.send(200);
+      return res.send(200);
     } else {
-      res.sendStatus(400);
+      return res.sendStatus(400);
     }
   });
 
   router.get("/get-tags", async (req, res, next) => {
     const tags = await Tag.findAll();
-    res.json({ tags });
+    return res.json({ tags });
   });
-
 
   return router;
 };

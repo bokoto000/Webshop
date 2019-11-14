@@ -11,21 +11,18 @@ router.use(
 
 router.use(checkPermission());
 
-module.exports = (passport, ormModels, sequelize) => {
-  const Item = ormModels.Item;
-  const Cart = ormModels.Cart;
-  const Product = ormModels.Product;
+module.exports = (passport, models, sequelize) => {
+  const Item = models.Item;
+  const Cart = models.Cart;
 
   router.get("/get-cart", async (req, res) => {
     const user = req.user;
     if (user && user.id) {
-      const cart = await Cart.findOne({ where: { userId: user.id } });
+      const cart = await Cart.findOneByUserId(user.id);
       if (!cart) {
-        await Cart.create({
-          userId: user.id
-        });
+        await Cart.create(user.id);
       }
-      const cartId = cart.dataValues.id;
+      const cartId = cart.id;
       const items = await sequelize.query(`SELECT "items"."id",
          "items"."stock",
           "product"."id" AS "id",
@@ -34,14 +31,9 @@ module.exports = (passport, ormModels, sequelize) => {
              "product"."image" AS "image",
               "product"."price" AS "price",
               "product"."stock" AS "leftStock"
-                FROM "items" AS "items" LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id" WHERE "items"."cart_id" = ${cartId}`);
-      /*const items = await Item.findAll({
-        where: { cartId: cart.dataValues.id },
-        include:{
-            model:Product
-        }
-      });*/
-      res.json(items[0]);
+                FROM "items" AS "items" LEFT OUTER JOIN "products" AS "product"
+                 ON "items"."product_id" = "product"."id" WHERE "items"."cart_id" = ${cartId}`);
+      return res.json(items[0]);
     } else res.sendStatus(403);
   });
 
@@ -50,35 +42,17 @@ module.exports = (passport, ormModels, sequelize) => {
     const itemId = req.body.id;
     stock = req.body.stock;
     if (user && user.id) {
-      const cart = await Cart.findOne({ where: { userId: user.id } });
+      const cart = await Cart.findOneByUserId(user.id);
       if (!cart) {
-        await Cart.create({
-          userId: user.id
-        });
+        await Cart.create(user.id);
       }
       cartId = cart.dataValues.id;
-      const item = await Item.findOne({
-        where: { cartId: cartId, productId: itemId }
-      });
+      const item = await Item.findOne(cartId, itemId);
       if (!item) {
         if (!stock) stock = 1;
-        await Item.create({
-          cartId: cartId,
-          productId: itemId,
-          stock: stock
-        });
+        await Item.create(cartId, itemId, stock);
       } else {
-        await Item.update(
-          {
-            stock: stock
-          },
-          {
-            where: {
-              cartId: cartId,
-              productId: itemId
-            }
-          }
-        );
+        await Item.updateStock(cartId, itemId, stock);
       }
       const updatedItem = await sequelize.query(`SELECT "items"."id",
          "items"."stock",
@@ -100,35 +74,17 @@ module.exports = (passport, ormModels, sequelize) => {
     const itemId = req.body.id;
     stock = req.body.stock;
     if (user && user.id) {
-      let cart = await Cart.findOne({ where: { userId: user.id } });
+      let cart = await Cart.findOneByUserId(user.id);
       if (!cart) {
-        cart = await Cart.create({
-          userId: user.id
-        });
+        cart = await Cart.create(user.id);
       }
-      cartId = cart.dataValues.id;
-      const item = await Item.findOne({
-        where: { cartId: cartId, productId: itemId }
-      });
+      cartId = cart.id;
+      const item = await Item.findOne(cartId, itemId);
       if (!item) {
         if (!stock) stock = 1;
-        await Item.create({
-          cartId: cartId,
-          productId: itemId,
-          stock: stock
-        });
+        await Item.create(cartId, itemId, stock);
       } else {
-        await Item.update(
-          {
-            stock: item.dataValues.stock + 1
-          },
-          {
-            where: {
-              cartId: cartId,
-              productId: itemId
-            }
-          }
-        );
+        await Item.updateStock(cartId, itemId, item.stock + 1);
       }
       res.json(cart);
     } else res.sendStatus(403);
@@ -138,25 +94,16 @@ module.exports = (passport, ormModels, sequelize) => {
     const user = req.user;
     const itemId = req.body.id;
     if (user && user.id) {
-      const cart = await Cart.findOne({ where: { userId: user.id } });
+      const cart = await Cart.findOne(user.id);
       if (!cart) {
-        await Cart.create({
-          userId: user.id
-        });
+        await Cart.create(user.id);
       }
       cartId = cart.dataValues.id;
-      const item = await Item.findOne({
-        where: { cartId: cartId, productId: itemId }
-      });
+      const item = await Item.findOne(cartId, itemId);
       if (!item) {
         return 422;
       } else {
-        await Item.destroy({
-          where: {
-            cartId: cartId,
-            productId: itemId
-          }
-        });
+        await Item.destroy(cartId, itemId);
       }
       res.status(200).send({ product: [null] });
     } else res.sendStatus(403);

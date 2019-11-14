@@ -13,8 +13,7 @@ module.exports = (passport, ormModels, models) => {
   const UserRole = models.UserRole;
   const Admin = models.Admin;
   const PermissionRole = models.PermissionRole;
-  const Permission = models.Permission;
-
+  
   router.post("/create-role", async (req, res, next) => {
     const roleName = req.body.roleName;
     try {
@@ -47,7 +46,6 @@ module.exports = (passport, ormModels, models) => {
   router.get("/get-role-permissions/:id", async (req, res, next) => {
     const roleId = req.params.id;
     const permissions = await PermissionRole.findAllByRole(roleId);
-    console.log(permissions);
     if (permissions) return res.json(permissions);
     else return res.sendStatus(403);
   });
@@ -57,7 +55,6 @@ module.exports = (passport, ormModels, models) => {
     const roleId = req.body.roleId;
     const admin = await Admin.findByPk(adminId);
     const hasUserRole = await UserRole.findOne(adminId, roleId);
-    console.log(hasUserRole);
     if (hasUserRole) {
       return res.status(403).send({ error: "User already has that role" });
     }
@@ -65,8 +62,7 @@ module.exports = (passport, ormModels, models) => {
       try {
         const userRole = await UserRole.create(adminId, roleId);
         return res.sendStatus(200);
-      }
-      catch (e) {
+      } catch (e) {
         console.error(e);
 
         return res
@@ -94,18 +90,13 @@ module.exports = (passport, ormModels, models) => {
     const perms = req.body.perms;
     const role = await Role.findOne(roleId);
     const permsLength = perms.length;
-    console.log(perms);
     let hasErrors = 0;
     for (let i = 0; i < permsLength; i++) {
       const permId = perms[i].id;
       const permRole = await PermissionRole.findOne(permId, roleId);
-      console.log(role);
-      if (role ) {
+      if (role) {
         if (!permRole && perms[i].isTicked == true)
-          await PermissionRole.create({
-            roleId,
-            permissionId: permId
-          });
+          await PermissionRole.create(permId, roleId);
         if (permRole && !perms[i].isTicked) {
           await PermissionRole.deletePermission(permId, roleId);
         }

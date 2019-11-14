@@ -18,12 +18,12 @@ paypal.configure({
     "EIRTG0a9Nqwogqe3__UuE1iDBCQohZE32eu_HsqxdQwG0-jSRcmhrNHlMiS0WeAr1a7KkWnDXkRqqEX1"
 });
 
-module.exports = (sequelize, ormModels) => {
-  const Order = ormModels.Order;
-  const PendingPayment = ormModels.PendingPayment;
-  const Product = ormModels.Product;
-  const Cart = ormModels.Cart;
-  const Item = ormModels.Item;
+module.exports = (sequelize, models) => {
+  const Order = models.Order;
+  const PendingPayment = models.PendingPayment;
+  const Product = models.Product;
+  const Cart = models.Cart;
+  const Item = models.Item;
 
   router.post("/pay", async (req, res) => {
     const user = req.user;
@@ -31,9 +31,7 @@ module.exports = (sequelize, ormModels) => {
     let total = 0;
     let order;
     if (user && user.id) {
-      order = await Order.findOne({
-        where: { userId: user.id, status: "New" }
-      });
+      order = await Order.findNewOrderByUserId(user.id);
       if (!order) {
         return res.sendStatus(403);
       } else {
@@ -97,7 +95,7 @@ module.exports = (sequelize, ormModels) => {
       } else {
         const paymentId = payment.id;
         const orderId = order.dataValues.id;
-        await PendingPayment.create({ orderId, paymentId, total });
+        await PendingPayment.create(orderId, paymentId, total);
         for (let i = 0; i < payment.links.length; i++) {
           if (payment.links[i].rel === "approval_url") {
             return res.json({ href: payment.links[i].href });
@@ -111,7 +109,7 @@ module.exports = (sequelize, ormModels) => {
     console.log("Success");
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-    const payment = await PendingPayment.findOne({ where: { paymentId } });
+    const payment = await PendingPayment.findOneByPaymentId(paymentId);
     const orderId = payment.dataValues.orderId;
     const execute_payment_json = {
       payer_id: payerId,
@@ -134,9 +132,7 @@ module.exports = (sequelize, ormModels) => {
           throw error;
         } else {
           if (orderId) {
-            const order = await Order.findOne({
-              where: { id: orderId, status: "New" }
-            });
+            const order = await Order.findNewOrder(orderId);
             const userId = order.dataValues.userId;
             if (!order) {
               return res.sendStatus(403);
@@ -146,10 +142,11 @@ module.exports = (sequelize, ormModels) => {
                 { where: { id: order.dataValues.id } }
               );
               if (updatedOrder) {
-                const cart = await Cart.findOne({ where: { userId } });
-                if (cart){
-                  await Item.destroy({ where: { cartId: cart.dataValues.id } });
-                  await Cart.destroy({ where: { userId } });}
+                const cart = await Cart.findOneByUserId(userId);
+                if (cart) {
+                  await Item.destroyAllByCartId(cart.id);
+                  await Cart.destroy(userId);
+                }
 
                 const orderedItems = await sequelize.query(`SELECT "ordereditems"."id",
                 "ordereditems"."id" AS "id",
@@ -170,13 +167,13 @@ module.exports = (sequelize, ormModels) => {
                     const leftStock = item.leftStock;
                     const stock = item.stock;
                     const productId = item.productId;
-                    const product = await Product.update(
-                      { stock: leftStock - stock },
-                      { where: { id: productId } }
+                    const product = await Product.updateStock(
+                      productId,
+                      leftStock - stock
                     );
                   }
                 }
-                await PendingPayment.destroy({ where: { paymentId } });
+                await PendingPayment.destroy(paymentId);
                 return res.redirect("http://localhost:3000/success-order");
               } else return res.send(403);
             }

@@ -44,8 +44,6 @@ module.exports = (passport, models, sequelize) => {
       for (let i = 0; i < orderedItemsLength; i++) {
         const productId = orderedItems[i].product_id;
         const stock = orderedItems[i].stock;
-        console.log(orderedItems[i]);
-        console.log(productId);
         const product = await Product.findByPk(productId);
         await Product.updateStock(productId, product.stock + stock);
       }
