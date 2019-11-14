@@ -28,34 +28,16 @@ module.exports = (passport, ormModels, sequelize) => {
       if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
       } else {
-        user = await User.findOne({
-          where: {
-            email: req.body.email
-          }
-        });
+        user = await User.findOneByEmail(req.body.email);
         if (!user) {
           return res.sendStatus(422);
         }
         const token = crypto.randomBytes(20).toString("hex");
-        const resPass = await ResetPasswordToken.findOne({
-          where: {
-            id: user.dataValues.id
-          }
-        });
+        const resPass = await ResetPasswordToken.findOne(user.dataValues.id);
         if (resPass) {
-          await ResetPasswordToken.update(
-            {
-              resetPasswordToken: token,
-              expirePasswordToken: Date.now() + 3600000
-            },
-            { where: { id: user.dataValues.id } }
-          );
+          await ResetPasswordToken.update(user.id, token);
         } else {
-          await ResetPasswordToken.create({
-            id: user.dataValues.id,
-            resetPasswordToken: token,
-            expirePasswordToken: Date.now() + 3600000
-          });
+          await ResetPasswordToken.create(user.id, token);
         }
         try {
           const transporter = nodemailer.createTransport({
@@ -115,7 +97,7 @@ module.exports = (passport, ormModels, sequelize) => {
       if (req.body.password == req.body.verifyPassword) {
         const token = req.body.token;
         const resToken = await ResetPasswordToken.findOne({
-          where: { expirePasswordToken: {[Op.gt]:Date.now().toString()} }
+          where: { expirePasswordToken: { [Op.gt]: Date.now().toString() } }
         });
         const userId = resToken.dataValues.id;
         const user = await User.findOne({ where: { id: userId } });
@@ -128,9 +110,9 @@ module.exports = (passport, ormModels, sequelize) => {
               { password: hash },
               { where: { id: userId } }
             );
-            if(user){
+            if (user) {
               return res.sendStatus(200);
-            } else{
+            } else {
               return res.sendStatus(403);
             }
           }

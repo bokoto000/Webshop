@@ -79,10 +79,10 @@ module.exports = (passport, ormModels, sequelize) => {
 
   router.get("/get-product/:id", async (req, res) => {
     const id = req.params.id;
-    const product = await Product.findOne({ where: { id } });
-    if(product){
-      return res.status(200).json({product});
-    } else{
+    const product = await Product.findOneByPk(id);
+    if (product) {
+      return res.status(200).json({ product });
+    } else {
       return res.sendStatus(403);
     }
   });
