@@ -11,10 +11,9 @@ router.use(
 
 router.use(checkPermission());
 
-module.exports = (passport, ormModels, sequelize) => {
-  const Item = ormModels.Item;
-  const Cart = ormModels.Cart;
-  const Product = ormModels.Product;
+module.exports = (passport, models, sequelize) => {
+  const Item = models.Item;
+  const Cart = models.Cart;
 
   router.get("/get-cart", async (req, res) => {
     const user = req.user;

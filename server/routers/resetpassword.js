@@ -15,9 +15,9 @@ router.use(
 const Op = Sequelize.Op;
 const saltRounds = 10;
 
-module.exports = (passport, ormModels, sequelize) => {
-  const User = ormModels.User;
-  const ResetPasswordToken = ormModels.ResetPasswordToken;
+module.exports = (passport, models, sequelize) => {
+  const User = models.User;
+  const ResetPasswordToken = models.ResetPasswordToken;
 
   router.post(
     "/forget-password",

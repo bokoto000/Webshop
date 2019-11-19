@@ -18,12 +18,12 @@ paypal.configure({
     "EIRTG0a9Nqwogqe3__UuE1iDBCQohZE32eu_HsqxdQwG0-jSRcmhrNHlMiS0WeAr1a7KkWnDXkRqqEX1"
 });
 
-module.exports = (sequelize, ormModels) => {
-  const Order = ormModels.Order;
-  const PendingPayment = ormModels.PendingPayment;
-  const Product = ormModels.Product;
-  const Cart = ormModels.Cart;
-  const Item = ormModels.Item;
+module.exports = (sequelize, models) => {
+  const Order = models.Order;
+  const PendingPayment = models.PendingPayment;
+  const Product = models.Product;
+  const Cart = models.Cart;
+  const Item = models.Item;
 
   router.post("/pay", async (req, res) => {
     const user = req.user;
