@@ -18,8 +18,8 @@ function compare(a, b) {
   return 0;
 }
 
-module.exports = (passport, ormModels, sequelize) => {
-  const Product = ormModels.Product;
+module.exports = (passport, models, sequelize) => {
+  const Product = models.Product;
 
   router.get("/get-products", async (req, res, next) => {
     const productsQuery = await sequelize.query(`SELECT "products"."id", "products"."name",

@@ -1,24 +1,18 @@
 module.exports = sequelize => {
-  async function create(id) {
-    const results = (
-      await sequelize.query(`INSERT INTO carts (user_id) VALUES ('${id}')`)
-    )[0];
-    return results;
-  }
+    async function create(userId) {
+      const cart = (await sequelize.query(`INSERT INTO carts (user_id) VALUES ('${userId}')`));
+      return cart;
+    }
 
-  async function findOneByUserId(id) {
-    const results = (
-      await sequelize.query(`SELECT * FROM carts WHERE user_id='${id}'`)
-    )[0][0];
-    return results;
-  }
+    async function findOne(userId){
+      const cart = (await sequelize.query(`SELECT * carts WHERE user_id ='${userId}'`))[0][0];
+      return cart;
+    }
 
-  async function destroy(id) {
-    const results = (
-      await sequelize.query(`DELETE FROM carts WHERE user_id='${id}'`)
-    )[0];
-    return results;
-  }
+    async function destroy(userId){
+      const cart = (await sequelize.query(`DELETE FROM carts WHERE id='${userId}'`))
+    }
 
-  return { create, findOneByUserId, destroy };
-};
+    return { create, findOne };
+  };
+  

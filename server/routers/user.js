@@ -9,8 +9,8 @@ router.use(
   })
 );
 
-module.exports = (passport, ormModels, models) => {
-  const User = ormModels.User;
+module.exports = (passport, models) => {
+  const User = models.User;
   const modelUser = models.User;
   router.post(
     "/register",
