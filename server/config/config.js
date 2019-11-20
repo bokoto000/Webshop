@@ -22,9 +22,8 @@ module.exports = async app => {
   const sql = fs.readFileSync(__dirname+'/initDb.sql').toString();
   await sequelize.query(sql);
 
-  const ormModels = require("../orm_models/index")(sequelize);
   const models = require("../models/index")(sequelize);
-  require("./passportConfig")(passport, ormModels, models);
-  require("./routersConfig")(app, ormModels, passport, sequelize, models);
+  require("./passportConfig")(passport, models);
+  require("./routersConfig")(app, models, passport, sequelize);
   //require("./paypalConfig")();
 };

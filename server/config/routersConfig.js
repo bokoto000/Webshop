@@ -1,4 +1,4 @@
-module.exports = (app, ormModels, passport,sequelize, models) => {
+module.exports = (app, models, passport,sequelize) => {
     app.use('/product',require('../routers/product') (passport, models,sequelize))
     app.use('/user',require('../routers/user') (passport, models, models));
     app.use('/cart',require('../routers/cart') (passport, models,sequelize));

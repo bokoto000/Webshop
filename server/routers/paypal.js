@@ -94,7 +94,7 @@ module.exports = (sequelize, models) => {
         throw error;
       } else {
         const paymentId = payment.id;
-        const orderId = order.dataValues.id;
+        const orderId = order.id;
         await PendingPayment.create(orderId, paymentId, total);
         for (let i = 0; i < payment.links.length; i++) {
           if (payment.links[i].rel === "approval_url") {
@@ -109,15 +109,15 @@ module.exports = (sequelize, models) => {
     console.log("Success");
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-    const payment = await PendingPayment.findOneByPaymentId(paymentId);
-    const orderId = payment.dataValues.orderId;
+    const payment = await PendingPayment.findOne(paymentId);
+    const orderId = payment.order_id;
     const execute_payment_json = {
       payer_id: payerId,
       transactions: [
         {
           amount: {
             currency: "USD",
-            total: payment.dataValues.total
+            total: payment.total
           }
         }
       ]
@@ -132,19 +132,17 @@ module.exports = (sequelize, models) => {
           throw error;
         } else {
           if (orderId) {
-            const order = await Order.findNewOrder(orderId);
-            const userId = order.dataValues.userId;
+            const order = await Order.findNewOrderByOrderId(orderId);
+            console.log(order);
+            const userId = order.user_id;
             if (!order) {
               return res.sendStatus(403);
             } else {
-              const updatedOrder = await Order.update(
-                { status: "Paid" },
-                { where: { id: order.dataValues.id } }
-              );
+              const updatedOrder = await Order.updateStatus(order.id, "Paid");
               if (updatedOrder) {
                 const cart = await Cart.findOneByUserId(userId);
                 if (cart) {
-                  await Item.destroyAllByCartId(cart.id);
+                  await Item.destroyByCart(cart.id);
                   await Cart.destroy(userId);
                 }
 
@@ -160,7 +158,7 @@ module.exports = (sequelize, models) => {
                         "product"."stock" AS "leftStock"
                         FROM "ordereditems" AS "ordereditems"
                         LEFT OUTER JOIN "products" AS "product" ON "ordereditems"."product_id" = "product"."id"
-                            WHERE "ordereditems"."order_id" = ${order.dataValues.id};`);
+                            WHERE "ordereditems"."order_id" = ${order.id};`);
                 for (let i = 0; i < orderedItems[0].length; i++) {
                   if (orderedItems[0][i]) {
                     const item = orderedItems[0][i];

@@ -5,7 +5,7 @@ module.exports = sequelize => {
   }
 
   async function findOne(cartId, productId) {
-    const item = (await sequelize.query(`SELECT * FROM items WHERE id='${cartId}' AND product_id='${productId}'`))[0][0];
+    const item = (await sequelize.query(`SELECT * FROM items WHERE cart_id='${cartId}' AND product_id='${productId}'`))[0][0];
     return item;
   }
 
@@ -24,7 +24,7 @@ module.exports = sequelize => {
   }
 
   async function findItemProductsByItem(cartId, productId) {
-    const updatedItem = await sequelize.query(`SELECT "items"."id",
+    const updatedItem = (await sequelize.query(`SELECT "items"."id",
          "items"."stock",
           "product"."id" AS "id",
            "product"."name" AS "name",
@@ -33,12 +33,12 @@ module.exports = sequelize => {
               "product"."price" AS "price",
               "product"."stock" AS "leftStock"
                 FROM "items" AS "items" LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id"
-                 WHERE "items"."cart_id" = ${cartId} AND  "product"."id"=${productId}`);
+                 WHERE "items"."cart_id" = ${cartId} AND  "product"."id"=${productId}`))[0];
     return updatedItem;
   }
 
-  async function update(cartId, productId, stock) {
-    const item = (await sequelize.query(`UPDATE items SET stock='${stock}' WHERE cart_id='${cartId}' AND product_id='${productId}`))[0][0];
+  async function updateStock(cartId, productId, stock) {
+    const item = (await sequelize.query(`UPDATE items SET stock='${stock}' WHERE cart_id='${cartId}' AND product_id='${productId}'`))[0][0];
     return item;
   }
 
@@ -47,6 +47,11 @@ module.exports = sequelize => {
     return items;
   }
 
+  async function destroyItem(cartId, productId){
+    const items = (await sequelize.query(`DELETE FROM items WHERE cart_id='${cartId}' AND product_id='${productId}'`))[0];
+    return items;
+  }
 
-  return { create, findOne, update, findItemProductsByItem, findItemProductsByCart };
+
+  return { create, findOne, updateStock, findItemProductsByItem, findItemProductsByCart,destroyByCart,destroyItem };
 };

@@ -1,11 +1,8 @@
 const LocalStrategy = require("passport-local");
 
-module.exports = (passport, ormModels, models) => {
-  const ormUser = ormModels.User;
+module.exports = (passport,models) => {
   const User = models.User;
-  const ormAdmin = ormModels.Admin;
-  const Admin = models.Admin;
-  const ResetPasswordToken = ormModels.ResetPasswordToken;
+  const ResetPasswordToken = models.ResetPasswordToken;
 
   passport.serializeUser((user, done) => {
     const userData = {
@@ -18,14 +15,14 @@ module.exports = (passport, ormModels, models) => {
 
   passport.deserializeUser(async (userData, done) => {
     const id = userData.id;
-    const userFromDb = await ormUser.findByPk(id);
+    const userFromDb = await User.findOne(id);
     const user = {
-      id: userFromDb.dataValues.id,
-      firstName: userFromDb.dataValues.firstName,
-      lastName: userFromDb.dataValues.lastName,
-      email: userFromDb.dataValues.email,
-      username: userFromDb.dataValues.username,
-      role: userFromDb.dataValues.role
+      id: userFromDb.id,
+      firstName: userFromDb.firstName,
+      lastName: userFromDb.lastName,
+      email: userFromDb.email,
+      username: userFromDb.username,
+      role: userFromDb.role
     };
     if (user) done(null, user);
     else {
@@ -42,7 +39,7 @@ module.exports = (passport, ormModels, models) => {
         passReqToCallback: true
       },
       async function(req, username, password, done) {
-        const user = await ormUser.findOne({ where: { username: username } });
+        const user = await User.findOneByUsername( username );
         if (user) {
           const comp = await User.validPassword(password, user.password);
           if (!comp) return done(null, false, "Incorrect password");
@@ -66,14 +63,14 @@ module.exports = (passport, ormModels, models) => {
         const firstName = req.body.firstName;
         const lastName = req.body.lastName;
         const role = "Guest";
-        const user = await ormUser.findOne({ where: { email: email } });
-        const usernameUser = await ormUser.findOne({ where: { username } });
+        const user = await User.findOneByEmail(email);
+        const usernameUser = await User.findOneByUsername(username);
         if (user) {
           return done(null, false, "Email is already taken");
         } else if (usernameUser) {
           return done(null, false, "Username is already taken");
         } else {
-          const user = await User.createUser(
+          await User.createUser(
             firstName,
             lastName,
             email,
@@ -81,6 +78,7 @@ module.exports = (passport, ormModels, models) => {
             password,
             role
           );
+          const user =  await User.findOneByUsername(username);
           if (user) {
             return done(null, user);
           } else {
@@ -103,7 +101,7 @@ module.exports = (passport, ormModels, models) => {
           where: { expirePasswordToken: token }
         });
         const userId = resToken.dataValues.id;
-        const user = await ormUser.findOne({ where: { id: userId } });
+        const user = await User.findOne( userId );
         if (!user) {
           return done(null, false, "User doesnt exist");
         } else {

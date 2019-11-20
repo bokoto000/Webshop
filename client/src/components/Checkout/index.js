@@ -25,7 +25,8 @@ class Checkout extends Component {
   async componentDidMount() {
     this.setState({ Loading: true });
     const res = await (await get("/order/get")).json();
-    if (res[0].length > 0) {
+    console.log(res);
+    if (res.length > 0) {
       this.setState({ order: res[0] });
       this.setState({ total: res[2] });
     }

@@ -5,7 +5,7 @@ module.exports = (sequelize) => {
         return order;
     }
 
-    async function findNewOrder(userId) {
+    async function findNewOrderByUserId(userId) {
         const orders = (await sequelize.query(`SELECT * FROM orders WHERE user_id='${userId}' AND status='New'`))[0][0];
         return orders;
     }
@@ -56,5 +56,10 @@ module.exports = (sequelize) => {
         return order;
     }
 
-    return { findByPk, findAllBetweenDates, findAllByStatus, findFullOrderByPk, updateStatus, create, destroy };
+    async function findNewOrderByOrderId(orderId){
+        const order = (await sequelize.query(`SELECT * FROM orders WHERE id='${orderId}' AND status='New'`))[0][0];
+        return order;
+    }
+
+    return { findByPk,findNewOrderByUserId,findNewOrderByOrderId, findAllBetweenDates, findAllByStatus, findFullOrderByPk, updateStatus, create, destroy };
 }

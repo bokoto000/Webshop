@@ -23,30 +23,21 @@ module.exports = (passport, models, sequelize) => {
         await Cart.create(user.id);
       }
       const cartId = cart.id;
-      const items = await sequelize.query(`SELECT "items"."id",
-         "items"."stock",
-          "product"."id" AS "id",
-           "product"."name" AS "name",
-            "product"."description" AS "description",
-             "product"."image" AS "image",
-              "product"."price" AS "price",
-              "product"."stock" AS "leftStock"
-                FROM "items" AS "items" LEFT OUTER JOIN "products" AS "product"
-                 ON "items"."product_id" = "product"."id" WHERE "items"."cart_id" = ${cartId}`);
-      return res.json(items[0]);
+      const items = await Item.findItemProductsByCart(cartId);
+      return res.json(items);
     } else res.sendStatus(403);
   });
 
   router.post("/update-item", async (req, res) => {
     const user = req.user;
     const itemId = req.body.id;
-    stock = req.body.stock;
+    let stock = req.body.stock;
     if (user && user.id) {
       const cart = await Cart.findOneByUserId(user.id);
       if (!cart) {
         await Cart.create(user.id);
       }
-      cartId = cart.dataValues.id;
+      cartId = cart.id;
       const item = await Item.findOne(cartId, itemId);
       if (!item) {
         if (!stock) stock = 1;
@@ -54,19 +45,9 @@ module.exports = (passport, models, sequelize) => {
       } else {
         await Item.updateStock(cartId, itemId, stock);
       }
-      const updatedItem = await sequelize.query(`SELECT "items"."id",
-         "items"."stock",
-          "product"."id" AS "id",
-           "product"."name" AS "name",
-            "product"."description" AS "description",
-             "product"."image" AS "image",
-              "product"."price" AS "price",
-              "product"."stock" AS "leftStock"
-                FROM "items" AS "items" LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id"
-                 WHERE "items"."cart_id" = ${cartId} AND  "product"."id"=${itemId}`);
-
-      res.status(200).send({ product: updatedItem[0] });
-    } else res.sendStatus(403);
+      const updatedItem = await Item.findItemProductsByItem(cartId, itemId);
+      return res.status(200).send({ product: updatedItem });
+    } else return res.sendStatus(403);
   });
 
   router.post("/buy-item", async (req, res) => {
@@ -94,16 +75,16 @@ module.exports = (passport, models, sequelize) => {
     const user = req.user;
     const itemId = req.body.id;
     if (user && user.id) {
-      const cart = await Cart.findOne(user.id);
+      const cart = await Cart.findOneByUserId(user.id);
       if (!cart) {
         await Cart.create(user.id);
       }
-      cartId = cart.dataValues.id;
+      cartId = cart.id;
       const item = await Item.findOne(cartId, itemId);
       if (!item) {
         return 422;
       } else {
-        await Item.destroy(cartId, itemId);
+        await Item.destroyItem(cartId, itemId);
       }
       res.status(200).send({ product: [null] });
     } else res.sendStatus(403);

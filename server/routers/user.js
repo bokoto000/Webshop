@@ -24,7 +24,9 @@ module.exports = (passport, models) => {
     (req, res, next) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(422).json({ errors: errors.array() });
+        const errorArray=errors.array()[0];
+        const errorText = errorArray.msg+" in " + errorArray.param +" field!";
+        return res.status(422).json({ error: errorText });
       } else
         passport.authenticate("local-signup", function(err, user,info) {
           if (err) {

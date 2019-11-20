@@ -5,7 +5,8 @@ module.exports = sequelize => {
     const hash = await bcrypt.hash(password, saltRounds);
     if (hash) {
       const user = (await sequelize.query(`INSERT INTO users (first_name,last_name,email,username,password,role)
-       VALUES('${firstName}','${lastName}','${email}','${username}','${password}','${role}')`))[0][0];
+       VALUES('${firstName}','${lastName}','${email}','${username}','${hash}','${role}')`));
+       console.log(user);
       return user;
     }
   }
@@ -24,5 +25,14 @@ module.exports = sequelize => {
     const user = (await sequelize.query(`SELECT * FROM users WHERE id='${id}'`))[0][0];
     return user;
   }
-  return { createUser, validPassword, changePassword };
+  async function findOneByUsername(username){
+    const user = (await sequelize.query(`SELECT * FROM users WHERE username='${username}'`))[0][0];
+    return user;
+  }
+
+  async function findOneByEmail(email){
+    const user = (await sequelize.query(`SELECT * FROM users WHERE email='${email}'`))[0][0];
+    return user;
+  }
+  return { createUser, validPassword, changePassword, findOne, findOneByUsername, findOneByEmail };
 };

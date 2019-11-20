@@ -23,26 +23,13 @@ module.exports = (passport, models, sequelize) => {
       if (!cart) {
         return res.sendStatus(422);
       }
-      cartId = cart.dataValues.id;
-      const items = await sequelize.query(`SELECT "items"."id",
-       "items"."cart_id" AS "cartId",
-        "items"."product_id" AS "productId",
-         "items"."stock",
-          "product"."id" AS "product.id",
-           "product"."name" AS "product.name",
-            "product"."description" AS "product.description",
-             "product"."image" AS "product.image",
-              "product"."price" AS "orderedPrice",
-               "product"."stock" AS "product.stock",
-                "product"."stock" AS "leftStock",
-                  "product"."price" AS "price"
-                  FROM "items" AS "items"
-                  LEFT OUTER JOIN "products" AS "product" ON "items"."product_id" = "product"."id"
-                   WHERE "items"."cart_id" = ${cartId};`);
-      for (let i = 0; i < items[0].length; i++) {
-        const stock = items[0][i].stock;
-        const price = items[0][i].price;
-        const leftStock = items[0][i].leftStock;
+      cartId = cart.id;
+      const items = await Cart.getCartItems(cartId);
+      for (let i = 0; i < items.length; i++) {
+        const curr = items[i];
+        const stock = curr.stock;
+        const price = curr.price;
+        const leftStock = curr.leftStock;
         total += stock * price;
         if (stock > leftStock) {
           return res.status(422).send({
@@ -53,20 +40,20 @@ module.exports = (passport, models, sequelize) => {
       }
       const order = await Order.findNewOrderByUserId(user.id);
       if (order) {
-        await OrderedItem.destroy(order.id);
+        await OrderedItem.destroyByOrderId(order.id);
         await Order.destroy(order.id);
-        await Order.create(user.id, total);
+        await Order.create(user.id, "New", Date.now(), total);
       } else {
-        await Order.create(user.id, total);
+        await Order.create(user.id, "New", Date.now(), total);
       }
       const newOrder = await Order.findNewOrderByUserId(user.id);
       if (newOrder) {
         newOrderId = newOrder.id;
-        for (let i = 0; i < items[0].length; i++) {
-          const productId = items[0][i].productId;
-          const stock = items[0][i].stock;
-          const leftStock = items[0][i].leftStock;
-          const orderedPrice = items[0][i].orderedPrice;
+        for (let i = 0; i < items.length; i++) {
+          const curr = items[i];
+          const productId = curr.productId;
+          const stock = curr.stock;
+          const orderedPrice = curr.orderedPrice;
           const orderedTotal = stock * orderedPrice;
           const orderedItem = await OrderedItem.create(
             newOrderId,
@@ -91,35 +78,24 @@ module.exports = (passport, models, sequelize) => {
       if (!order) {
         return res.sendStatus(403);
       } else {
-        let fullOrder = await sequelize.query(`SELECT "orders".*,
-           "ordereditems"."product_id" AS "productId", 
-           "ordereditems"."stock" AS "stock",
-            "ordereditems"."ordered_price" AS "orderedPrice",
-              "ordereditems->product"."name" AS "productName",
-               "ordereditems->product"."description" AS "productDescription",
-                "ordereditems->product"."image" AS "productImage"
-                    FROM (SELECT "orders"."id",
-                      "orders"."status"
-                       FROM "orders" AS "orders" 
-                       WHERE "orders"."status" = 'New' AND "orders"."user_id" = ${user.id} LIMIT 1)
-                        AS "orders"
-                        LEFT OUTER JOIN "ordereditems" AS "ordereditems" ON "orders"."id" = "ordereditems"."order_id" 
-                        LEFT OUTER JOIN "products" AS "ordereditems->product"
-                         ON "ordereditems"."product_id" = "ordereditems->product"."id";`);
+        let fullOrder = await OrderedItem.findAllOrderedProductsByOrder(
+          order.id
+        );
         let itemsCount = fullOrder[0].length;
         let total = 0;
         for (let i = 0; i < itemsCount; i++) {
+          const curr = fullOrder[0][i];
           let productTotal =
-            parseInt(fullOrder[0][i].stock) *
-            parseFloat(fullOrder[0][i].orderedPrice);
+            parseInt(curr.stock) * parseFloat(curr.orderedPrice);
           total += productTotal;
           fullOrder[0][i].productTotal = productTotal;
         }
         fullOrder[2] = total;
-        res.status(200).json(fullOrder);
+        return res.status(200).json(fullOrder);
       }
-    } else res.sendStatus(403);
+    } else return res.sendStatus(403);
   });
+
   router.post("/finish", async (req, res) => {
     const user = req.user;
     if (user && user.id) {
@@ -127,29 +103,19 @@ module.exports = (passport, models, sequelize) => {
       if (!order) {
         return res.sendStatus(403);
       } else {
-        const updatedOrder = await Order.updateStatus("Sent", order.id);
+        const updatedOrder = await Order.updateStatus(order.id, "Sent");
         if (updatedOrder) {
           const cart = await Cart.findOneByUserId(user.id);
           if (cart) {
-            await Item.destroyAllByCartId(cart.dataValues.id);
+            await Item.destroyByCart(cart.id);
             await Cart.destroy(user.id);
           }
-          const orderedItems = await sequelize.query(`SELECT "ordereditems"."id",
-            "ordereditems"."id" AS "id",
-             "ordereditems"."product_id" AS "productId",
-              "ordereditems"."stock",
-               "product"."id" AS "product.id",
-                "product"."name" AS "product.name",
-                 "product"."description" AS "product.description",
-                  "product"."image" AS "product.image",
-                   "product"."price" AS "orderedPrice",
-                     "product"."stock" AS "leftStock"
-                       FROM "ordereditems" AS "ordereditems"
-                       LEFT OUTER JOIN "products" AS "product" ON "ordereditems"."product_id" = "product"."id"
-                        WHERE "ordereditems"."order_id" = ${order.dataValues.id};`);
-          for (let i = 0; i < orderedItems[0].length; i++) {
-            if (orderedItems[0][i]) {
-              const item = orderedItems[0][i];
+          const orderedItems = (
+            await OrderedItem.findAllOrderedProductsByOrder(order.id)
+          )[0];
+          for (let i = 0; i < orderedItems.length; i++) {
+            const item = orderedItems[i];
+            if (item) {
               const leftStock = item.leftStock;
               const stock = item.stock;
               const productId = item.productId;

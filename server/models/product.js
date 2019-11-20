@@ -4,7 +4,7 @@ module.exports = sequelize => {
     return product;
   }
 
-  async function findByPk(id) {
+  async function findOneByPk(id) {
     const product = (await sequelize.query(
       `SELECT * FROM products WHERE id='${id}'`
     ))[0][0];
@@ -33,5 +33,5 @@ module.exports = sequelize => {
     return products;
   }
 
-  return { findOne, findByPk, findAll, updateStock };
+  return { findOne, findAll, updateStock, findOneByPk };
 };

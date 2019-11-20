@@ -48,7 +48,6 @@ export default class Register extends React.Component {
   }
 
   onSubmit = async () => {
-    console.log(this.state.isVerified);
     if (this.state.hasAcceptedTerms) {
       if (this.state.isVerified) {
         const res = await post("/user/register", {
@@ -58,7 +57,6 @@ export default class Register extends React.Component {
           firstName: this.state.firstName,
           lastName: this.state.lastName
         });
-        console.log(res);
         if (res.ok) {
           window.location.reload();
         } else {

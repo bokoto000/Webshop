@@ -12,6 +12,31 @@
   "license": "ISC",
   "dependencies": {
     "concurrently": "^4.1.2",
-    "nodemon": "^1.19.3"
+    "bcrypt": "^3.0.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "express-validator": "^6.1.1",
+    "nodemailer": "^6.3.0",
+    "nodemon": "^1.19.2",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "paypal-rest-sdk": "^1.8.1",
+    "pg": "^7.12.0",
+    "sequelize": "^5.12.2",
+    "query-string": "^6.8.3",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-notifications": "^1.4.3",
+    "react-paginate": "^6.3.0",
+    "react-recaptcha": "^2.3.10",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "^3.0.1",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^0.87.3",
+    "faker": "^4.1.0",
+    "react-datepicker": "^2.9.6",
+    "react-export-excel": "^0.5.3",
+    "react-time-picker": "^3.7.2"
   }
 }
