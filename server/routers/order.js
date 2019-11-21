@@ -66,7 +66,7 @@ module.exports = (passport, models, sequelize) => {
       }
       return res.sendStatus(200).json(items[0]);
     } else
-      res
+      return res
         .status(403)
         .send({ error: "Имаше проблем със създаването на вашата поръчка." });
   });
@@ -81,17 +81,7 @@ module.exports = (passport, models, sequelize) => {
         let fullOrder = await OrderedItem.findAllOrderedProductsByOrder(
           order.id
         );
-        let itemsCount = fullOrder[0].length;
-        let total = 0;
-        for (let i = 0; i < itemsCount; i++) {
-          const curr = fullOrder[0][i];
-          let productTotal =
-            parseInt(curr.stock) * parseFloat(curr.orderedPrice);
-          total += productTotal;
-          fullOrder[0][i].productTotal = productTotal;
-        }
-        fullOrder[2] = total;
-        return res.status(200).json(fullOrder);
+        return res.status(200).json({ fullOrder, total: order.total });
       }
     } else return res.sendStatus(403);
   });

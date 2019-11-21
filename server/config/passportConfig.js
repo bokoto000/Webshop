@@ -16,10 +16,12 @@ module.exports = (passport,models) => {
   passport.deserializeUser(async (userData, done) => {
     const id = userData.id;
     const userFromDb = await User.findOne(id);
+    const firstName = userFromDb.first_name;
+    const lastName = userFromDb.last_name;
     const user = {
       id: userFromDb.id,
-      firstName: userFromDb.firstName,
-      lastName: userFromDb.lastName,
+      firstName,
+      lastName,
       email: userFromDb.email,
       username: userFromDb.username,
       role: userFromDb.role

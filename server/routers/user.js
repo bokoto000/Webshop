@@ -24,17 +24,18 @@ module.exports = (passport, models) => {
     (req, res, next) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        const errorArray=errors.array()[0];
-        const errorText = errorArray.msg+" in " + errorArray.param +" field!";
+        const errorArray = errors.array()[0];
+        const errorText =
+          errorArray.msg + " in " + errorArray.param + " field!";
         return res.status(422).json({ error: errorText });
       } else
-        passport.authenticate("local-signup", function(err, user,info) {
+        passport.authenticate("local-signup", function(err, user, info) {
           if (err) {
             console.log(err);
             return res.status(400).send();
           }
-          if(info){
-            return res.status(422).send({error:info});
+          if (info) {
+            return res.status(422).send({ error: info });
           }
           req.logIn(user, err => {
             if (err) {
@@ -83,14 +84,21 @@ module.exports = (passport, models) => {
           const email = req.body.email;
           const firstName = req.body.firstName;
           const lastName = req.body.lastName;
-          const user = await User.update(
-            { firstName, lastName, email },
-            {
-              where: { id }
+          try {
+            if (email) {
+              await User.changeEmail(id, email);
             }
-          );
-          if (user) return res.sendStatus(200);
-          else return res.sendStatus(403);
+            if (firstName) {
+              await User.changeFirstName(id, firstName);
+            }
+            if (lastName) {
+              await User.changeLastName(id, lastName);
+            }
+            return res.sendStatus(200);
+          } catch (e) {
+            console.error(e);
+            return res.sendStatus(403);
+          }
         }
       }
       return res.sendStatus(403);

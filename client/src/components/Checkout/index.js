@@ -26,9 +26,9 @@ class Checkout extends Component {
     this.setState({ Loading: true });
     const res = await (await get("/order/get")).json();
     console.log(res);
-    if (res.length > 0) {
-      this.setState({ order: res[0] });
-      this.setState({ total: res[2] });
+    if (res.fullOrder.length>=0) {
+      this.setState({ order: res.fullOrder });
+      this.setState({ total: res.total});
     }
 
     this.setState({ Loading: false });
@@ -70,6 +70,7 @@ class Checkout extends Component {
 
   render() {
     const cart = this.state.order;
+    console.log(cart);
     if (!this.state.Loading)
       return (
         <div style={{ minHeight: "80vh" }}>

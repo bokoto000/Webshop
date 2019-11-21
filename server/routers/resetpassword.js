@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const Sequelize = require("sequelize");
+const transporter = require("../helpers/transporter");
+const mailer = require("../helpers/mailer.js");
 const { check, validationResult } = require("express-validator");
 router.use(bodyParser.json());
 router.use(
@@ -33,32 +34,20 @@ module.exports = (passport, models, sequelize) => {
           return res.sendStatus(422);
         }
         const token = crypto.randomBytes(20).toString("hex");
-        const resPass = await ResetPasswordToken.findOne(user.dataValues.id);
+        const resPass = await ResetPasswordToken.findOne(user.id);
         if (resPass) {
-          await ResetPasswordToken.update(user.id, token);
+          await ResetPasswordToken.update(user.id, token, Date.now() + 3600000);
         } else {
-          await ResetPasswordToken.create(user.id, token);
+          await ResetPasswordToken.create(user.id, token, Date.now() + 3600000);
         }
         try {
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: `webshopdemo123@gmail.com`,
-              pass: `demo1231`
-            }
-          });
-          const mailOptions = {
-            from: "Webshop@gmail.com",
-            to: `${user.dataValues.email}`,
-            subject: "Reset Password",
-            text: `Hello ${user.username},\nReset pasword\nhttp://borisvelkovski.com:3000/restorepassword/${token}`
-          };
+          const mailOptions = mailer.getChangePasswordMailOptions(user.email,user.username,token);
           transporter.sendMail(mailOptions, function(err, response) {
             if (err) {
               console.error(`Error resseting password`, err);
-              res.sendStatus(403);
+              return res.sendStatus(403);
             } else {
-              res.sendStatus(200);
+              return res.sendStatus(200);
             }
           });
         } catch (e) {
@@ -71,12 +60,7 @@ module.exports = (passport, models, sequelize) => {
 
   router.get("/restore-password/:token", async (req, res) => {
     const token = req.params.token;
-    const resPass = await ResetPasswordToken.findOne({
-      where: {
-        resetPasswordToken: token,
-        expirePasswordToken: { [Op.gt]: Date.now().toString() }
-      }
-    });
+    const resPass = await ResetPasswordToken.findOneValidToken(token);
     if (resPass) {
       return res.sendStatus(200);
     } else return res.sendStatus(403);
@@ -96,25 +80,18 @@ module.exports = (passport, models, sequelize) => {
     async (req, res, next) => {
       if (req.body.password == req.body.verifyPassword) {
         const token = req.body.token;
-        const resToken = await ResetPasswordToken.findOne({
-          where: { expirePasswordToken: { [Op.gt]: Date.now().toString() } }
-        });
-        const userId = resToken.dataValues.id;
-        const user = await User.findOne({ where: { id: userId } });
+        const resToken = await ResetPasswordToken.findOneValidToken(token);
+        const userId = resToken.id;
+        const user = await User.findOne(userId);
         if (!user) {
           return done(null, false, "User doesnt exist");
         } else {
-          const hash = await bcrypt.hash(req.body.password, saltRounds);
-          if (hash) {
-            const user = await User.update(
-              { password: hash },
-              { where: { id: userId } }
-            );
-            if (user) {
-              return res.sendStatus(200);
-            } else {
-              return res.sendStatus(403);
-            }
+          try {
+            await User.changePassword(userId, req.body.password);
+            return res.sendStatus(200);
+          } catch (e) {
+            console.error(e);
+            return res.sendStatus(403);
           }
         }
       } else {

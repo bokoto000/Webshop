@@ -29,6 +29,7 @@ export default class Profile extends Component {
     const res = await get("get-sess-info/user");
     if (res.ok) {
       const user = (await res.json()).user;
+      console.log(user);
       this.setState({ isAuth: true, user: user, authenticating: false });
       this.setState({
         email: user.email,

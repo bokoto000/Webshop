@@ -21,6 +21,7 @@ paypal.configure({
 module.exports = (sequelize, models) => {
   const Order = models.Order;
   const PendingPayment = models.PendingPayment;
+  const OrderedItem = models.OrderedItem;
   const Product = models.Product;
   const Cart = models.Cart;
   const Item = models.Item;
@@ -35,30 +36,18 @@ module.exports = (sequelize, models) => {
       if (!order) {
         return res.sendStatus(403);
       } else {
-        let fullOrder = await sequelize.query(`SELECT "orders".*,
-               "ordereditems"."product_id" AS "productId", 
-               "ordereditems"."stock" AS "stock",
-                "ordereditems"."ordered_price" AS "orderedPrice",
-                  "ordereditems->product"."name" AS "productName",
-                   "ordereditems->product"."description" AS "productDescription",
-                    "ordereditems->product"."image" AS "productImage"
-                        FROM (SELECT "orders"."id",
-                          "orders"."status"
-                           FROM "orders" AS "orders" 
-                           WHERE "orders"."status" = 'New' AND "orders"."user_id" = ${user.id} LIMIT 1)
-                            AS "orders"
-                            LEFT OUTER JOIN "ordereditems" AS "ordereditems" ON "orders"."id" = "ordereditems"."order_id" 
-                            LEFT OUTER JOIN "products" AS "ordereditems->product"
-                             ON "ordereditems"."product_id" = "ordereditems->product"."id";`);
-        let itemsCount = fullOrder[0].length;
+        let fullOrder = await OrderedItem.findAllOrderedProductsByOrder(
+          order.id
+        );
+        let itemsCount = fullOrder.length;
         for (let i = 0; i < itemsCount; i++) {
-          const item = fullOrder[0][i];
+          const item = fullOrder[i];
           let productTotal =
             parseInt(item.stock) * parseFloat(item.orderedPrice);
           total += productTotal;
           items.push({
             name: item.productName,
-            sku: item.id.toString(),
+            sku: item.productId.toString(),
             price: item.orderedPrice,
             currency: "USD",
             quantity: item.stock.toString()
@@ -146,22 +135,12 @@ module.exports = (sequelize, models) => {
                   await Cart.destroy(userId);
                 }
 
-                const orderedItems = await sequelize.query(`SELECT "ordereditems"."id",
-                "ordereditems"."id" AS "id",
-                "ordereditems"."product_id" AS "productId",
-                "ordereditems"."stock",
-                "product"."id" AS "product.id",
-                    "product"."name" AS "product.name",
-                    "product"."description" AS "product.description",
-                    "product"."image" AS "product.image",
-                    "product"."price" AS "orderedPrice",
-                        "product"."stock" AS "leftStock"
-                        FROM "ordereditems" AS "ordereditems"
-                        LEFT OUTER JOIN "products" AS "product" ON "ordereditems"."product_id" = "product"."id"
-                            WHERE "ordereditems"."order_id" = ${order.id};`);
-                for (let i = 0; i < orderedItems[0].length; i++) {
-                  if (orderedItems[0][i]) {
-                    const item = orderedItems[0][i];
+                const orderedItems = await OrderedItem.findAllOrderedProductsByOrder(
+                  order.id
+                );
+                for (let i = 0; i < orderedItems.length; i++) {
+                  const item = orderedItems[i];
+                  if (item) {
                     const leftStock = item.leftStock;
                     const stock = item.stock;
                     const productId = item.productId;

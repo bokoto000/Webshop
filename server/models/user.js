@@ -34,5 +34,20 @@ module.exports = sequelize => {
     const user = (await sequelize.query(`SELECT * FROM users WHERE email='${email}'`))[0][0];
     return user;
   }
-  return { createUser, validPassword, changePassword, findOne, findOneByUsername, findOneByEmail };
+
+  async function changeFirstName(id, firstName){
+    const user = (await sequelize.query(`UPDATE users SET first_name='${firstName}' WHERE id='${id}'`))[0][0];
+    return user;
+  }
+
+  async function changeLastName(id, lastName){
+    const user = (await sequelize.query(`UPDATE users SET last_name='${lastName}' WHERE id='${id}'`))[0][0];
+    return user;
+  }
+
+  async function changeEmail(id, email){
+    const user = (await sequelize.query(`UPDATE users SET email='${email}' WHERE id='${id}'`))
+  }
+
+  return { changeFirstName, changeLastName, changeEmail, createUser, validPassword, changePassword, findOne, findOneByUsername, findOneByEmail };
 };
