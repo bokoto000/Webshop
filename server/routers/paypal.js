@@ -18,7 +18,7 @@ paypal.configure({
     "EIRTG0a9Nqwogqe3__UuE1iDBCQohZE32eu_HsqxdQwG0-jSRcmhrNHlMiS0WeAr1a7KkWnDXkRqqEX1"
 });
 
-module.exports = (sequelize, models) => {
+module.exports = models => {
   const Order = models.Order;
   const PendingPayment = models.PendingPayment;
   const OrderedItem = models.OrderedItem;

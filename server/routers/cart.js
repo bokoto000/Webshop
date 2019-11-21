@@ -11,7 +11,7 @@ router.use(
 
 router.use(checkPermission());
 
-module.exports = (passport, models, sequelize) => {
+module.exports = ( models, sequelize) => {
   const Item = models.Item;
   const Cart = models.Cart;
 

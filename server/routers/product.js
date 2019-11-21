@@ -18,7 +18,7 @@ function compare(a, b) {
   return 0;
 }
 
-module.exports = (passport, models, sequelize) => {
+module.exports = models => {
   const Product = models.Product;
 
   router.get("/get-products", async (req, res, next) => {

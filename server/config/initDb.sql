@@ -117,6 +117,12 @@ CREATE TABLE IF NOT EXISTS producttags (
     CONSTRAINT producttags_pkey PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS verifyemailtokens(
+    user_id int UNIQUE NOT NULL,
+    token text UNIQUE NOT NULL,
+    CONSTRAINT verifyemailtokens_pkey PRIMARY KEY(token)
+);
+
 ALTER TABLE carts DROP CONSTRAINT IF EXISTS fk_user_id;
 ALTER TABLE items DROP CONSTRAINT IF EXISTS fk_cart_id;
 ALTER TABLE items DROP CONSTRAINT IF EXISTS fk_product_id;
@@ -125,6 +131,11 @@ ALTER TABLE ordereditems DROP CONSTRAINT IF EXISTS fk_order_id;
 ALTER TABLE ordereditems DROP CONSTRAINT IF EXISTS fk_product_id;
 ALTER TABLE producttags DROP CONSTRAINT IF EXISTS fk_product_id;
 ALTER TABLE producttags DROP CONSTRAINT IF EXISTS fk_tag_id;
+ALTER TABLE verifyemailtokens DROP CONSTRAINT IF EXISTS fk_user_id;
+ALTER TABLE
+    verifyemailtokens
+ADD
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users(id);
 ALTER TABLE
     carts
 ADD

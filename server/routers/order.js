@@ -8,7 +8,7 @@ router.use(
   })
 );
 
-module.exports = (passport, models, sequelize) => {
+module.exports = models => {
   const Item = models.Item;
   const Cart = models.Cart;
   const OrderedItem = models.OrderedItem;

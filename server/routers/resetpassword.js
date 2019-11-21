@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const Sequelize = require("sequelize");
 const transporter = require("../helpers/transporter");
@@ -16,7 +15,7 @@ router.use(
 const Op = Sequelize.Op;
 const saltRounds = 10;
 
-module.exports = (passport, models, sequelize) => {
+module.exports = models => {
   const User = models.User;
   const ResetPasswordToken = models.ResetPasswordToken;
 
@@ -41,7 +40,11 @@ module.exports = (passport, models, sequelize) => {
           await ResetPasswordToken.create(user.id, token, Date.now() + 3600000);
         }
         try {
-          const mailOptions = mailer.getChangePasswordMailOptions(user.email,user.username,token);
+          const mailOptions = mailer.getChangePasswordMailOptions(
+            user.email,
+            user.username,
+            token
+          );
           transporter.sendMail(mailOptions, function(err, response) {
             if (err) {
               console.error(`Error resseting password`, err);

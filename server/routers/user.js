@@ -1,4 +1,7 @@
 const express = require("express");
+const crypto = require("crypto");
+const transporter = require("../helpers/transporter");
+const mailer = require("../helpers/mailer");
 const { check, validationResult } = require("express-validator");
 const router = express.Router();
 const bodyParser = require("body-parser");
@@ -11,7 +14,7 @@ router.use(
 
 module.exports = (passport, models) => {
   const User = models.User;
-  const modelUser = models.User;
+  const VerifyEmailToken = models.VerifyEmailToken;
   router.post(
     "/register",
     check("email").isEmail(),
@@ -29,13 +32,30 @@ module.exports = (passport, models) => {
           errorArray.msg + " in " + errorArray.param + " field!";
         return res.status(422).json({ error: errorText });
       } else
-        passport.authenticate("local-signup", function(err, user, info) {
+        passport.authenticate("local-signup", async function(err, user, info) {
           if (err) {
             console.log(err);
             return res.status(400).send();
           }
           if (info) {
             return res.status(422).send({ error: info });
+          }
+          const token = crypto.randomBytes(20).toString("hex");
+          try {
+            await VerifyEmailToken.create(user.id, token);
+            const mailOptions = mailer.getVerifyEmailOptions(
+              user.email,
+              user.username,
+              token
+            );
+            transporter.sendMail(mailOptions, function(err, response) {
+              if (err) {
+                console.error(`Error sending verify mail`, err);
+              } else {
+              }
+            });
+          } catch (e) {
+            console.error(e);
           }
           req.logIn(user, err => {
             if (err) {
@@ -127,12 +147,12 @@ module.exports = (passport, models) => {
         } else {
           const user = await User.findOne({ where: { id: req.user.id } });
           if (user) {
-            const comp = await modelUser.validPassword(password, user.password);
+            const comp = await User.validPassword(password, user.password);
             if (!comp) {
               res.sendStatus(403).send("Incorrect password");
             } else {
               if (newPassword == newPasswordVerify) {
-                const update = await modelUser.changePassword(
+                const update = await User.changePassword(
                   req.user.id,
                   newPassword
                 );

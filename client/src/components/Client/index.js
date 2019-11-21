@@ -17,6 +17,7 @@ import Profile from "../Profile";
 import ForgotPassword from "../ForgotPassword";
 import RestorePassword from "../RestorePassword";
 import Order from "../Order";
+import VerifiedEmail from "../VerifiedEmail";
 import ProductPage from "../ProductPage";
 import Checkout from "../Checkout";
 
@@ -74,6 +75,7 @@ class Client extends Component {
                 <Route path="/product/:id" component={ProductPage} />
                 <Route path="/success-order" component={SuccessOrderScreen} />
                 <Route exact path="/profile" component={Profile} user={user} />
+                <Route exact path="/verify-email/:token" component={VerifiedEmail} user={user} />
                 <Route
                   exact
                   path="/forgotpassword"
