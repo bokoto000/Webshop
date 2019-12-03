@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter, } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import {
   Grid,
   Form,
@@ -9,6 +9,8 @@ import {
   Header,
   Button
 } from "semantic-ui-react";
+import FileBase64 from "react-file-base64";
+
 import "./index.css";
 
 const post = require("../../helpers/fetch").post;
@@ -23,7 +25,8 @@ export default withRouter(
         name: "",
         description: "",
         price: 0,
-        stock: 0
+        stock: 0,
+        selectedFile: null
       };
     }
 
@@ -31,9 +34,14 @@ export default withRouter(
       this.setState({ [event.target.name]: event.target.value });
     };
 
+    getFiles(files) {
+      console.log(files);
+      this.setState({ files: files });
+    }
+
     onSubmit = async () => {
       const res = await post("/product/create", {
-        image: this.state.image,
+        image: this.state.files[0].base64,
         name: this.state.name,
         description: this.state.description,
         price: this.state.price,
@@ -41,7 +49,7 @@ export default withRouter(
       });
       if (res.ok) {
         window.location.reload();
-      } else{
+      } else {
         alert("Имаше проблем със създаването на продукта!");
       }
     };
@@ -57,13 +65,11 @@ export default withRouter(
                   <Divider />
                   <Segment basic textAlign="left">
                     <Form onSubmit={this.onSubmit}>
-                      <Form.Input
-                        fluid
-                        label="Image"
-                        placeholder="Image"
-                        name="image"
-                        onChange={this.onChange}
+                      <FileBase64
+                        multiple={true}
+                        onDone={this.getFiles.bind(this)}
                       />
+
                       <Form.Input
                         fluid
                         label="Name"

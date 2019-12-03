@@ -117,6 +117,14 @@ CREATE TABLE IF NOT EXISTS producttags (
     CONSTRAINT producttags_pkey PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS productimages (
+    id serial NOT NULL,
+    image_data text NOT NULL,
+    product_id int NOT NULL,
+    CONSTRAINT product_images_pkey PRIMARY KEY (id)
+);
+
+
 ALTER TABLE carts DROP CONSTRAINT IF EXISTS fk_user_id;
 ALTER TABLE items DROP CONSTRAINT IF EXISTS fk_cart_id;
 ALTER TABLE items DROP CONSTRAINT IF EXISTS fk_product_id;
@@ -125,6 +133,12 @@ ALTER TABLE ordereditems DROP CONSTRAINT IF EXISTS fk_order_id;
 ALTER TABLE ordereditems DROP CONSTRAINT IF EXISTS fk_product_id;
 ALTER TABLE producttags DROP CONSTRAINT IF EXISTS fk_product_id;
 ALTER TABLE producttags DROP CONSTRAINT IF EXISTS fk_tag_id;
+ALTER TABLE productimages DROP CONSTRAINT IF EXISTS fk_product_id;
+ALTER TABLE
+    productimages
+ADD
+    CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES products(id);
+
 ALTER TABLE
     carts
 ADD

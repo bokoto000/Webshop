@@ -22,7 +22,7 @@ module.exports = models => {
   const Product = models.Product;
 
   router.get("/get-products", async (req, res, next) => {
-    const productsQuery = await Product.findAll();
+    const productsQuery = await Product.find();
     //transforming the query results into good format
     const products = productsQuery[0];
     products.sort(compare);

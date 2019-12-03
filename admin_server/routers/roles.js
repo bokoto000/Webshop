@@ -8,7 +8,7 @@ router.use(
   })
 );
 
-module.exports = (passport, ormModels, models) => {
+module.exports = (passport, models) => {
   const Role = models.Role;
   const UserRole = models.UserRole;
   const Admin = models.Admin;

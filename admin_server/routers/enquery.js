@@ -14,7 +14,7 @@ const Op = Sequelize.Op;
 const checkPermission = require("../helpers/checkPermissions");
 router.use(checkPermission());
 
-module.exports = (passport, ormModels, sequelize) => {
+module.exports = (passport, sequelize) => {
   
   router.get("/products/:startDate/:endDate", async (req, res, next) => {
       // TO DO Refactor

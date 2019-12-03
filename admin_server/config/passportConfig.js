@@ -1,6 +1,6 @@
 const LocalStrategy = require("passport-local");
 
-module.exports = (passport, ormModels, models) => {
+module.exports = (passport, models) => {
   const Admin = models.Admin;
 
   passport.serializeUser((user, done) => {

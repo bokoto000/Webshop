@@ -9,6 +9,7 @@ credentials = {
     port: process.env.DBPORT || '5432'
 }
 const sequelize = new Sequelize(credentials.dbname, credentials.username, credentials.password, {
+  logging: false,
   host: credentials.hostname,
   port: credentials.port,
   dialect: 'postgres',

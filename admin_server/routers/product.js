@@ -19,10 +19,10 @@ function compare(a, b) {
   return 0;
 }
 
-const checkPermission = require("../helpers/checkPermissions");
-router.use(checkPermission());
+//const checkPermission = require("../helpers/checkPermissions");
+//router.use(checkPermission());
 
-module.exports = (passport, ormModels, models, sequelize) => {
+module.exports = ( models, sequelize) => {
   const Product = models.Product;
   const Tag = models.Tag;
   const ProductTag = models.ProductTag;
@@ -173,6 +173,24 @@ module.exports = (passport, ormModels, models, sequelize) => {
       }
     }
     console.log(failed);
+    return res.json(fakes);
+  });
+
+  router.post("/fake-images", async (req, res, next) => { 
+    const fakes = [];
+    const fakeImage = "https://media-cdn.tripadvisor.com/media/photo-s/15/c5/a4/14/pepperoni-lovers.jpg";
+    const products = (await sequelize.query(`SELECT id FROM products`))[0];
+    const count =(await sequelize.query(`SELECT COUNT(image) FROM products WHERE image='${fakeImage}'`))[0][0];
+    console.log(count);
+    for (let i = 0; i <products.length; i++) {
+      try{
+        await sequelize.query(`UPDATE products SET image='${fakeImage}' WHERE id='${products[i].id}'`)
+      }catch(e){
+        console.log(e);
+      }
+    }
+    
+
     return res.json(fakes);
   });
 

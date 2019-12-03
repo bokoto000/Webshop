@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import { Grid, Table, Loader } from "semantic-ui-react";
 import ProductDisplay from "../ProductDisplay";
 import Menu from "../Menu";
+import ProductsFilters from "../ProductsFilters";
+import Pagination from "../Pagination";
 import filters from "../../helpers/filters";
 
 const get = require("../../helpers/fetch").get;
+const x = 5;
 
 export default class Body extends Component {
   constructor(props) {
@@ -23,6 +26,10 @@ export default class Body extends Component {
     products = filters.filterNewest(products);
     this.setState({ products, allProducts: products });
     this.setState({loading:false});
+  }
+
+  getX(){
+    console.log(x);
   }
 
   setTag = async (tag) =>  {
@@ -83,9 +90,11 @@ export default class Body extends Component {
               </div>
             </Grid.Column>
             <Grid.Column width={12}>
+              <ProductsFilters getX={this.getX} ></ProductsFilters>
               {this.state.products ? ( 
                 <ProductDisplay products={this.state.products} />
               ) :null}
+              <Pagination></Pagination>
             </Grid.Column>
           </Grid.Row>
         </Grid>
