@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
+const matcher = require("../helpers/match");
+
 router.use(bodyParser.json());
 router.use(
   bodyParser.urlencoded({
@@ -20,12 +22,13 @@ function compare(a, b) {
 
 module.exports = models => {
   const Product = models.Product;
-
   router.get("/get-products", async (req, res, next) => {
-    const productsQuery = await Product.find();
+    query = req.query;
+    console.log(query);
+    match=matcher.getMatchJson(query);
+    const productsQuery = await Product.findAll(match);
     //transforming the query results into good format
     const products = productsQuery[0];
-    products.sort(compare);
     productsRes = [];
     product = products[0];
     productsRes.push({

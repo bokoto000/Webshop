@@ -50,6 +50,7 @@ class ProductsFilters extends Component {
     this.props.history.push({
       search: "?" + new URLSearchParams(values).toString()
     });
+    window.location.reload();
   };
 
   handleChange = async (e, { name, value }) => {
@@ -61,7 +62,14 @@ class ProductsFilters extends Component {
     });
     await this.setState({ loading: false });
   };
-
+  filterProducts = () => {  
+    let values = queryString.parse(this.props.location.search);
+    values["page"] = 0; 
+    this.props.history.push({
+      search: "?" + new URLSearchParams(values).toString()
+    });
+    window.location.reload();
+  }
   render() {
     const values = queryString.parse(this.props.location.search);
     return (

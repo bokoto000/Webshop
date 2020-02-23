@@ -28,7 +28,7 @@ class SearchBar extends Component {
   }
 
   async componentDidMount() {
-    let products = (await (await get("/product/get-products")).json()).products;
+    let products =[];// (await (await get("/product/get-products")).json()).products;
     this.setState({ products });
   }
 

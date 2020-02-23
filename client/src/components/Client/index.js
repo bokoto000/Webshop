@@ -68,12 +68,11 @@ class Client extends Component {
               <Divider />
               <NotificationContainer />
               <Switch style={{ minHeight: "80vh!important" }}>
-                <Route exact path="/" component={Body} />
                 <Route exact path="/cart" component={Cart} />
-                <Route path="/order" component={Order} />
-                <Route path="/checkout" component={Checkout} />
-                <Route path="/product/:id" component={ProductPage} />
-                <Route path="/success-order" component={SuccessOrderScreen} />
+                <Route exact path="/order" component={Order} />
+                <Route exact path="/checkout" component={Checkout} />
+                <Route exact path="/product/:id" component={ProductPage} />
+                <Route exact path="/success-order" component={SuccessOrderScreen} />
                 <Route exact path="/profile" component={Profile} user={user} />
                 <Route exact path="/verify-email/:token" component={VerifiedEmail} user={user} />
                 <Route
@@ -82,9 +81,14 @@ class Client extends Component {
                   component={ForgotPassword}
                 />
                 <Route
+                  exact
                   path="/restorepassword/:token"
                   component={RestorePassword}
                 />
+
+                <Route exact path="/:category/page/:page" component={Body} />
+                <Redirect exact from="/" to="/All/page/0" component={Body} />
+                <Redirect exact from="/:category" to="/:category/page/0" component={Body} />
               </Switch>
               <Footer />
             </div>

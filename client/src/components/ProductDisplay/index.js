@@ -70,23 +70,6 @@ class ProductDisplay extends React.Component {
     let products = this.state.unfilteredProducts;
     const values = queryString.parse(this.props.location.search);
     let sort = values.sort ? values.sort : "newest";
-    if (sort == "newest") {
-      products = filters.filterNewest(products);
-    }
-    if (sort == "oldest") {
-      products = filters.filterOldest(products);
-    }
-    if (sort == "cheapest") {
-      products = filters.filterLowestPrice(products);
-    }
-    if (sort == "priciest") {
-      products = filters.filterHighestPrice(products);
-    }
-    const higherprice = values.higherprice,
-      lowerprice = values.lowerprice;
-    if (lowerprice) {
-      products = filters.filterBetweenPrice(products, lowerprice, higherprice);
-    }
     const pageCount = products.length / this.state.perPage;
     products = this.pageFilterProducts(products);
     return { products, pageCount };
