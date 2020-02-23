@@ -86,9 +86,9 @@ class Client extends Component {
                   component={RestorePassword}
                 />
 
-                <Route exact path="/:category/page/:page" component={Body} />
+                <Route path="/:category/page/:page" component={Body} />
                 <Redirect exact from="/" to="/All/page/0" component={Body} />
-                <Redirect exact from="/:category" to="/:category/page/0" component={Body} />
+                <Redirect from="/:category" to="/:category/page/0" component={Body} />
               </Switch>
               <Footer />
             </div>

@@ -37,15 +37,6 @@ class Body extends Component {
 
   async componentDidMount() {
     await this.getProducts();
-    if (this.props.history.action === "POP") {
-       await this.getProducts();
-      }
-  }
-
-  async componentDidUpdate(){
-    //if (this.props.history.action === "POP") {
-    //  await this.getProducts();
-    //}
   }
 
 
@@ -54,6 +45,12 @@ class Body extends Component {
     //console.log(refresh);
     await this.getProducts();
     this.setState({refresh:!refresh});
+  }
+
+  async componentDidUpdate(prevProps) { 
+    if(this.props.match.params!=prevProps.match.params) {
+      await this.getProducts();
+    }
   }
 
   setTag = async (tag) =>  {
