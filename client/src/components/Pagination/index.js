@@ -7,11 +7,24 @@ import { withRouter } from "react-router-dom";
 class Pagination extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pages:25
+    };
+  }
+
+  async componentDidMount(){
+    this.setState({pages:this.props.pagesCount?this.props.pagesCount:this.state.pages});
+    console.log("t" + this.props.pagesCount);
+  }
+
+  async componentDidUpdate(prevProps){
+    if(this.props.pagesCount!=prevProps.pagesCount)
+    this.setState({pages:this.props.pagesCount?this.props.pagesCount:this.state.pages});
+    console.log("t" + this.props.pagesCount);
+
   }
 
   handlePageClick = async (data) => {
-    console.log(data);
     let selected = data.selected;
     let values = await queryString.parse(this.props.location.search);
     let category = this.props.match.params.category;
@@ -19,12 +32,9 @@ class Pagination extends Component {
       pathname: `/${category}/page/${selected}`,
       search: "?" + new URLSearchParams(values).toString()
     });
-    this.props.refresh();
   };
 
   render() {
-    let page = this.state.page;
-    console.log(page);
     return (
       <div>
         <ReactPaginate
@@ -32,7 +42,7 @@ class Pagination extends Component {
           nextLabel={"next"}
           breakLabel={"..."}
           breakClassName={"break-me"}
-          pageCount={25}
+          pageCount={this.state.pages}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
           onPageChange={this.handlePageClick}

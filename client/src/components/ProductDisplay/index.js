@@ -58,57 +58,27 @@ class ProductDisplay extends React.Component {
   }
 
   async componentDidMount() {
+    this.setState({loading:true});
     const products = this.props.products;
-
-    this.setState({ filtering: true });
-    this.setState({ unfilteredProducts: products });
     this.setState({ products: products });
-    this.setState({ filtering: false });
+    this.setState({loading:false});
   }
 
-  filterProducts = () => {
-    let products = this.state.unfilteredProducts;
-    const values = queryString.parse(this.props.location.search);
-    let sort = values.sort ? values.sort : "newest";
-    const pageCount = products.length / this.state.perPage;
-    products = this.pageFilterProducts(products);
-    return { products, pageCount };
-  };
-
-  componentWillReceiveProps(newProps) {
-    const products = newProps.products;
-    const pageCount = products.length / this.state.perPage;
-    this.setState({
-      products: newProps.products,
-      unfilteredProducts: newProps.products,
-      pageCount
+  async componentWillReceiveProps(newProps) {
+    await this.setState({loading:true});
+    await this.setState({
+      products: newProps.products
     });
+    this.setState({loading:false});
   }
-
-  pageFilterProducts(originalProducts) {
-    let products = [];
-    if (originalProducts) {
-      const page = this.state.page;
-      const perPage = this.state.perPage;
-      for (let i = page * perPage; i < (page + 1) * perPage; i++) {
-        if (originalProducts[i]) products.push(originalProducts[i]);
-      }
-    }
-
-    return products;
-  }
-
-  handlePageClick = data => {
-    let selected = data.selected;
-    this.setState({ page: selected });
-  };
 
   render() {
-    const data = this.filterProducts();
-    const products = data.products;
-    const pageCount = data.pageCount;
+    const products = this.state.products;
     const loading = this.state.loading;
-    const values = queryString.parse(this.props.location.search);
+    console.log(loading);
+    if(loading){
+      return <Loader active> </Loader>;
+    }
     return (
       <div style={{ width: "100%" }}>
           {products && !loading ? (
@@ -118,10 +88,9 @@ class ProductDisplay extends React.Component {
             })}
           </Card.Group>
         ) : null}
-        {loading ? <Loader></Loader> : null}
       </div>
     );
-  }
+  } 
 }
 
 export default withRouter(ProductDisplay);

@@ -19,36 +19,29 @@ class Body extends Component {
       tag: "All",
       refresh:0
     };
-    this.refresh = this.refresh.bind(this); 
+    //this.refresh = this.refresh.bind(this); 
   }
 
   async getProducts(){
-    this.setState({loading:true});
     let values = await queryString.parse(this.props.location.search);
     values.page=this.props.match.params.page;
     values.category=this.props.match.params.category;
     let stringifiedValues = await queryString.stringify(values);
-    console.log(stringifiedValues);
-    const res = await get(`/product/get-products/?${stringifiedValues}`);
-    let products = (await res.json()).products;
-    this.setState({ products, allProducts: products });
-    this.setState({loading:false});
+    const res = await (await get(`/product/get-products/?${stringifiedValues}`)).json();
+    let products = res.products;
+    let pagesCount = res.pagesCount;
+    console.log(pagesCount);
+    this.setState({ products, allProducts: products, pagesCount});
   }
 
   async componentDidMount() {
     await this.getProducts();
   }
 
-
-  async refresh(){
-    const refresh = this.state.refresh;
-    //console.log(refresh);
-    await this.getProducts();
-    this.setState({refresh:!refresh});
-  }
-
-  async componentDidUpdate(prevProps) { 
-    if(this.props.match.params!=prevProps.match.params) {
+  async componentDidUpdate(prevProps) {
+    const prevParams = await JSON.stringify(prevProps.match.params);
+    const currParams = await JSON.stringify(this.props.match.params);
+    if(prevParams!=currParams) {
       await this.getProducts();
     }
   }
@@ -56,26 +49,9 @@ class Body extends Component {
   setTag = async (tag) =>  {
     const products = this.state.allProducts;
     return this.props.history.push(`/${tag}`);
-    if (tag == "All") {
-      this.setState({ products });
-    } else {
-      let newProducts = [];
-      for (let i = 0; i < products.length; i++) {
-        if (products[i].tags)
-          for (let j = 0; j < products[i].tags.length; j++) {
-            if (products[i].tags[j].name == tag) {
-              newProducts.push(products[i]);
-              break;
-            }
-          }
-      }
-      this.setState({ products: newProducts });
-    }
-
   }
 
   render() {
-    if(!this.state.loading)
     return (
       <div>
         <Grid>
@@ -114,21 +90,14 @@ class Body extends Component {
             <Grid.Column width={12}>
               <ProductsFilters refresh={this.refresh}></ProductsFilters>
               {this.state.products ? ( 
-                <ProductDisplay refresh={this.refresh} products={this.state.products} />
+                <ProductDisplay loading={this.state.products} products={this.state.products} />
               ) :null}
-              <Pagination refresh={this.refresh}></Pagination>
+              <Pagination pagesCount={this.state.pagesCount} refresh={this.refresh}></Pagination>
             </Grid.Column>
           </Grid.Row>
         </Grid>
       </div>
     );
-    else  {
-      return <div>
-        <Loader active>
-
-        </Loader>
-      </div>
-    }
   }
 }
 

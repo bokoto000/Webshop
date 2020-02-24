@@ -36,6 +36,25 @@ module.exports = sequelize => {
     return products;
   }
 
+  async function countAll(match){
+    const products = await sequelize.query(`SELECT COUNT(DISTINCT "tmp"."id") as total FROM (SELECT DISTINCT "products"."id", "products"."name",
+    "products"."description",
+     "products"."image",
+      "products"."price",
+       "products"."stock",
+       "products"."name" AS "title",
+            "producttags->tags"."tag_id" AS "tagId",
+             "producttags->tags"."name" AS "tagName"
+               FROM "tags","products"  LEFT OUTER JOIN "producttags" AS "producttags" 
+               ON "products"."id" = "producttags"."product_id"
+                INNER JOIN "tags" AS "producttags->tags" 
+                ON "producttags"."tag_id" = "producttags->tags"."tag_id"
+                WHERE "products"."price">0 AND "products"."price">=${match.filters.lowerPrice} 
+                AND "products"."price"<=${match.filters.higherPrice} ${match.category}) AS tmp` );
+
+    return products[0][0].total;
+  }
+
   async function find() {
     const products = await sequelize.query(`SELECT "products"."id", "products"."name",
     "products"."description",
@@ -51,5 +70,5 @@ module.exports = sequelize => {
     return products;
   }
 
-  return { findOne, findAll, updateStock, findOneByPk,find };
+  return { findOne, findAll, updateStock, findOneByPk,find, countAll };
 };

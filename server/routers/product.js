@@ -27,48 +27,10 @@ module.exports = models => {
     console.log(query);
     match=matcher.getMatchJson(query);
     const productsQuery = await Product.findAll(match);
-    //transforming the query results into good format
+    const productCount = (await Product.countAll(match));
     const products = productsQuery[0];
-    productsRes = [];
-    product = products[0];
-    productsRes.push({
-      description: product.description,
-      name: product.name,
-      id: product.id,
-      image: product.image,
-      price: product.price,
-      tags: []
-    });
-    if (product.tagId) {
-      productsRes[0].tags.push({ id: product.tagId, name: product.tagName });
-    }
-    lastProduct = 0;
-    for (i = 1; i < products.length; i++) {
-      product = products[i];
-      if (productsRes[lastProduct].id == product.id) {
-        productsRes[lastProduct].tags.push({
-          id: product.tagId,
-          name: product.tagName
-        });
-      } else {
-        lastProduct++;
-        productsRes.push({
-          description: product.description,
-          name: product.name,
-          id: product.id,
-          image: product.image,
-          price: product.price,
-          tags: []
-        });
-        if (product.tagId) {
-          productsRes[lastProduct].tags.push({
-            id: product.tagId,
-            name: product.tagName
-          });
-        }
-      }
-    }
-    res.json({ products: productsRes });
+    const pagesCount = Math.ceil(productCount/match.perPage);
+    res.json({ products,pagesCount });
   });
 
   router.get("/get-product/:id", async (req, res) => {
