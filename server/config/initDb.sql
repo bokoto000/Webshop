@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS admins (
 CREATE TABLE IF NOT EXISTS products (
     id serial NOT NULL,
     description text,
-    image text,
     name text UNIQUE NOT NULL,
     price numeric(15, 2) NOT NULL,
     stock int NOT NULL,

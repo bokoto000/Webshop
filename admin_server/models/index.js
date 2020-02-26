@@ -10,6 +10,7 @@ module.exports = (sequelize) => {
     const UserRole = require('./userroles')(sequelize);
     const PermissionRole = require('./permissionroles')(sequelize);
     const Tag = require('./tag')(sequelize);
+    const ProductImage = require('./product_image')(sequelize);
     return {
         Admin,
         Order,
@@ -21,6 +22,7 @@ module.exports = (sequelize) => {
         Role,
         UserRole,
         PermissionRole,
-        Tag
+        Tag,
+        ProductImage
     }
 }

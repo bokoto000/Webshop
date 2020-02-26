@@ -33,7 +33,6 @@ module.exports = sequelize => {
   async function findAll() {
     const products = (await sequelize.query(`SELECT "products"."id", "products"."name",
      "products"."description",
-      "products"."image",
        "products"."price",
         "products"."stock",
              "producttags->tags"."tag_id" AS "tagId",

@@ -27,6 +27,7 @@ module.exports = ( models, sequelize) => {
   const Product = models.Product;
   const Tag = models.Tag;
   const ProductTag = models.ProductTag;
+  const ProductImage = models.ProductImage;
 
   router.post("/create", async (req, res, next) => {
     const user = req.user;
@@ -185,19 +186,21 @@ module.exports = ( models, sequelize) => {
 
   router.post("/fake-images", async (req, res, next) => { 
     const fakes = [];
-    const fakeImage = "https://picsum.photos/200";
+    const fakeImage = base64_encode('/home/boris/Desktop/ardes.jpg');
     const products = (await sequelize.query(`SELECT id FROM products`))[0];
-    const count =(await sequelize.query(`SELECT COUNT(image) FROM products WHERE image='${fakeImage}'`))[0][0];
+    const count =(await sequelize.query(`SELECT COUNT(id) FROM productimages WHERE image_data='${fakeImage}'`))[0][0];
     console.log(count);
-    for (let i = 0; i <products.length; i++) {
+    const n = products.length;
+    for(k=0;k<6;k++){
+    for (let i = n/5*k; i <n; i++) {
       try{
-        await sequelize.query(`UPDATE products SET image='${fakeImage}' WHERE id='${products[i].id}'`)
-        console.log(i);
+        await ProductImage.create(products[i].id,fakeImage);
+        if(i%1000==0)console.log(i);
       }catch(e){
         console.log(e);
       }
     }
-    
+  }
 
     return res.json(fakes);
   });

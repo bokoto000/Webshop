@@ -23,7 +23,6 @@ module.exports = sequelize => {
     console.log(match.lowerPrice);
     const products = await sequelize.query(`SELECT DISTINCT "products"."id", "products"."name",
     "products"."description",
-     "products"."image",
       "products"."price",
        "products"."stock",
        "products"."name" AS "title",
@@ -48,7 +47,6 @@ module.exports = sequelize => {
   async function countAll(match){
     const products = await sequelize.query(`SELECT COUNT(DISTINCT "tmp"."id") as total FROM (SELECT DISTINCT "products"."id", "products"."name",
     "products"."description",
-     "products"."image",
       "products"."price",
        "products"."stock",
        "products"."name" AS "title",
@@ -72,7 +70,6 @@ module.exports = sequelize => {
   async function find() {
     const products = await sequelize.query(`SELECT "products"."id", "products"."name",
     "products"."description",
-     "products"."image",
       "products"."price",
        "products"."stock",
        "products"."name" AS "title",

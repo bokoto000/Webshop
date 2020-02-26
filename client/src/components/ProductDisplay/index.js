@@ -36,18 +36,13 @@ class ProductDisplay extends React.Component {
     await this.setState({
       products: newProps.products
     });
-    this.setState({loading:false});
   }
 
   render() {
     const products = this.state.products;
-    const loading = this.state.loading;
-    if(loading){
-      return <Loader active> </Loader>;
-    }
     return (
       <div style={{ width: "100%" }}>
-          {products && !loading ? (
+          {products ? (
           <Card.Group itemsPerRow={5}>
             {products.map(product => {
               return <ProductCard key={product.id} product={product} />;

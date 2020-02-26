@@ -8,6 +8,7 @@ module.exports =  (sequelize) => {
     const ResetPasswordToken = require('./resetpassword_token')(sequelize);
     const PendingPayment = require('./pending_payment')(sequelize);
     const VerifyEmailToken = require('./verifyemail_token')(sequelize);
+    const ProductImage = require('./product_images')(sequelize);
 
     return {
         User,
@@ -18,6 +19,7 @@ module.exports =  (sequelize) => {
         Order,
         OrderedItem,
         PendingPayment,
-        VerifyEmailToken
+        VerifyEmailToken,
+        ProductImage
     }
 }

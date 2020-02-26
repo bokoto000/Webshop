@@ -8,4 +8,5 @@ module.exports = (app, models, passport, sequelize) => {
   app.use("/status", require("../routers/status")());
   app.use("/paypal", require("../routers/paypal")(models));
   app.use("/verifyemail", require("../routers/verify-email")(models));
+  app.use("/images", require('../routers/images')(models));
 };

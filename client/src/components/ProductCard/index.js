@@ -1,7 +1,8 @@
 import React from "react";
 import {
   Button,
-  Card
+  Card,
+  Loader
 } from "semantic-ui-react";
 import {
   NotificationManager
@@ -9,6 +10,7 @@ import {
 import "./index.css";
 
 const post = require("../../helpers/fetch").post;
+const get = require("../../helpers/fetch").get;
 
 export default class ProductCard extends React.Component {
   constructor(props) {
@@ -18,7 +20,14 @@ export default class ProductCard extends React.Component {
     };
   }
 
-  async componentDidMount() {}
+  async componentDidMount() {
+    this.setState({loading:true});
+    const productId = this.props.product.id;
+    const res = (await (await get(`/images/get-product-image/${productId}`)).json());
+    console.log(productId+ " ok");
+    this.setState({image_data:res.image_data});
+    this.setState({loading:false});
+  }
 
   async buyItem() {
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -62,9 +71,14 @@ export default class ProductCard extends React.Component {
     const product = this.props.product;
     return (
       <Card>
-        <div className="product-image">
-          <img  src={product.image} alt="Loading" className="product-image" />
+        {this.state.loading?
+        <Loader active>
+
+        </Loader>
+        :<div className="product-image">
+          <img  src={`data:image/jpeg;base64,${this.state.image_data}`} alt="Loading" className="product-image" />
         </div>
+      }
         <Card.Content>
           <Card.Header>{product.name}</Card.Header>
           <Card.Meta>

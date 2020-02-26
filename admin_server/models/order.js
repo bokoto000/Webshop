@@ -27,8 +27,7 @@ module.exports = (sequelize) => {
         "ordereditems"."ordered_total" AS "total",
          "ordereditems"."ordered_price" AS "orderedPrice",
            "ordereditems->product"."name" AS "productName",
-            "ordereditems->product"."description" AS "productDescription",
-             "ordereditems->product"."image" AS "productImage"
+            "ordereditems->product"."description" AS "productDescription"
                  FROM (SELECT "orders"."id",
                  "orders"."status"
                     FROM "orders" AS "orders" 
