@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ProductCard from "../ProductCard";
 import {
   Button,
   Dropdown,
@@ -13,11 +12,8 @@ import {
   Label,
   Dimmer
 } from "semantic-ui-react";
-import { Redirect } from "react-router-dom";
 import "./index.css";
 import { post } from "../../helpers/fetch";
-
-const get = require("../../helpers/fetch").get;
 
 const maxProducts = 50;
 

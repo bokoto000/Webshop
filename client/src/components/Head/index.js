@@ -6,13 +6,12 @@ import {
   Segment,
   Visibility,
   Modal,
-  Popup,
-  Search
+  Popup
 } from "semantic-ui-react";
 import Login from "../Login";
 import Register from "../Register";
 import SearchBar from "../SearchBar";
-import { Link, Redirect, withRouter } from "react-router-dom";
+import { Link , withRouter } from "react-router-dom";
 import "./index.css";
 
 const fetch = require("../../helpers/fetch");

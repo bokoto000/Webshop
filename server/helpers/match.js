@@ -1,41 +1,40 @@
 module.exports= {
          getMatchJson: (query)=>{
           categories = ["Laptop","PC","Accessory","Monitor","Phone"];
-        match={filters:{}, sort:{}, page:0};
-        match.filters.higherPrice=1000000;
-        match.filters.lowerPrice = 0;
-        match.sort.sortBy='id';
-        match.sort.type="DESC";
+        match={ page:0};
+        match.higherPrice=1000000;
+        match.lowerPrice = 0;
+        match.orderBy='id';
+        match.order="DESC";
         match.page=0;
         match.perPage=25;
         match.category="";
-        console.log(query);
         if(query.page>0){
           match.page=0;
         }
         if(query.sort){
           if(query.sort=="cheapest"){
-            match.sort.sortBy='price';
-            match.sort.type="ASC";
+            match.orderBy='price';
+            match.order="ASC";
           }
           if(query.sort=="priciest"){
-            match.sort.sortBy='price';
-            match.sort.type="DESC";
+            match.orderBy='price';
+            match.order="DESC";
           }
           if(query.sort=="newest"){
-            match.sort.sortBy='id';
-            match.sort.type="DESC";
+            match.orderBy='id';
+            match.order="DESC";
           }
           if(query.sort=="oldest"){
-            match.sort.sortBy='id';
-            match.sort.type="ASC";
+            match.orderBy='id';
+            match.order="ASC";
           }
         }
         if(query.higherprice>0){
-          match.filters.higherPrice=query.higherprice;
+          match.higherPrice=query.higherprice;
         }
         if(query.lowerprice>0){
-          match.filters.lowerPrice=query.lowerprice;
+          match.lowerPrice=query.lowerprice;
         }
         if(query.page>0){
           match.page = query.page;

@@ -1,44 +1,11 @@
 import React from "react";
 import {
-  Dropdown,
   Loader,
-  Card,
-  Icon,
-  Grid,
-  Button,
-  Input,
-  Segment,
-  Form,
-  Header
+  Card
 } from "semantic-ui-react";
-import { Redirect, withRouter } from "react-router-dom";
-import queryString from "query-string";
+import { withRouter } from "react-router-dom";
 import ProductCard from "../ProductCard";
 import "./index.css";
-import filters from "../../helpers/filters";
-
-const filterOptions = [
-  {
-    key: 0,
-    text: `Най-нови`,
-    value: "newest"
-  },
-  {
-    key: 1,
-    text: "Най-евтини",
-    value: "cheapest"
-  },
-  {
-    key: 2,
-    text: "Най-скъпи",
-    value: "priciest"
-  },
-  {
-    key: 3,
-    text: "Най-стари",
-    value: "oldest"
-  }
-];
 
 class ProductDisplay extends React.Component {
   constructor(props) {
@@ -75,7 +42,6 @@ class ProductDisplay extends React.Component {
   render() {
     const products = this.state.products;
     const loading = this.state.loading;
-    console.log(loading);
     if(loading){
       return <Loader active> </Loader>;
     }

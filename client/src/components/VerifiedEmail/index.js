@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {withRouter} from "react-router-dom";
 import { Loader, Header } from "semantic-ui-react";
-import queryString from "query-string";
 
 const post = require("../../helpers/fetch").post;
 
@@ -13,7 +12,6 @@ class VerifiedEmail extends Component {
 
   componentDidMount = async () => {
     this.setState({ verified: null });
-    const values = queryString.parse(this.props.location.search);
     const token = this.props.match.params.token;
     const res = await post(`/verifyemail/verify-email/${token}`);
     if (res.ok) {

@@ -7,7 +7,7 @@ import Products from "./Products";
 import Orders from "./Orders";
 import "react-datepicker/dist/react-datepicker.css";
 
-class Enquiry extends Component {
+class Enquery extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -79,4 +79,4 @@ class Enquiry extends Component {
   }
 }
 
-export default withRouter(Enquiry);
+export default withRouter(Enquery);

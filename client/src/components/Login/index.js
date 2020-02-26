@@ -1,8 +1,7 @@
 import React from "react";
-import { Grid, Form, Segment, Button, Label } from "semantic-ui-react";
+import { Grid, Form, Button, Label } from "semantic-ui-react";
 import { Link, withRouter } from "react-router-dom";
 import "./index.css";
-import Register from "../Register";
 
 const post = require("../../helpers/fetch").post;
 

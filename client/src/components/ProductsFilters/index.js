@@ -1,15 +1,12 @@
 import React, { Component } from "react";
 import {
   Dropdown,
-  Loader,
-  Card,
   Icon,
   Grid,
   Button,
   Input,
   Segment,
-  Form,
-  Header
+  Form
 } from "semantic-ui-react";
 
 import { withRouter } from "react-router-dom";

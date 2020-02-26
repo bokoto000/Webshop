@@ -1,11 +1,8 @@
 import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
-import ProductCard from "../ProductCard";
+import { withRouter } from "react-router-dom";
 import CartItem from "../CartItem";
 import {
   Button,
-  Input,
-  Image,
   Divider,
   Grid,
   Segment,
@@ -66,7 +63,7 @@ class Cart extends Component {
       let cart = this.state.cart;
       const cartLength = cart.length;
       for (let i = 0; i < cartLength; i++) {
-        if (cart[i].id == item.id) cart[i] = item;
+        if (cart[i].id === item.id) cart[i] = item;
       }
       this.calculateTotal(cart);
       this.setState({ recalculatingTotal: false });

@@ -14,14 +14,11 @@ class Pagination extends Component {
 
   async componentDidMount(){
     this.setState({pages:this.props.pagesCount?this.props.pagesCount:this.state.pages});
-    console.log("t" + this.props.pagesCount);
   }
 
   async componentDidUpdate(prevProps){
-    if(this.props.pagesCount!=prevProps.pagesCount)
+    if(this.props.pagesCount!==prevProps.pagesCount)
     this.setState({pages:this.props.pagesCount?this.props.pagesCount:this.state.pages});
-    console.log("t" + this.props.pagesCount);
-
   }
 
   handlePageClick = async (data) => {

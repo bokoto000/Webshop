@@ -1,13 +1,11 @@
 import React, { Component } from "react";
-import { Grid, Table, Loader } from "semantic-ui-react";
+import { Grid, Table} from "semantic-ui-react";
 import ProductDisplay from "../ProductDisplay";
-import Menu from "../Menu";
 import ProductsFilters from "../ProductsFilters";
 import Pagination from "../Pagination";
-import filters from "../../helpers/filters";
 
 import queryString from "query-string";
-import { withRouter, useParams, Link, Redirect } from "react-router-dom";
+import { withRouter} from "react-router-dom";
 const get = require("../../helpers/fetch").get;
 
 
@@ -30,7 +28,6 @@ class Body extends Component {
     const res = await (await get(`/product/get-products/?${stringifiedValues}`)).json();
     let products = res.products;
     let pagesCount = res.pagesCount;
-    console.log(pagesCount);
     this.setState({ products, allProducts: products, pagesCount});
   }
 
@@ -41,13 +38,12 @@ class Body extends Component {
   async componentDidUpdate(prevProps) {
     const prevParams = await JSON.stringify(prevProps.match.params);
     const currParams = await JSON.stringify(this.props.match.params);
-    if(prevParams!=currParams) {
+    if(prevParams!==currParams) {
       await this.getProducts();
     }
   }
 
   setTag = async (tag) =>  {
-    const products = this.state.allProducts;
     return this.props.history.push(`/${tag}`);
   }
 

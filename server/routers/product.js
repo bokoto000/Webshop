@@ -24,13 +24,11 @@ module.exports = models => {
   const Product = models.Product;
   router.get("/get-products", async (req, res, next) => {
     query = req.query;
-    console.log(query);
     match=matcher.getMatchJson(query);
     const productsQuery = await Product.findAll(match);
     const productCount = (await Product.countAll(match));
-    const products = productsQuery[0];
     const pagesCount = Math.ceil(productCount/match.perPage);
-    res.json({ products,pagesCount });
+    res.json({ products:productsQuery,pagesCount });
   });
 
   router.get("/get-product/:id", async (req, res) => {

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import _ from "lodash";
 import { Search, Header, Label } from "semantic-ui-react";
 
-const get = require("../../helpers/fetch").get;
 
 const initialState = { isLoading: false, results: [], value: "" };
 const resultRenderer = ({ name,price,id }) => (

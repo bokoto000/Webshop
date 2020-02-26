@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import {
   Form,
-  Input,
   Segment,
   Button,
   Container,
   Divider
 } from "semantic-ui-react";
-import { Link } from "react-router-dom";
-import { post,get } from "../../helpers/fetch";
+import { post } from "../../helpers/fetch";
 
 
 export default class ForgotPassword extends Component {

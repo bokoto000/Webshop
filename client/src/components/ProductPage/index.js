@@ -29,15 +29,15 @@ export default class ProductPage extends Component {
   async buyItem() {
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
     const product = this.state.product;
-    if (cart != "[]") {
+    if (cart !== "[]") {
       let done = false;
       for (let i = 0; i < cart.length; i++) {
-        if (cart[i].id == product.id) {
+        if (cart[i].id === product.id) {
           cart[i].count++;
           done = true;
         }
       }
-      if (done == false) {
+      if (done === false) {
         cart.push({
           id: product.id,
           name: product.name,

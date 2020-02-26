@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
 const faker = require("faker");
+const fs = require('fs');
 router.use(bodyParser.json());
 router.use(
   bodyParser.urlencoded({
@@ -176,15 +177,22 @@ module.exports = ( models, sequelize) => {
     return res.json(fakes);
   });
 
+  function base64_encode(file) {
+    // read binary data
+    var bitmap = fs.readFileSync(file);
+    return new Buffer(bitmap).toString('base64');
+}
+
   router.post("/fake-images", async (req, res, next) => { 
     const fakes = [];
-    const fakeImage = "https://media-cdn.tripadvisor.com/media/photo-s/15/c5/a4/14/pepperoni-lovers.jpg";
+    const fakeImage = "https://picsum.photos/200";
     const products = (await sequelize.query(`SELECT id FROM products`))[0];
     const count =(await sequelize.query(`SELECT COUNT(image) FROM products WHERE image='${fakeImage}'`))[0][0];
     console.log(count);
     for (let i = 0; i <products.length; i++) {
       try{
         await sequelize.query(`UPDATE products SET image='${fakeImage}' WHERE id='${products[i].id}'`)
+        console.log(i);
       }catch(e){
         console.log(e);
       }

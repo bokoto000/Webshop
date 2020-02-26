@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
   Button,
-  Input,
   Image,
   Divider,
   Grid,
@@ -25,7 +24,6 @@ class Checkout extends Component {
   async componentDidMount() {
     this.setState({ Loading: true });
     const res = await (await get("/order/get")).json();
-    console.log(res);
     if (res.fullOrder.length>=0) {
       this.setState({ order: res.fullOrder });
       this.setState({ total: res.total});
@@ -38,11 +36,9 @@ class Checkout extends Component {
     try {
       if (this.state.payWithPaypal) {
         const paypal = await post("/paypal/pay");
-        console.log(paypal);
         if (paypal.ok) {
           const redirect = await paypal.json();
           window.location.href = redirect.href;
-          console.log(redirect);
         }
       }
       else {
@@ -59,7 +55,7 @@ class Checkout extends Component {
   };
 
   toggle = (e,{name})=>{
-    if(this.state[name]=="true"){
+    if(this.state[name]==="true"){
       this.setState({[name]:"false"});
     }
     else {
@@ -70,7 +66,6 @@ class Checkout extends Component {
 
   render() {
     const cart = this.state.order;
-    console.log(cart);
     if (!this.state.Loading)
       return (
         <div style={{ minHeight: "80vh" }}>

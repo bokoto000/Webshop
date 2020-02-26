@@ -4,11 +4,9 @@ import {
   Route,
   Switch,
   Redirect,
-  BrowserRouter,
   withRouter
 } from "react-router-dom";
 import { NotificationContainer } from "react-notifications";
-import Menu from "../Menu";
 import Head from "../Head";
 import Body from "../Body";
 import Footer from "../Footer";

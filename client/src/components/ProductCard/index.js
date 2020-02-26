@@ -1,11 +1,5 @@
 import React from "react";
 import {
-  Grid,
-  Form,
-  Image,
-  Segment,
-  Divider,
-  Message,
   Button,
   Card
 } from "semantic-ui-react";
@@ -28,15 +22,15 @@ export default class ProductCard extends React.Component {
 
   async buyItem() {
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    if (cart != "[]") {
+    if (cart !== "[]") {
       let done = false;
       for (let i = 0; i < cart.length; i++) {
-        if (cart[i].id == this.props.product.id) {
+        if (cart[i].id === this.props.product.id) {
           cart[i].count++;
           done = true;
         }
       }
-      if (done == false) {
+      if (done === false) {
         cart.push({
           id: this.props.product.id,
           name: this.props.product.name,
@@ -69,7 +63,7 @@ export default class ProductCard extends React.Component {
     return (
       <Card>
         <div className="product-image">
-          <img src={product.image} className="product-image" />
+          <img  src={product.image} alt="Loading" className="product-image" />
         </div>
         <Card.Content>
           <Card.Header>{product.name}</Card.Header>

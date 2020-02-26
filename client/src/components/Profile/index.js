@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import {
   Container,
-  Checkbox,
   Table,
   Form,
   Segment,
   Button
 } from "semantic-ui-react";
-import { Redirect } from "react-router-dom";
 
 const get = require("../../helpers/fetch").get;
 const post = require("../../helpers/fetch").post;

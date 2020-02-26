@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import {
   Form,
-  Input,
   Segment,
   Button,
   Container,
   Divider,
   Label
 } from "semantic-ui-react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { post, get } from "../../helpers/fetch";
 
 class RestorePassword extends Component {
@@ -30,7 +29,7 @@ class RestorePassword extends Component {
   };
 
   onSubmit = async () => {
-    if (this.state.password != this.state.verifyPassword) {
+    if (this.state.password !== this.state.verifyPassword) {
       this.setState({ passwordNotVerified: true });
       return;
     }
