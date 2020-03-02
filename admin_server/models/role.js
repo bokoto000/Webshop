@@ -1,12 +1,20 @@
 module.exports = (sequelize) => {
 
     async function create(name) {
-        const results = (await sequelize.query(`INSERT INTO roles (role) VALUES ('${name}')`));
+        const results = (await sequelize.query(`INSERT INTO roles (role) VALUES ($name)`,{
+            bind:{
+                name
+            }
+        }));
         return results;
     }
 
     async function findOne(id) {
-        const role = (await sequelize.query(`SELECT * FROM roles WHERE id='${id}' LIMIT 1`))[0][0];
+        const role = (await sequelize.query(`SELECT * FROM roles WHERE id=$id LIMIT 1`,{
+            bind:{
+                id
+            }
+        }))[0][0];
         return role;
     }
 
@@ -21,7 +29,11 @@ module.exports = (sequelize) => {
     }
 
     async function deleteById(id) {
-        const role = (await sequelize.query(`DELETE FROM roles WHERE id='${id}'`));
+        const role = (await sequelize.query(`DELETE FROM roles WHERE id=$id`,{
+            bind:{
+                id
+            }
+        }));
         return role;
     }
 

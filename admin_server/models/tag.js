@@ -1,7 +1,11 @@
 module.exports = (sequelize) => {
 
     async function create(name){
-        const results = (await sequelize.query(`INSERT INTO tags (name) VALUES ('${name}')`));
+        const results = (await sequelize.query(`INSERT INTO tags (name) VALUES ($name)`,{
+            bind:{
+                name
+            }
+        }));
         return results;
     }
 

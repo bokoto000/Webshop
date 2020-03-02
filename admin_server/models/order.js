@@ -1,7 +1,11 @@
 module.exports = (sequelize) => {
 
     async function findByPk(id) {
-        const order = (await sequelize.query(`SELECT * FROM orders WHERE id='${id}''`))[0][0];
+        const order = (await sequelize.query(`SELECT * FROM orders WHERE id=$id`,{
+            bind:{
+                id
+            }
+        }))[0][0];
         return order;
     }
 
@@ -11,12 +15,21 @@ module.exports = (sequelize) => {
     }
 
     async function findAllBetweenDates(startDate, endDate) {
-        const orders = (await sequelize.query(`SELECT * FROM orders WHERE date>='${startDate}' AND date<='${endDate}'`))[0][0];
+        const orders = (await sequelize.query(`SELECT * FROM orders WHERE date>=$startDate AND date<=$endDate`,{
+            bind:{
+                startDate,
+                endDate
+            }
+        }))[0][0];
         return orders;
     }
 
     async function findAllByStatus(status) {
-        const orders = (await sequelize.query(`SELECT * FROM orders WHERE status='${status}'`))[0];
+        const orders = (await sequelize.query(`SELECT * FROM orders WHERE status=$status`,{
+            bind:{
+                status
+            }
+        }))[0];
         return orders;
     }
 
@@ -28,19 +41,28 @@ module.exports = (sequelize) => {
          "ordereditems"."ordered_price" AS "orderedPrice",
            "ordereditems->product"."name" AS "productName",
             "ordereditems->product"."description" AS "productDescription"
-                 FROM (SELECT "orders"."id",
+                 FROM (SELECT "orders".id,
                  "orders"."status"
                     FROM "orders" AS "orders" 
-                    WHERE "orders"."id" = ${id})
+                    WHERE "orders"."id" = $id)
                      AS "orders"
                      LEFT OUTER JOIN "ordereditems" AS "ordereditems" ON "orders"."id" = "ordereditems"."order_id" 
                      LEFT OUTER JOIN "products" AS "ordereditems->product"
-                      ON "ordereditems"."product_id" = "ordereditems->product"."id";`))[0];
+                      ON "ordereditems"."product_id" = "ordereditems->product"."id";`,{
+                          bind:{
+                              id
+                          }
+                      }))[0];
         return orders;
     }
 
     async function updateStatus(id, status){
-        const updatedOrder = (await sequelize.query(`UPDATE orders SET status='${status}' WHERE id='${id}'`))
+        const updatedOrder = (await sequelize.query(`UPDATE orders SET status=$status WHERE id=$id`,{
+            bind:{
+                status,
+                id
+            }
+        }))
     }
 
     return { findByPk, findAll, findAllBetweenDates, findAllByStatus, findFullOrderByPk, updateStatus };

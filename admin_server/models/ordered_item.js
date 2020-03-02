@@ -11,7 +11,11 @@ module.exports = (sequelize) => {
     }
 
     async function findAllByOrderPk(id) {
-        const orderedItem = (await sequelize.query(`SELECT * FROM ordereditems WHERE order_id='${id}';`))[0];
+        const orderedItem = (await sequelize.query(`SELECT * FROM ordereditems WHERE order_id=$id;`,{
+            bind:{
+                id
+            }
+        }))[0];
         return orderedItem;
     }
     return { findOne, findByPk, findAllByOrderPk };

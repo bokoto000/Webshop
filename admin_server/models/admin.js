@@ -6,7 +6,16 @@ module.exports = (sequelize) => {
         if (hash) {
             try {
                 const query = await sequelize.query(`INSERT INTO admins (username,password,email,first_name,last_name)
-             VALUES ('${username}','${hash}','${email}','${firstName}','${lastName}') `);
+             VALUES ($username,$hash,$email,$firstName,$lastName) `,{
+                 bind:{
+                    username,
+                    hash,
+                    email,
+                    firstName,
+                    lastName
+                 },
+                 type:sequelize.QueryTypes.INSERT
+             });
                 if (query) {
                     const user = await findOne(username);
                     return user;
@@ -19,18 +28,30 @@ module.exports = (sequelize) => {
     }
 
     async function validPassword(username, password) {
-        const hash = (await sequelize.query(`SELECT password FROM admins WHERE admins.username='${username}'`))[0][0].password;
+        const hash = (await sequelize.query(`SELECT password FROM admins WHERE admins.username=$username`,{
+            bind:{
+                username
+            }
+        }))[0][0].password;
         const comp = await bcrypt.compare(password, hash);
         return comp;
     }
 
     async function findOne(username) {
-        const user = (await sequelize.query(`SELECT id,username,email,first_name,last_name FROM admins WHERE username='${username}'`))[0][0];
+        const user = (await sequelize.query(`SELECT id,username,email,first_name,last_name FROM admins WHERE username=$username`,{
+            bind:{
+                username
+            }
+        }))[0][0];
         return user;
     }
 
     async function findByPk(id) {
-        const user = (await sequelize.query(`SELECT id,username,email,first_name,last_name FROM admins WHERE id='${id}'`))[0][0];
+        const user = (await sequelize.query(`SELECT id,username,email,first_name,last_name FROM admins WHERE id=$id`,{
+            bind:{
+                id
+            }
+        }))[0][0];
         return user;
     }
 

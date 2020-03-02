@@ -6,27 +6,54 @@ module.exports = sequelize => {
 
   async function findByPk(id) {
     const product = (await sequelize.query(
-      `SELECT * FROM products WHERE id='${id}'`
+      `SELECT * FROM products WHERE id=$id`,{
+        bind:{
+          id
+        }
+      }
     ))[0][0];
     return product;
   }
 
   async function updateStock(id, stock) {
     const update = await sequelize.query(
-      `UPDATE products SET stock='${stock}' WHERE id='${id}'`
+      `UPDATE products SET stock=$stock WHERE id=$id`,{
+        bind:{
+          stock,
+          id
+        }
+      }
     );
     return update;
   }
 
   async function create(image, name, description, price, stock) {
     const result = await sequelize.query(
-      `INSERT INTO products (image,name,description,price,stock) VALUES ('${image}','${name}','${description}','${price}','${stock}')`
+      `INSERT INTO products (image,name,description,price,stock)
+       VALUES ($image,$name,$description,$price,$stock)`,{
+         bind:{
+           image,
+           name,
+           description,
+           stock,
+           price
+         }
+       }
     );
   }
 
   async function update(id,image, name, description, price) {
     const result = await sequelize.query(
-      `UPDATE products SET image='${image}', name='${name}', description='${description}', price='${price}' WHERE id='${id}'`);
+      `UPDATE products SET 
+      image=$image, name=$name, description=$description, price=$price WHERE id=$id`,{
+        bind:{
+          image,
+          price,
+          description,
+          id,
+          name
+        }
+      });
     
   }
 
