@@ -16,7 +16,7 @@
   "author": "Boris Velkovski",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcrypt": "^5.0.0",
     "concurrently": "^4.1.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
