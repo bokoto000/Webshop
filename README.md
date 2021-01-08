@@ -1,6 +1,6 @@
 # Webshop
 
-A standart online site used for selling products.\
+A standart online site used for selling products.
 
 ### Features
 
@@ -10,7 +10,7 @@ Categories - Search products by tags\
 Cart - see what products you've added to the cart\
 User management - roles and permission for making changes to products and categories\
 [Admin Client](admin_client) \
-[Admin Server](admin_server)\
+[Admin Server](admin_server)
 
 ### Prerequisites
 
