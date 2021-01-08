@@ -9,6 +9,7 @@ Product management - add/remove/edit products and keeps track of product quantit
 Categories - Search products by tags\
 Cart - see what products you've added to the cart\
 User management - roles and permission for making changes to products and categories\
+Verifying emails \
 [Admin Client](admin_client) - the admin client\
 [Admin Server](admin_server) - the admin server
 
