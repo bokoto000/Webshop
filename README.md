@@ -14,7 +14,7 @@ User management - roles and permission for making changes to products and catego
 
 ### Prerequisites
 
-What things you need to install the software and how to install them:
+What things you need to install the software:
 NodeJS
 Postgresql
 React
