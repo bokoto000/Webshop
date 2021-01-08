@@ -1,16 +1,16 @@
 # Webshop
 
-A standart online site used for selling products.
+A standart online site used for selling products.\
 
 ### Features
 
-PayPal payment system
-Product management - add/remove/edit products and keeps track of product quantity
-Categories - Search products by tags
-Cart - see what products you've added to the cart
-User management - roles and permission for making changes to products and categories
-[Admin Client](admin_client) 
-[Admin Server](admin_server)
+PayPal payment system\
+Product management - add/remove/edit products and keeps track of product quantity\
+Categories - Search products by tags\
+Cart - see what products you've added to the cart\
+User management - roles and permission for making changes to products and categories\
+[Admin Client](admin_client) \
+[Admin Server](admin_server)\
 
 ### Prerequisites
 
@@ -22,7 +22,7 @@ Express
 
 ## Authors
 
-* **Boris Velkovski** - *Initial work* - [bokoto000](https://github.com/bokoto000)
+* **Boris Velkovski**  - [bokoto000](https://github.com/bokoto000)
 
 ## License
 
